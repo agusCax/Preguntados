@@ -9,5 +9,6 @@
 <body>
 
 <div class="w3-container header-evento w3-padding-32 w3-center">
-    <h1>Preguntados - Primera etapa</h1>
+    <h1>Preguntados</h1>
+    <h2>Primera etapa</h2>
 </div>
