@@ -27,5 +27,5 @@ jobs:
           lftp -e "
           set ftp:ssl-allow no;
           open -u $FTP_USER,$FTP_PASS $FTP_HOST;
-          mirror -R ./ /htdocs/ --exclude .git/ --exclude .github/ --exclude config/config.ini;
+          mirror -R ./ /htdocs/ProyectoWeb/ --exclude .git/ --exclude .github/ --exclude config/config.ini;
           bye"
