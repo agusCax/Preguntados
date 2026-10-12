@@ -1,0 +1,99 @@
+<style>
+   body {
+       background-color: #ffffff !important; /* Fondo completamente blanco */
+       color: #333333; /* Texto oscuro por defecto */
+   }
+
+   .preguntados-card {
+       background-color: #ffffff;
+       border-radius: 20px;
+       /* Sombra un poco más fuerte para que resalte en el fondo blanco */
+       box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.05);
+       border-top: 8px solid #ff7b00;
+       overflow: hidden;
+       margin-bottom: 40px;
+   }
+    .preguntados-header {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 25px;
+    }
+    .preguntados-header h2 {
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+    .preguntados-header p {
+        color: #7f8c8d;
+        font-size: 1.1em;
+    }
+    .tabla-contenedor {
+        max-width: 400px;
+        margin: 0 auto 30px auto;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 10px;
+        border: 2px solid #e9ecef;
+    }
+    .preguntados-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .preguntados-table td {
+        padding: 15px;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #00a8ff; /* Azul característico */
+        border-bottom: 2px dashed #dee2e6;
+        transition: all 0.2s ease;
+    }
+    .preguntados-table tr:last-child td {
+        border-bottom: none;
+    }
+    .preguntados-table tr:hover td {
+        background-color: #eef7ff;
+        border-radius: 8px;
+        transform: scale(1.02);
+    }
+    .btn-preguntados {
+        background-color: #4cd137; /* Verde vibrante */
+        color: white !important;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(76, 209, 55, 0.4);
+        border: none;
+    }
+    .btn-preguntados:hover {
+        background-color: #44bd32;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(76, 209, 55, 0.5);
+    }
+</style>
+
+<div class="w3-content" style="max-width:800px">
+    <div class="w3-panel preguntados-card w3-padding-32 w3-margin-top w3-center">
+
+        <div class="preguntados-header">
+            <h2>¡Hola Mundo!</h2>
+            <p>Los siguientes usuarios fueron recuperados de la base de datos:</p>
+        </div>
+
+        <div class="tabla-contenedor">
+            <table class="preguntados-table">
+                <tbody>
+                    {{#usuarios}}
+                    <tr>
+                        <td>{{usuario}}</td>
+                    </tr>
+                    {{/usuarios}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
