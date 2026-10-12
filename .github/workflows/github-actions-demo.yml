@@ -1,0 +1,31 @@
+name: Deploy a InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_to_infinityfree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y lftp
+
+      - name: Sincronizar archivos por FTP
+        env:
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+        run: |
+          echo "Iniciando deploy a InfinityFree..."
+          lftp -e "
+          set ftp:ssl-allow no;
+          open -u $FTP_USER,$FTP_PASS $FTP_HOST;
+          mirror -R ./ /htdocs/ --exclude .git/ --exclude .github/ --exclude config/config.ini;
+          bye"
