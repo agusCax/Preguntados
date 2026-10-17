@@ -16,11 +16,19 @@ class MustacheRender
         ]);
     }
 
-    public function renderiza($view, $data = [])
+    // $conLayout = false: renderiza solo la vista (para páginas completas con su propio <head>)
+    public function renderiza($view, $data = [], $conLayout = true)
     {
         $data['base_url'] = BASE_URL;
-        require_once($this->viewPath . "/header.php");
+
+        if ($conLayout) {
+            require_once($this->viewPath . "/header.php");
+        }
+
         echo $this->mustache->render($view . "View", $data);
-        require_once($this->viewPath . "/footer.php");
+
+        if ($conLayout) {
+            require_once($this->viewPath . "/footer.php");
+        }
     }
 }

@@ -21,7 +21,7 @@ class InicioController
             $data['usuarios'] = $this->model->getInicio();
             $this->render->renderiza("inicio", $data);
         }else{
-            $this->render->renderiza("login");
+            $this->render->renderiza("bienvenida", [], false);
         }
     }
 }

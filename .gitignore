@@ -1,4 +1,5 @@
 __MACOSX/
+vendor/
 log/
 config/
 .idea/
