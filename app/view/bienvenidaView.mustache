@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cerebrito</title>
+
+  <!-- Fuentes: Outfit (base), Fredoka (título), Nunito (subtítulo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       TOKENS (basados en DESIGN.md)
+       ========================================================= */
+    :root {
+      /* Colores */
+      --color-primary: #0284c7;
+      --color-primary-dark: #0369a1;
+      --color-secondary: #f59e0b;
+      --color-tertiary: #10b981;
+      --color-error: #ef4444;
+      --color-ink: #0f172a;
+      --color-ink-soft: #334155; /* texto de apoyo (subtítulos) */
+      --color-canvas: #f8fafc;
+      --color-white: #ffffff;
+      --color-border: #e2e8f0;
+      --color-shape: #f1f5ff; /* formas decorativas del fondo */
+
+      /* Tipografía */
+      --font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-display: "Fredoka", "Outfit", system-ui, sans-serif; /* título */
+      --font-text: "Nunito", "Outfit", system-ui, sans-serif; /* subtítulo */
+
+      --fs-display-mobile: 34px;
+      --lh-display-mobile: 38px;
+      --fs-display: 56px;
+      --lh-display: 60px;
+      --fs-body-md: 16px;
+      --lh-body-md: 24px;
+      --fs-body-lg: 18px;
+      --lh-body-lg: 26px;
+      --fs-label-lg: 16px;
+
+      /* Radios */
+      --radius-sm: 0.5rem;
+      --radius-md: 1.5rem;
+      --radius-lg: 2rem;
+      --radius-full: 9999px;
+
+      /* Espaciado */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+
+      --margin: 1rem;
+      --gutter: 1rem;
+    }
+
+    /* =========================================================
+       RESET / BASE
+       ========================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-weight: 500;
+      color: var(--color-ink);
+      background-color: var(--color-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =========================================================
+       COMPONENTE: BOTONES
+       ========================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0 var(--space-lg);
+      border: 0;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: var(--fs-label-lg);
+      font-weight: 700;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease,
+        background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    /* Primario: botón táctil con bisel inferior */
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      box-shadow: 0 4px 0 var(--color-primary-dark);
+    }
+
+    .btn--primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn--primary:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 transparent;
+    }
+
+    /* Secundario: contorno azul, sin bisel */
+    .btn--secondary {
+      background-color: transparent;
+      color: var(--color-primary-dark);
+      border: 2px solid var(--color-primary);
+    }
+
+    .btn--secondary:hover {
+      background-color: var(--color-shape);
+      border-color: var(--color-primary-dark);
+    }
+
+    .btn--secondary:active {
+      transform: scale(0.98);
+    }
+
+    /* Foco de teclado: outline, para no pisar el bisel del primario */
+    .btn:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 3px;
+    }
+
+    /* =========================================================
+       PANTALLA: BIENVENIDA (mobile first)
+       ========================================================= */
+    .welcome {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      overflow: hidden;
+      background-color: var(--color-white);
+    }
+
+    /* Marca (esquina superior izquierda) */
+    .welcome__brand {
+      position: absolute;
+      top: var(--space-lg);
+      left: var(--margin);
+      z-index: 2;
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--color-primary-dark);
+    }
+
+    /* Formas decorativas */
+    .welcome__shape {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .welcome__shape--circle {
+      top: -10%;
+      right: -20%;
+      width: 90vw;
+      height: 90vw;
+      border-radius: 50%;
+      background-color: var(--color-shape);
+    }
+
+    .welcome__shape--ring {
+      bottom: -5%;
+      left: -10%;
+      width: 55vw;
+      height: 55vw;
+      border: 2px solid var(--color-shape);
+      border-radius: 50%;
+    }
+
+    /* Contenedor principal: columna */
+    .welcome__container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: calc(var(--space-xl) + var(--space-lg)) var(--margin)
+        calc(var(--space-xl) + var(--space-md));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-lg);
+    }
+
+    /* Mascota */
+    .welcome__media {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .welcome__mascot {
+      width: min(70%, 280px);
+      /* PNG con transparencia: sin blend, con sombra suave para despegarla del fondo */
+      filter: drop-shadow(0 12px 24px rgba(11, 91, 220, 0.18));
+    }
+
+    /* Contenido */
+    .welcome__content {
+      width: 100%;
+      text-align: center;
+    }
+
+    .welcome__title {
+      font-family: var(--font-display);
+      font-size: var(--fs-display-mobile);
+      line-height: var(--lh-display-mobile);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      margin-bottom: var(--space-md);
+    }
+
+    .welcome__subtitle {
+      font-family: var(--font-text);
+      font-size: var(--fs-body-md);
+      line-height: var(--lh-body-md);
+      font-weight: 600;
+      color: var(--color-ink-soft);
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Acciones: dos botones en fila */
+    .welcome__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: var(--gutter);
+    }
+
+    /* Pantallas muy chicas: botones apilados, principal arriba */
+    @media (max-width: 359px) {
+      .welcome__actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* =========================================================
+       TABLET (≥ 768px)
+       ========================================================= */
+    @media (min-width: 768px) {
+      :root {
+        --margin: 1.5rem;
+        --gutter: 1.25rem;
+      }
+
+      .welcome__container {
+        max-width: 640px;
+      }
+
+      .welcome__mascot {
+        width: min(60%, 340px);
+      }
+
+      .welcome__title {
+        font-size: 40px;
+        line-height: 46px;
+      }
+
+      .welcome__subtitle {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+      }
+    }
+
+    /* =========================================================
+       DESKTOP (≥ 1024px): dos columnas, todo más grande
+       ========================================================= */
+    @media (min-width: 1024px) {
+      :root {
+        --margin: 2.5rem;
+        --gutter: 1.5rem;
+      }
+
+      .welcome {
+        align-items: center;
+      }
+
+      .welcome__brand {
+        top: var(--space-xl);
+        font-size: 30px;
+      }
+
+      /* Círculo centrado verticalmente. El borde izquierdo (donde está el texto)
+         queda fijo en 45vw. Si la pantalla es más alta que ancha-proporcional,
+         el círculo crece hacia la derecha para cubrir todo el alto. */
+      .welcome__shape--circle {
+        top: 50%;
+        left: 45vw;
+        right: auto;
+        width: max(60vw, 100dvh);
+        height: max(60vw, 100dvh);
+        transform: translateY(-50%);
+      }
+
+      /* Relleno: desde el centro del círculo hasta el borde derecho de la
+         pantalla, en todo el alto. Tapa las esquinas sin tocar la curva izquierda. */
+      .welcome__shape--circle::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 200vh;
+        transform: translateY(-50%);
+        background-color: inherit;
+      }
+
+      .welcome__shape--ring {
+        bottom: -15%;
+        left: -5%;
+        width: 30vw;
+        height: 30vw;
+      }
+
+      .welcome__container {
+        max-width: 1200px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 4rem;
+        padding: 4rem var(--margin);
+      }
+
+      /* Columnas simétricas */
+      .welcome__media {
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: center;
+      }
+
+      .welcome__mascot {
+        width: min(100%, 460px);
+        /* Separa la mascota del borde del círculo: se corre más cuanto más ancha es la pantalla */
+        transform: translateX(calc(-1 * clamp(0px, 4vw, 80px)));
+      }
+
+      .welcome__content {
+        flex: 1 1 0;
+        min-width: 0;
+        text-align: left;
+      }
+
+      .welcome__title {
+        font-size: var(--fs-display);
+        line-height: var(--lh-display);
+        margin-bottom: var(--space-lg);
+      }
+
+      .welcome__subtitle {
+        font-size: 22px;
+        line-height: 30px;
+        margin-bottom: 2.5rem;
+      }
+
+      .welcome__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-lg);
+      }
+
+      .btn {
+        min-height: 60px;
+        padding: 0 2.5rem;
+        font-size: 18px;
+      }
+    }
+
+
+    /* =========================================================
+       BURBUJAS DE CATEGORÍAS (≥ 1400px)
+       Se acomodan en arco, en el espacio libre a la derecha del
+       contenedor (max-width 1200px). --ox es la posición dentro de
+       ese espacio: así nunca pisan el texto.
+       ========================================================= */
+    .welcome__bubbles {
+      display: none;
+      list-style: none;
+    }
+
+    @media (min-width: 1400px) {
+      .welcome__bubbles {
+        display: block;
+      }
+
+      .bubble {
+        position: absolute;
+        z-index: 1;
+        left: calc(50% + 600px + var(--ox) * (50% - 600px));
+        top: var(--y);
+        width: var(--s);
+        height: var(--s);
+        margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+        display: grid;
+        place-items: center;
+        font-size: calc(var(--s) * 0.5);
+        line-height: 1;
+        background-color: var(--tint);
+        border: 3px solid var(--color-white);
+        border-radius: 50%;
+        box-shadow: 0 10px 24px rgba(3, 105, 161, 0.12);
+        animation: bubble-float var(--d) ease-in-out var(--delay) infinite;
+      }
+    }
+
+    @keyframes bubble-float {
+      0%,
+      100% {
+        translate: 0 0;
+      }
+      50% {
+        translate: 0 -10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bubble {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="welcome">
+    <!-- Marca -->
+    <a href="{{base_url}}/inicio/show" class="welcome__brand">Cerebrito</a>
+
+    <!-- Formas decorativas de fondo -->
+    <span class="welcome__shape welcome__shape--circle" aria-hidden="true"></span>
+    <span class="welcome__shape welcome__shape--ring" aria-hidden="true"></span>
+
+    <!-- Burbujas de categorías (decorativas, solo desktop grande) -->
+    <ul class="welcome__bubbles" aria-hidden="true">
+      <li class="bubble" style="--ox:-0.07; --y:10%;   --s:60px; --tint:#d1fae5; --d:6s;   --delay:0s">🔬</li>
+      <li class="bubble" style="--ox:0.15;  --y:20%;   --s:72px; --tint:#fef3c7; --d:7s;   --delay:-2s">🏛️</li>
+      <li class="bubble" style="--ox:0.27;  --y:31.5%; --s:80px; --tint:#e0f2fe; --d:5.5s; --delay:-1s">🌎</li>
+      <li class="bubble" style="--ox:0.34;  --y:44%;   --s:68px; --tint:#fce7f3; --d:6.5s; --delay:-3s">🎨</li>
+      <li class="bubble" style="--ox:0.42;  --y:55%;   --s:76px; --tint:#fee2e2; --d:7.5s; --delay:-4s">⚽</li>
+      <li class="bubble" style="--ox:0.53;  --y:68%;   --s:84px; --tint:#ede9fe; --d:6s;   --delay:-2.5s">🎬</li>
+      <li class="bubble" style="--ox:0.26;  --y:79%;   --s:64px; --tint:#ffedd5; --d:5s;   --delay:-1.5s">🎵</li>
+      <li class="bubble" style="--ox:-0.07; --y:87%;   --s:72px; --tint:#cffafe; --d:7s;   --delay:-3.5s">💻</li>
+    </ul>
+
+    <div class="welcome__container">
+
+      <!-- Mascota -->
+      <figure class="welcome__media">
+        <img
+          class="welcome__mascot"
+          src="{{base_url}}/public/img/imagenPreguntadosLogo.png"
+          alt="Cerebrito, la mascota, pensando con un signo de pregunta"
+        />
+      </figure>
+
+      <!-- Contenido -->
+      <section class="welcome__content">
+        <h1 class="welcome__title">Jugá y aprendé al mismo tiempo</h1>
+        <p class="welcome__subtitle">¡Creá tu cuenta y accedé a Cerebrito!</p>
+
+        <div class="welcome__actions">
+          <a href="{{base_url}}/registro/show" class="btn btn--primary">Registrarse</a>
+          <a href="{{base_url}}/login/show" class="btn btn--secondary">Iniciar Sesión</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>

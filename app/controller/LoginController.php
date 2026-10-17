@@ -18,8 +18,8 @@ class LoginController
 
     public function show()
     {
-        $data["error"] = Request::get('login_error') !== null ? "Usuario o contraseña incorrectos." : ""; 
-        $this->render->renderiza("login", $data);
+        $data["error"] = Request::get('login_error') !== null ? "Usuario o contraseña incorrectos." : "";
+        $this->render->renderiza("login", $data, false);
     }
 
     public function login()
