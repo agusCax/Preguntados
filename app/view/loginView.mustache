@@ -1,0 +1,121 @@
+<style>
+    body {
+        background-color: #ffffff !important;
+        color: #333333;
+    }
+
+    .preguntados-card {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-top: 8px solid #ff7b00;
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .preguntados-header {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    .preguntados-header h2 {
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .preguntados-header p {
+        color: #7f8c8d;
+        font-size: 1.1em;
+    }
+
+    .login-form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 24px;
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        text-align: left;
+    }
+
+    .login-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font: inherit;
+        box-sizing: border-box;
+    }
+
+    .login-form input:focus {
+        outline: 3px solid rgba(0, 168, 255, 0.2);
+        border-color: #00a8ff;
+    }
+
+    .btn-preguntados {
+        width: 100%;
+        background-color: #4cd137;
+        color: white;
+        padding: 14px 32px;
+        border-radius: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(76, 209, 55, 0.4);
+        border: none;
+    }
+
+    .btn-preguntados:hover {
+        background-color: #44bd32;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(76, 209, 55, 0.5);
+    }
+</style>
+
+<div class="w3-content" style="max-width: 800px">
+    <div class="w3-panel preguntados-card w3-padding-32 w3-margin-top w3-center">
+        <div class="preguntados-header">
+            <h2>¡Bienvenido/a!</h2>
+            <p>Iniciá sesión para jugar.</p>
+        </div>
+
+        {{#error}}
+            <div class="w3-panel w3-pale-red w3-border">
+                <p>{{error}}</p>
+            </div>
+        {{/error}}
+
+        <form class="login-form" action="{{base_url}}/login/login" method="post">
+            <label for="usuario">Usuario</label>
+            <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Contraseña</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button class="btn-preguntados" type="submit">Iniciar sesión</button>
+        </form>
+    </div>
+</div>

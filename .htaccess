@@ -17,17 +17,16 @@ Options -Indexes
 # ══════════════════════════════════════════════════════
 # URL REWRITING
 # Transforma URLs limpias en la URL real de PHP.
-# El browser pide:  /evento/show
-# Apache convierte: index.php?controller=evento&method=show
+# El browser pide:  /proyectoWeb/inicio/show
+# Apache convierte: index.php?controller=inicio&method=show
 # El browser nunca sabe que existe index.php.
 # ══════════════════════════════════════════════════════
 <IfModule mod_rewrite.c>
     # Activa el motor de reescritura.
     RewriteEngine On
 
-    # Raíz desde donde se aplican las reglas (relativo al DocumentRoot).
-    # Si el proyecto no está en la raíz de htdocs, cambiar a /nombre-carpeta/
-    RewriteBase /
+    # Base pública del proyecto, relativa al DocumentRoot.
+    RewriteBase /proyectoWeb/
 
     # ── SEGURIDAD: código interno inaccesible por URL directa ──
     # app/, helper/ y vendor/ son PHP interno (controllers, models,

@@ -10,6 +10,6 @@ class Redirect
 
     public static function toIndex()
     {
-        self::to('/');
+        self::to(BASE_URL . '/');
     }
 }

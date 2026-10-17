@@ -2,7 +2,8 @@
 use app\Configuration;
 
 session_start();
-require_once("app/Configuration.php");
+define('BASE_URL', '/proyectoWeb');
+require_once __DIR__ . "/app/Configuration.php";
 
 $configuration = new Configuration();
 $router = $configuration->getRouter();
