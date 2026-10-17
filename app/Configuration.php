@@ -3,12 +3,14 @@
 namespace app;
 
 use app\controller\InicioController;
+use app\controller\LoginController;
 use app\model\InicioModel;
+use app\model\LoginModel;
 use MustacheRender;
 use MyDatabase;
 use Router;
 
-require_once("helper/Autoloader.php");
+require_once __DIR__ . "/../helper/Autoloader.php";
 
 class Configuration
 {
@@ -17,6 +19,23 @@ class Configuration
     {
     }
 
+    //Login
+    public function getLoginController()
+    {
+        return new LoginController(
+            $this->getLoginModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getLoginModel()
+    {
+        return new LoginModel(
+            $this->getDatabase()
+        );
+    }
+
+    //Inicio
     public function getInicioController()
     {
         return new InicioController(
@@ -25,7 +44,6 @@ class Configuration
         );
     }
 
-    // Los privados
     private function getInicioModel()
     {
         return new InicioModel(
@@ -33,10 +51,9 @@ class Configuration
         );
     }
 
-
     private function getDatabase()
     {
-        $config = parse_ini_file("config/config.ini");
+        $config = parse_ini_file(__DIR__ . "/../config/config.ini");
 
         return new MyDatabase($config["db_host"],
             $config["db_user"],
