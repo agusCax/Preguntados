@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crear cuenta | Cerebrito</title>
+
+  <!-- Fuentes: Outfit (base), Fredoka (título), Nunito (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+
+  <style>
+    /* =========================================================
+       TOKENS (basados en DESIGN.md)
+       ========================================================= */
+    :root {
+      /* Colores */
+      --color-primary: #0284c7;
+      --color-primary-dark: #0369a1;
+      --color-secondary: #f59e0b;
+      --color-tertiary: #10b981;
+      --color-error: #ef4444;
+      --color-ink: #0f172a;
+      --color-ink-soft: #334155; /* texto de apoyo (subtítulos) */
+      --color-canvas: #f8fafc;
+      --color-white: #ffffff;
+      --color-border: #e2e8f0;
+      --color-shape: #f1f5ff; /* formas decorativas del fondo */
+
+      /* Tipografía */
+      --font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-display: "Fredoka", "Outfit", system-ui, sans-serif; /* título */
+      --font-text: "Nunito", "Outfit", system-ui, sans-serif; /* subtítulo */
+
+      --fs-display-mobile: 34px;
+      --lh-display-mobile: 38px;
+      --fs-display: 56px;
+      --lh-display: 60px;
+      --fs-body-md: 16px;
+      --lh-body-md: 24px;
+      --fs-body-lg: 18px;
+      --lh-body-lg: 26px;
+      --fs-label-lg: 16px;
+
+      /* Radios */
+      --radius-sm: 0.5rem;
+      --radius-md: 1.5rem;
+      --radius-lg: 2rem;
+      --radius-full: 9999px;
+
+      /* Espaciado */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+
+      --margin: 1rem;
+      --gutter: 1rem;
+    }
+
+    /* =========================================================
+       RESET / BASE
+       ========================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-weight: 500;
+      color: var(--color-ink);
+      background-color: var(--color-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =========================================================
+       COMPONENTE: BOTONES
+       ========================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0 var(--space-lg);
+      border: 0;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: var(--fs-label-lg);
+      font-weight: 700;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease,
+        background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    /* Primario: botón táctil con bisel inferior */
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      box-shadow: 0 4px 0 var(--color-primary-dark);
+    }
+
+    .btn--primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn--primary:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 transparent;
+    }
+
+    /* Secundario: contorno azul, sin bisel */
+    .btn--secondary {
+      background-color: transparent;
+      color: var(--color-primary-dark);
+      border: 2px solid var(--color-primary);
+    }
+
+    .btn--secondary:hover {
+      background-color: var(--color-shape);
+      border-color: var(--color-primary-dark);
+    }
+
+    .btn--secondary:active {
+      transform: scale(0.98);
+    }
+
+    /* Foco de teclado: outline, para no pisar el bisel del primario */
+    .btn:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 3px;
+    }
+
+    /* =========================================================
+       PANTALLA: REGISTRO (mobile first)
+       Depende de styles.css (tokens + botones)
+       ========================================================= */
+    .auth {
+      --color-field: #eaf0fe; /* fondo de inputs */
+      --color-placeholder: #64748b;
+      --radius-field: 1rem;
+
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--color-white);
+    }
+
+    /* Utilidad: texto solo para lectores de pantalla */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ---------- Fondo decorativo (fijo) ---------- */
+    .auth__bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth__shape {
+      position: absolute;
+    }
+
+    .auth__shape--circle {
+      top: -8%;
+      right: -30%;
+      width: 95vw;
+      height: 95vw;
+      border-radius: 50%;
+      background-color: var(--color-shape);
+    }
+
+    .auth__shape--ring {
+      bottom: -10%;
+      left: -25%;
+      width: 70vw;
+      height: 70vw;
+      border: 2px solid var(--color-shape);
+      border-radius: 50%;
+    }
+
+    /* ---------- Marca ---------- */
+    .auth__brand {
+      position: absolute;
+      top: var(--space-lg);
+      left: var(--margin);
+      z-index: 2;
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--color-primary-dark);
+    }
+
+    /* ---------- Estructura ---------- */
+    .auth__container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 5.5rem var(--margin) 3rem;
+    }
+
+    .auth__main {
+      width: 100%;
+      max-width: 480px;
+      margin-inline: auto;
+    }
+
+    .auth__header {
+      margin-bottom: var(--space-xl);
+      text-align: center;
+    }
+
+    .auth__title {
+      font-family: var(--font-display);
+      font-size: var(--fs-display-mobile);
+      line-height: var(--lh-display-mobile);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      margin-bottom: var(--space-sm);
+    }
+
+    .auth__subtitle {
+      font-family: var(--font-text);
+      font-size: var(--fs-body-md);
+      line-height: var(--lh-body-md);
+      font-weight: 600;
+      color: var(--color-ink-soft);
+    }
+
+    .auth__form {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    /* ---------- Campos ---------- */
+    .field__control {
+      display: block;
+      width: 100%;
+      min-height: 56px;
+      padding: 0 1.25rem;
+      font-family: var(--font-text);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      background-color: var(--color-field);
+      border: 2px solid transparent;
+      border-radius: var(--radius-field);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field__control::placeholder {
+      color: var(--color-placeholder);
+      opacity: 1;
+    }
+
+    .field__control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Select con flecha propia */
+    .field__control--select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 3rem;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.1rem center;
+      background-size: 18px;
+    }
+
+    .field__control--select:has(option[value=""]:checked) {
+      color: var(--color-placeholder);
+    }
+
+    .field__control--select option {
+      color: var(--color-ink);
+    }
+
+    /* Grupos (sexo, ubicación) */
+    .field-group {
+      min-width: 0;
+      border: 0;
+    }
+
+    .field__label {
+      display: block;
+      width: 100%;
+      padding: 0;
+      margin-bottom: var(--space-sm);
+      font-family: var(--font-text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-ink-soft);
+    }
+
+    /* ---------- Chips (sexo) ---------- */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .chip {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .chip input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .chip span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 0 1.15rem;
+      font-family: var(--font-text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-ink-soft);
+      background-color: var(--color-field);
+      border: 2px solid transparent;
+      border-radius: var(--radius-full);
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .chip:hover span {
+      border-color: var(--color-primary);
+    }
+
+    .chip input:checked + span {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .chip input:focus-visible + span {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Ubicación ---------- */
+    .map {
+      position: relative;
+      z-index: 0;
+      height: 240px;
+      overflow: hidden;
+      background-color: var(--color-field);
+      border: 2px solid var(--color-field);
+      border-radius: var(--radius-field);
+    }
+
+    .map iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .field__hint {
+      margin: var(--space-sm) 0 var(--space-md);
+      font-family: var(--font-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-placeholder);
+    }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    @media (max-width: 399px) {
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---------- Foto de perfil ---------- */
+    .photo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+
+    .photo__icon {
+      display: grid;
+      place-items: center;
+      width: 112px;
+      height: 112px;
+      color: var(--color-primary);
+      background-color: var(--color-field);
+      border: 3px dashed var(--color-primary);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .photo__icon:hover {
+      transform: scale(1.03);
+    }
+
+    .photo__label {
+      width: auto;
+      margin: 0;
+    }
+
+    /* Input de archivo nativo (muestra solo el nombre del archivo elegido) */
+    .photo__input {
+      max-width: 100%;
+      font-family: var(--font-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-placeholder);
+    }
+
+    .photo__input::file-selector-button {
+      min-height: 40px;
+      margin-right: 0.75rem;
+      padding: 0 1.25rem;
+      font-family: var(--font-text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      background-color: transparent;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .photo__input::file-selector-button:hover {
+      background-color: var(--color-shape);
+    }
+
+    .photo__input:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 4px;
+      border-radius: var(--radius-full);
+    }
+
+    .photo__note {
+      font-family: var(--font-text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-placeholder);
+    }
+
+    /* ---------- Acciones ---------- */
+    .auth__submit {
+      width: 100%;
+      margin-top: var(--space-sm);
+    }
+
+    .auth__login {
+      display: block;
+      padding: var(--space-sm);
+      text-align: center;
+      font-family: var(--font-text);
+      font-weight: 700;
+      color: var(--color-ink-soft);
+    }
+
+    .auth__login:hover {
+      color: var(--color-primary);
+    }
+
+    /* ---------- Celular (oculto en mobile) ---------- */
+    .phone {
+      display: none;
+    }
+
+    /* =========================================================
+       TABLET (≥ 768px)
+       ========================================================= */
+    @media (min-width: 768px) {
+      .auth__title {
+        font-size: 40px;
+        line-height: 46px;
+      }
+
+      .auth__subtitle {
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body-lg);
+      }
+    }
+
+    /* =========================================================
+       DESKTOP (≥ 1024px): formulario a la izquierda, celular a la derecha
+       ========================================================= */
+    @media (min-width: 1024px) {
+      .auth__brand {
+        top: var(--space-xl);
+        font-size: 30px;
+      }
+
+      /* Panel curvo a la derecha, igual que la bienvenida */
+      .auth__shape--circle {
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 48vw;
+        height: auto;
+        border-radius: 100% 0 0 100% / 50% 0 0 50%;
+      }
+
+      .auth__shape--ring {
+        bottom: -15%;
+        left: -5%;
+        width: 30vw;
+        height: 30vw;
+      }
+
+      .auth__container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+        gap: 4rem;
+        max-width: 1200px;
+        padding: 6rem var(--margin) 4rem;
+      }
+
+      .auth__header {
+        text-align: left;
+      }
+
+      .auth__title {
+        font-size: 48px;
+        line-height: 52px;
+      }
+
+      .auth__subtitle {
+        font-size: 20px;
+        line-height: 28px;
+      }
+
+      /* Celular fijo mientras se scrollea el formulario */
+      .phone {
+        display: block;
+        position: sticky;
+        top: max(1.5rem, calc(50vh - 310px));
+        justify-self: center;
+        width: 290px;
+      }
+
+      .phone__frame {
+        position: relative;
+        aspect-ratio: 9 / 18.6;
+        padding: 10px;
+        background-color: var(--color-ink);
+        border-radius: 44px;
+        box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.35),
+          0 12px 24px rgba(3, 105, 161, 0.15);
+      }
+
+      .phone__notch {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 3;
+        width: 84px;
+        height: 22px;
+        transform: translateX(-50%);
+        background-color: var(--color-ink);
+        border-radius: var(--radius-full);
+      }
+
+      .phone__screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--color-canvas);
+        border-radius: 34px;
+        font-family: var(--font-text);
+        font-size: 13px;
+        color: var(--color-ink);
+      }
+
+      /* ----- Vista previa del sitio ----- */
+      .app__status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 44px;
+        padding: 6px 22px 0;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .app__battery {
+        width: 22px;
+        height: 11px;
+        background-color: var(--color-ink);
+        border-radius: 3px;
+      }
+
+      .app__body {
+        padding: 4px 14px 0;
+      }
+
+      .app__header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .app__avatar {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+        background-color: var(--color-shape);
+        border: 2px solid var(--color-primary);
+        border-radius: 50%;
+      }
+
+      .app__who {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .app__hello {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-placeholder);
+      }
+
+      .app__name {
+        font-family: var(--font-display);
+        font-size: 14px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .app__stats {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .app__stat {
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        background-color: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-full);
+      }
+
+      .app__hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        margin-top: 12px;
+        padding: 12px;
+        background-color: #e0f2fe;
+        border-radius: 18px;
+      }
+
+      .app__hero-title {
+        font-family: var(--font-display);
+        font-size: 17px;
+        line-height: 20px;
+        font-weight: 700;
+        color: var(--color-primary-dark);
+      }
+
+      .app__hero-sub {
+        margin: 2px 0 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--color-ink-soft);
+      }
+
+      .app__play {
+        display: inline-block;
+        padding: 6px 18px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--color-white);
+        background-color: var(--color-primary);
+        border-radius: var(--radius-full);
+        box-shadow: 0 3px 0 var(--color-primary-dark);
+      }
+
+      .app__hero img {
+        width: 82px;
+        flex-shrink: 0;
+      }
+
+      .app__section {
+        margin: 14px 0 8px;
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .app__cats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .app__cat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 8px;
+        font-size: 12px;
+        font-weight: 700;
+        background-color: var(--tint);
+        border-radius: 14px;
+      }
+
+      .app__cat-icon {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+        background-color: var(--color-white);
+        border-radius: 50%;
+      }
+
+      .app__nav {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 8px 6px 14px;
+        background-color: var(--color-white);
+        border-top: 1px solid var(--color-border);
+      }
+
+      .app__nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--color-placeholder);
+      }
+
+      .app__nav-item span {
+        font-size: 16px;
+      }
+
+      .app__nav-item.is-active {
+        color: var(--color-primary);
+      }
+    }
+
+    /* Fila de dos campos (nombres y apellidos) */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    @media (max-width: 479px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Aclaración pegada a las filas de nombres */
+    .field__hint--tight {
+      margin: -0.5rem 0 0;
+    }
+
+    /* Mensaje de error */
+    .auth__error {
+      margin-bottom: var(--space-md);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-text);
+      font-weight: 700;
+      text-align: center;
+      color: #b91c1c;
+      background-color: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: var(--radius-field);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="auth">
+
+    <!-- Fondo decorativo (fijo) -->
+    <div class="auth__bg" aria-hidden="true">
+      <span class="auth__shape auth__shape--circle"></span>
+      <span class="auth__shape auth__shape--ring"></span>
+    </div>
+
+    <!-- Marca -->
+    <a href="{{base_url}}/inicio/show" class="auth__brand">Cerebrito</a>
+
+    <div class="auth__container">
+
+      <!-- Columna izquierda: formulario -->
+      <section class="auth__main">
+        <header class="auth__header">
+          <h1 class="auth__title">Creá una cuenta</h1>
+          <p class="auth__subtitle">Creá una cuenta y divertite aprendiendo</p>
+        </header>
+
+        {{#error}}
+          <p class="auth__error" role="alert">{{error}}</p>
+        {{/error}}
+
+        <form class="auth__form" action="{{base_url}}/registro/registrar" method="post" enctype="multipart/form-data">
+
+          <!-- Foto de perfil -->
+          <div class="photo">
+            <label for="foto" class="photo__icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            </label>
+            <label for="foto" class="field__label photo__label">Foto de perfil</label>
+            <input class="photo__input" type="file" id="foto" name="foto_perfil" accept="image/*" />
+            <span class="photo__note">JPG, PNG, WEBP o GIF, hasta 2 MB</span>
+          </div>
+
+          <!-- Datos personales -->
+          <div class="field-row">
+            <div class="field">
+              <label class="sr-only" for="nombre_1">Nombre</label>
+              <input class="field__control" type="text" id="nombre_1" name="nombre_1" placeholder="Nombre" autocomplete="given-name" maxlength="100" required />
+            </div>
+            <div class="field">
+              <label class="sr-only" for="nombre_2">Segundo nombre (opcional)</label>
+              <input class="field__control" type="text" id="nombre_2" name="nombre_2" placeholder="Segundo nombre" autocomplete="additional-name" maxlength="100" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="sr-only" for="apellido_1">Apellido</label>
+              <input class="field__control" type="text" id="apellido_1" name="apellido_1" placeholder="Apellido" autocomplete="family-name" maxlength="100" required />
+            </div>
+            <div class="field">
+              <label class="sr-only" for="apellido_2">Segundo apellido (opcional)</label>
+              <input class="field__control" type="text" id="apellido_2" name="apellido_2" placeholder="Segundo apellido" maxlength="100" />
+            </div>
+          </div>
+          <p class="field__hint field__hint--tight">El segundo nombre y el segundo apellido son opcionales.</p>
+
+          <div class="field">
+            <label class="sr-only" for="usuario">Nombre de usuario</label>
+            <input class="field__control" type="text" id="usuario" name="nombre_usuario" placeholder="Nombre de usuario" autocomplete="username" maxlength="50" required />
+          </div>
+
+          <div class="field">
+            <label class="sr-only" for="email">Email</label>
+            <input class="field__control" type="email" id="email" name="email" placeholder="Email" autocomplete="email" maxlength="254" required />
+          </div>
+
+          <div class="field">
+            <label class="sr-only" for="password">Contraseña</label>
+            <input class="field__control" type="password" id="password" name="password" placeholder="Contraseña" autocomplete="new-password" required />
+          </div>
+
+          <div class="field">
+            <label class="sr-only" for="password2">Repetir contraseña</label>
+            <input class="field__control" type="password" id="password2" name="password_repetir" placeholder="Repetir contraseña" autocomplete="new-password" required />
+          </div>
+
+          <div class="field">
+            <label class="sr-only" for="anio">Año de nacimiento</label>
+            <select class="field__control field__control--select" id="anio" name="anio_nacimiento" required>
+              <option value="" selected disabled>Año de nacimiento</option>
+              {{#anios}}
+              <option value="{{.}}">{{.}}</option>
+              {{/anios}}
+            </select>
+          </div>
+
+          <!-- Sexo -->
+          <fieldset class="field-group">
+            <legend class="field__label">Sexo</legend>
+            <div class="chips">
+              <label class="chip">
+                <input type="radio" name="sexo" value="Masculino" required />
+                <span>Masculino</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="sexo" value="Femenino" />
+                <span>Femenino</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="sexo" value="Prefiero no cargarlo" />
+                <span>Prefiero no cargarlo</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Ubicación -->
+          <fieldset class="field-group">
+            <legend class="field__label">¿Desde dónde jugás?</legend>
+
+            <!-- Mapa (OpenStreetMap). Se puede mover y hacer zoom para ubicar tu país y ciudad -->
+            <div class="map">
+              <iframe
+                title="Mapa para ubicar tu país y ciudad"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-85%2C-56%2C-30%2C15&amp;layer=mapnik"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <p class="field__hint">Buscá tu ubicación en el mapa y completá tu país y ciudad.</p>
+
+            <div class="location-grid">
+              <div class="field">
+                <label class="sr-only" for="pais">País</label>
+                <input class="field__control" type="text" id="pais" name="pais" placeholder="País" list="paises" autocomplete="country-name" maxlength="100" required />
+                <datalist id="paises">
+                  <option value="Argentina"></option>
+                  <option value="Bolivia"></option>
+                  <option value="Brasil"></option>
+                  <option value="Chile"></option>
+                  <option value="Colombia"></option>
+                  <option value="Costa Rica"></option>
+                  <option value="Cuba"></option>
+                  <option value="Ecuador"></option>
+                  <option value="El Salvador"></option>
+                  <option value="España"></option>
+                  <option value="Estados Unidos"></option>
+                  <option value="Guatemala"></option>
+                  <option value="Honduras"></option>
+                  <option value="México"></option>
+                  <option value="Nicaragua"></option>
+                  <option value="Panamá"></option>
+                  <option value="Paraguay"></option>
+                  <option value="Perú"></option>
+                  <option value="Puerto Rico"></option>
+                  <option value="República Dominicana"></option>
+                  <option value="Uruguay"></option>
+                  <option value="Venezuela"></option>
+                </datalist>
+              </div>
+              <div class="field">
+                <label class="sr-only" for="ciudad">Ciudad</label>
+                <input class="field__control" type="text" id="ciudad" name="ciudad" placeholder="Ciudad" autocomplete="address-level2" maxlength="100" required />
+              </div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn btn--primary auth__submit">Registrarse</button>
+          <a href="{{base_url}}/login/show" class="auth__login">Ya tengo una cuenta</a>
+        </form>
+      </section>
+
+      <!-- Columna derecha (solo desktop): celular con vista previa del sitio -->
+      <aside class="phone" aria-hidden="true">
+        <div class="phone__frame">
+          <span class="phone__notch"></span>
+          <div class="phone__screen">
+
+            <div class="app__status">
+              <span>9:41</span>
+              <span class="app__battery"></span>
+            </div>
+
+            <div class="app__body">
+              <div class="app__header">
+                <span class="app__avatar">😎</span>
+                <div class="app__who">
+                  <p class="app__hello">¡Hola de nuevo!</p>
+                  <p class="app__name">@tu_usuario</p>
+                </div>
+                <div class="app__stats">
+                  <span class="app__stat">⭐ 1.250</span>
+                </div>
+              </div>
+
+              <div class="app__hero">
+                <div class="app__hero-text">
+                  <p class="app__hero-title">Partida rápida</p>
+                  <p class="app__hero-sub">Respondé y sumá puntos</p>
+                  <span class="app__play">Jugar</span>
+                </div>
+                <img src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
+              </div>
+
+              <p class="app__section">Categorías</p>
+              <div class="app__cats">
+                <div class="app__cat" style="--tint:#d1fae5"><span class="app__cat-icon">🔬</span>Ciencia</div>
+                <div class="app__cat" style="--tint:#fef3c7"><span class="app__cat-icon">🏛️</span>Historia</div>
+                <div class="app__cat" style="--tint:#e0f2fe"><span class="app__cat-icon">🌎</span>Geografía</div>
+                <div class="app__cat" style="--tint:#fce7f3"><span class="app__cat-icon">🎨</span>Arte</div>
+                <div class="app__cat" style="--tint:#fee2e2"><span class="app__cat-icon">⚽</span>Deportes</div>
+                <div class="app__cat" style="--tint:#ede9fe"><span class="app__cat-icon">🎬</span>Cine</div>
+              </div>
+            </div>
+
+            <nav class="app__nav">
+              <span class="app__nav-item is-active"><span>🏠</span>Inicio</span>
+              <span class="app__nav-item"><span>🏆</span>Ranking</span>
+              <span class="app__nav-item"><span>👤</span>Perfil</span>
+            </nav>
+
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+</body>
+</html>

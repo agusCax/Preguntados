@@ -3,3 +3,4 @@ vendor/
 log/
 config/
 .idea/
+public/uploads/

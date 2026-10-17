@@ -17,7 +17,7 @@ class InicioModel
         $usuarios = $this->database->queryAll($sql_usuarios);
 
         foreach ($usuarios as &$u) {
-            $u['usuarios'] = $u['usuario'];
+            $u['usuarios'] = $u['nombre_usuario'];
         }
 
         return $usuarios;

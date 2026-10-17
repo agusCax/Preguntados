@@ -2,11 +2,17 @@
 
 namespace app\controller;
 
+use Log;
+use PDOException;
 use Redirect;
 use Request;
 
 class RegistroController
 {
+    // Foto de perfil: tamaño máximo y carpeta donde se guarda
+    private const FOTO_MAX_BYTES = 2 * 1024 * 1024;
+    private const FOTO_CARPETA = 'public/uploads/perfiles';
+
     private $model;
     private $render;
 
@@ -18,15 +24,37 @@ class RegistroController
 
     public function show()
     {
-        $data["error"] = Request::get('registro_error') !== null ? "Error al registrar su usuario y/o contraseña, intente nuevamente." : ""; 
-        $this->render->renderiza("registro", $data);
+        $codigo = Request::get('registro_error');
+        $data["error"] = $codigo !== null ? $this->mensajeError($codigo) : "";
+
+        // Años para el desplegable de año de nacimiento (de más nuevo a más viejo)
+        $anioActual = (int) date('Y');
+        $data["anios"] = range($anioActual - 6, $anioActual - 100);
+
+        $this->render->renderiza("registro", $data, false);
     }
 
     public function registrar()
     {
+        $password = Request::post('password');
+
+        if ($password === null || $password === '') {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=1');
+        }
+
+        if ($password !== Request::post('password_repetir')) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=password');
+        }
+
+        $foto = $this->guardarFoto();
+
+        if ($foto === false) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=foto');
+        }
+
         $datos = [
             'nombre_usuario' => Request::post('nombre_usuario'),
-            'password' => Request::post('password'),
+            'password' => $password,
             'nombre_1' => Request::post('nombre_1'),
             'nombre_2' => Request::post('nombre_2') ?: null,
             'apellido_1' => Request::post('apellido_1'),
@@ -38,15 +66,90 @@ class RegistroController
             // 'latitud' => Request::post('latitud'),
             // 'longitud' => Request::post('longitud'),
             'email' => Request::post('email'),
-            'foto_perfil' => Request::post('foto_perfil') ?: null
+            'foto_perfil' => $foto
         ];
 
-        $registroExitoso = $this->model->registrar($datos);
+        try {
+            $registroExitoso = $this->model->registrar($datos);
+        } catch (PDOException $e) {
+            Log::error($e->getMessage());
+            $this->borrarFoto($foto);
+
+            // 23000 = violación de UNIQUE (nombre de usuario o email repetidos)
+            $codigo = $e->getCode() === '23000' ? 'duplicado' : '1';
+            Redirect::to(BASE_URL . '/registro/show?registro_error=' . $codigo);
+        }
 
         if ($registroExitoso !== 1) {
+            $this->borrarFoto($foto);
             Redirect::to(BASE_URL . '/registro/show?registro_error=1');
         }
-        
+
         Redirect::toIndex();
+    }
+
+    private function mensajeError($codigo)
+    {
+        switch ($codigo) {
+            case 'password':
+                return "Las contraseñas no coinciden.";
+            case 'duplicado':
+                return "El nombre de usuario o el email ya están registrados.";
+            case 'foto':
+                return "La foto de perfil no es válida. Usá una imagen JPG, PNG, WEBP o GIF de hasta 2 MB.";
+            default:
+                return "Error al registrar su usuario y/o contraseña, intente nuevamente.";
+        }
+    }
+
+    // Devuelve la ruta relativa guardada, null si no se subió foto, o false si la foto no es válida
+    private function guardarFoto()
+    {
+        if (!isset($_FILES['foto_perfil']) || $_FILES['foto_perfil']['error'] === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        $archivo = $_FILES['foto_perfil'];
+
+        if ($archivo['error'] !== UPLOAD_ERR_OK || $archivo['size'] > self::FOTO_MAX_BYTES) {
+            return false;
+        }
+
+        // getimagesize comprueba que el contenido sea realmente una imagen
+        $info = @getimagesize($archivo['tmp_name']);
+        $extensiones = [
+            IMAGETYPE_JPEG => 'jpg',
+            IMAGETYPE_PNG => 'png',
+            IMAGETYPE_WEBP => 'webp',
+            IMAGETYPE_GIF => 'gif',
+        ];
+
+        if ($info === false || !isset($extensiones[$info[2]])) {
+            return false;
+        }
+
+        $carpeta = dirname(__DIR__, 2) . '/' . self::FOTO_CARPETA;
+        if (!is_dir($carpeta) && !mkdir($carpeta, 0755, true)) {
+            return false;
+        }
+
+        // Nombre aleatorio: no se usa el nombre que mandó el usuario
+        $nombre = bin2hex(random_bytes(16)) . '.' . $extensiones[$info[2]];
+
+        if (!move_uploaded_file($archivo['tmp_name'], $carpeta . '/' . $nombre)) {
+            return false;
+        }
+
+        return self::FOTO_CARPETA . '/' . $nombre;
+    }
+
+    private function borrarFoto($ruta)
+    {
+        if ($ruta) {
+            $archivo = dirname(__DIR__, 2) . '/' . $ruta;
+            if (is_file($archivo)) {
+                unlink($archivo);
+            }
+        }
     }
 }

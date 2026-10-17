@@ -31,7 +31,7 @@ class LoginController
         }
 
         $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['usuario'] = $usuario['usuario'];
+        $_SESSION['usuario'] = $usuario['nombre_usuario'];
         Redirect::toIndex();
     }
 
