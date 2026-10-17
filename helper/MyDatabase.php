@@ -24,10 +24,16 @@ class MyDatabase
         return $resultado->fetchAll();
     }
 
-    public function execute(string $sql)
+    public function execute(string $sql, array $parameters = [])
     {
         Log::info($sql);
-        return $this->conexion->exec($sql);
+        $statement = $this->conexion->prepare($sql);
+
+        if (!$statement->execute($parameters)) {
+            return false;
+        }
+
+        return $statement->rowCount();
     }
 
     public function lastInsertId()

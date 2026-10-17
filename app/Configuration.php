@@ -4,8 +4,10 @@ namespace app;
 
 use app\controller\InicioController;
 use app\controller\LoginController;
+use app\controller\RegistroController;
 use app\model\InicioModel;
 use app\model\LoginModel;
+use app\model\RegistroModel;
 use MustacheRender;
 use MyDatabase;
 use Router;
@@ -31,6 +33,22 @@ class Configuration
     private function getLoginModel()
     {
         return new LoginModel(
+            $this->getDatabase()
+        );
+    }
+
+    // Registro
+    public function getRegistroController()
+    {
+        return new RegistroController(
+            $this->getRegistroModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getRegistroModel()
+    {
+        return new RegistroModel(
             $this->getDatabase()
         );
     }
