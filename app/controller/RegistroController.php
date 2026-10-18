@@ -39,23 +39,15 @@ class RegistroController
     {
         $password = Request::post('password');
 
-        if ($password === null || $password === '') {
-            Redirect::to(BASE_URL . '/registro/show?registro_error=1');
-        }
+        $this->validarContraseniaVacia($password);
 
-        if (strlen($password) < 8) {
-            Redirect::to(BASE_URL . '/registro/show?registro_error=password_length');
-        }
+        $this->validarLongitudContrasenia($password);
 
-        if ($password !== Request::post('password_repetir')) {
-            Redirect::to(BASE_URL . '/registro/show?registro_error=password');
-        }
+        $this->validarRepeticionDeContrasenia($password);
 
         $foto = $this->guardarFoto();
 
-        if ($foto === false) {
-            Redirect::to(BASE_URL . '/registro/show?registro_error=foto');
-        }
+        $this->validarSubidaDeFoto($foto);
 
         $datos = [
             'nombre_usuario' => Request::post('nombre_usuario'),
@@ -157,6 +149,50 @@ class RegistroController
             if (is_file($archivo)) {
                 unlink($archivo);
             }
+        }
+    }
+
+    /**
+     * @param mixed $password
+     * @return void
+     */
+    public function validarContraseniaVacia(mixed $password): void
+    {
+        if ($password === null || $password === '') {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=1');
+        }
+    }
+
+    /**
+     * @param mixed $password
+     * @return void
+     */
+    public function validarLongitudContrasenia(mixed $password): void
+    {
+        if (strlen($password) < 8) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=password_length');
+        }
+    }
+
+    /**
+     * @param mixed $password
+     * @return void
+     */
+    public function validarRepeticionDeContrasenia(mixed $password): void
+    {
+        if ($password !== Request::post('password_repetir')) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=password');
+        }
+    }
+
+    /**
+     * @param false|string|null $foto
+     * @return void
+     */
+    public function validarSubidaDeFoto(false|string|null $foto): void
+    {
+        if ($foto === false) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=foto');
         }
     }
 }
