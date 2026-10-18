@@ -24,7 +24,8 @@ class RegistroController
 
     public function show()
     {
-        $codigo = Request::get('registro_error');
+        //$codigo = Request::get('registro_error');
+        $codigo = $_GET['registro_error'] ?? null;
         $data["error"] = $codigo !== null ? $this->mensajeError($codigo) : "";
 
         // Años para el desplegable de año de nacimiento (de más nuevo a más viejo)
@@ -40,6 +41,10 @@ class RegistroController
 
         if ($password === null || $password === '') {
             Redirect::to(BASE_URL . '/registro/show?registro_error=1');
+        }
+
+        if (strlen($password) < 8) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=password_length');
         }
 
         if ($password !== Request::post('password_repetir')) {
@@ -90,9 +95,11 @@ class RegistroController
 
     private function mensajeError($codigo)
     {
-        switch ($codigo) {
+        switch ((string) $codigo) {
             case 'password':
                 return "Las contraseñas no coinciden.";
+            case 'password_length' :
+                return "La contraseña debe tener al menos 8 caracteres.";
             case 'duplicado':
                 return "El nombre de usuario o el email ya están registrados.";
             case 'foto':
