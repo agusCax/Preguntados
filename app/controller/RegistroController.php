@@ -29,7 +29,7 @@ class RegistroController
 
         // Años para el desplegable de año de nacimiento (de más nuevo a más viejo)
         $anioActual = (int) date('Y');
-        $data["anios"] = range($anioActual - 6, $anioActual - 100);
+        $data["anios"] = range($anioActual - 10, $anioActual - 100);
 
         $this->render->renderiza("registro", $data, false);
     }
