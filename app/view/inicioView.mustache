@@ -100,6 +100,41 @@
         color: var(--color-ink, #0f172a);
     }
 
+    /* ---------- Categorías ---------- */
+    .ini__cats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .ini__cat {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 56px;
+        padding: 0.65rem 0.85rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--color-ink, #0f172a);
+        background-color: var(--tint);
+        border-radius: 1.1rem;
+    }
+
+    .ini__cat-icon {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        font-size: 1.15rem;
+        line-height: 1;
+        background-color: #ffffff;
+        border-radius: 50%;
+    }
+
     /* ---------- Usuarios (sección de prueba, viene de la base) ---------- */
     .ini__section {
         margin-top: 2rem;
@@ -180,6 +215,23 @@
         .ini__hello {
             font-size: 1.15rem;
         }
+
+        .ini__cats {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .ini__cat {
+            min-height: 72px;
+            padding: 0.85rem 1.1rem;
+            font-size: 1.1rem;
+        }
+
+        .ini__cat-icon {
+            width: 44px;
+            height: 44px;
+            font-size: 1.4rem;
+        }
     }
 
     /* ---------- Desktop (≥ 1024px) ---------- */
@@ -210,6 +262,19 @@
             <a href="{{base_url}}/partida/show" class="ini__play">Jugar</a>
         </div>
         <img class="ini__hero-img" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
+    </section>
+
+
+    <section class="ini__section" aria-labelledby="ini-categorias">
+        <h2 class="ini__section-title" id="ini-categorias">Categorías</h2>
+        <ul class="ini__cats">
+            <li class="ini__cat" style="--tint:#d1fae5"><span class="ini__cat-icon" aria-hidden="true">🔬</span>Ciencia</li>
+            <li class="ini__cat" style="--tint:#fef3c7"><span class="ini__cat-icon" aria-hidden="true">🏛️</span>Historia</li>
+            <li class="ini__cat" style="--tint:#e0f2fe"><span class="ini__cat-icon" aria-hidden="true">🌎</span>Geografía</li>
+            <li class="ini__cat" style="--tint:#fce7f3"><span class="ini__cat-icon" aria-hidden="true">🎨</span>Arte</li>
+            <li class="ini__cat" style="--tint:#fee2e2"><span class="ini__cat-icon" aria-hidden="true">⚽</span>Deportes</li>
+            <li class="ini__cat" style="--tint:#ede9fe"><span class="ini__cat-icon" aria-hidden="true">🎬</span>Cine</li>
+        </ul>
     </section>
 
 
