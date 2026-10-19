@@ -87,6 +87,19 @@
         filter: drop-shadow(0 8px 16px rgba(11, 91, 220, 0.15));
     }
 
+    /* ---------- Saludo ---------- */
+    .ini__hello {
+        margin: 0 0 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .ini__hello strong {
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
+    }
+
     /* ---------- Usuarios (sección de prueba, viene de la base) ---------- */
     .ini__section {
         margin-top: 2rem;
@@ -163,6 +176,10 @@
         .ini__hero-img {
             width: 200px;
         }
+
+        .ini__hello {
+            font-size: 1.15rem;
+        }
     }
 
     /* ---------- Desktop (≥ 1024px) ---------- */
@@ -183,6 +200,8 @@
 </style>
 
 <div class="ini">
+
+    <p class="ini__hello">¡Hola de nuevo, <strong>@usuario</strong>!</p>
 
     <section class="ini__hero" aria-labelledby="ini-partida">
         <div class="ini__hero-body">
