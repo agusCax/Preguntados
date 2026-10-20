@@ -26,8 +26,8 @@ class RegistroModel
                     sexo,
                     pais,
                     ciudad,
-                    -- latitud,
-                    -- longitud,
+                    latitud,
+                    longitud,
                     email,
                     foto_perfil
                 ) VALUES (
@@ -41,8 +41,8 @@ class RegistroModel
                     :sexo,
                     :pais,
                     :ciudad,
-                    -- :latitud,
-                    -- :longitud,
+                    :latitud,
+                    :longitud,
                     :email,
                     :foto_perfil
                 )";
@@ -58,8 +58,8 @@ class RegistroModel
             ':sexo' => $datos['sexo'],
             ':pais' => $datos['pais'],
             ':ciudad' => $datos['ciudad'],
-            // ':latitud' => $datos['latitud'],
-            // ':longitud' => $datos['longitud'],
+            ':latitud' => $datos['latitud'],
+            ':longitud' => $datos['longitud'],
             ':email' => $datos['email'],
             ':foto_perfil' => $datos['foto_perfil']
         ];
