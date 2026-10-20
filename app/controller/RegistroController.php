@@ -45,6 +45,12 @@ class RegistroController
 
         $this->validarRepeticionDeContrasenia($password);
 
+        $latitud = Request::post('latitud');
+        $longitud = Request::post('longitud');
+
+        // Se valida antes de guardar la foto, para no dejar archivos sueltos si falla
+        $this->validarUbicacion(Request::post('pais'), Request::post('ciudad'), $latitud, $longitud);
+
         $foto = $this->guardarFoto();
 
         $this->validarSubidaDeFoto($foto);
@@ -60,8 +66,8 @@ class RegistroController
             'sexo' => Request::post('sexo'),
             'pais' => Request::post('pais'),
             'ciudad' => Request::post('ciudad'),
-            // 'latitud' => Request::post('latitud'),
-            // 'longitud' => Request::post('longitud'),
+            'latitud' => $latitud,
+            'longitud' => $longitud,
             'email' => Request::post('email'),
             'foto_perfil' => $foto
         ];
@@ -94,6 +100,8 @@ class RegistroController
                 return "La contraseña debe tener al menos 8 caracteres.";
             case 'duplicado':
                 return "El nombre de usuario o el email ya están registrados.";
+            case 'ubicacion':
+                return "Elegí tu ubicación tocando el mapa.";
             case 'foto':
                 return "La foto de perfil no es válida. Usá una imagen JPG, PNG, WEBP o GIF de hasta 2 MB.";
             default:
@@ -193,6 +201,20 @@ class RegistroController
     {
         if ($foto === false) {
             Redirect::to(BASE_URL . '/registro/show?registro_error=foto');
+        }
+    }
+
+    /**
+     * Comprueba que se haya elegido una ubicación en el mapa (país, ciudad y coordenadas válidas)
+     */
+    public function validarUbicacion($pais, $ciudad, $latitud, $longitud): void
+    {
+        $coordenadasValidas = is_numeric($latitud) && is_numeric($longitud)
+            && $latitud >= -90 && $latitud <= 90
+            && $longitud >= -180 && $longitud <= 180;
+
+        if (!$pais || !$ciudad || !$coordenadasValidas) {
+            Redirect::to(BASE_URL . '/registro/show?registro_error=ubicacion');
         }
     }
 }
