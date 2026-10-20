@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
     /* =========================================================
@@ -396,11 +397,9 @@
       border-radius: var(--radius-field);
     }
 
-    .map iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
+    /* País y ciudad que se completan solos al tocar el mapa */
+    .field__control--readonly {
+      cursor: default;
     }
 
     .field__hint {
@@ -959,51 +958,22 @@
           <fieldset class="field-group">
             <legend class="field__label">¿Desde dónde jugás?</legend>
 
-            <!-- Mapa (OpenStreetMap). Se puede mover y hacer zoom para ubicar tu país y ciudad -->
-            <div class="map">
-              <iframe
-                title="Mapa para ubicar tu país y ciudad"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-85%2C-56%2C-30%2C15&amp;layer=mapnik"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-            <p class="field__hint">Buscá tu ubicación en el mapa y completá tu país y ciudad.</p>
+            <!-- Mapa: al tocar un punto se completan país, ciudad, latitud y longitud -->
+            <div id="map" class="map" role="application" aria-label="Mapa para elegir tu país y ciudad"></div>
+            <p class="field__hint" id="map-status" aria-live="polite">Tocá el mapa para elegir tu ubicación.</p>
 
             <div class="location-grid">
               <div class="field">
                 <label class="sr-only" for="pais">País</label>
-                <input class="field__control" type="text" id="pais" name="pais" placeholder="País" list="paises" autocomplete="country-name" maxlength="100" required />
-                <datalist id="paises">
-                  <option value="Argentina"></option>
-                  <option value="Bolivia"></option>
-                  <option value="Brasil"></option>
-                  <option value="Chile"></option>
-                  <option value="Colombia"></option>
-                  <option value="Costa Rica"></option>
-                  <option value="Cuba"></option>
-                  <option value="Ecuador"></option>
-                  <option value="El Salvador"></option>
-                  <option value="España"></option>
-                  <option value="Estados Unidos"></option>
-                  <option value="Guatemala"></option>
-                  <option value="Honduras"></option>
-                  <option value="México"></option>
-                  <option value="Nicaragua"></option>
-                  <option value="Panamá"></option>
-                  <option value="Paraguay"></option>
-                  <option value="Perú"></option>
-                  <option value="Puerto Rico"></option>
-                  <option value="República Dominicana"></option>
-                  <option value="Uruguay"></option>
-                  <option value="Venezuela"></option>
-                </datalist>
+                <input class="field__control field__control--readonly" type="text" id="pais" name="pais" placeholder="País" readonly />
               </div>
               <div class="field">
                 <label class="sr-only" for="ciudad">Ciudad</label>
-                <input class="field__control" type="text" id="ciudad" name="ciudad" placeholder="Ciudad" autocomplete="address-level2" maxlength="100" required />
+                <input class="field__control field__control--readonly" type="text" id="ciudad" name="ciudad" placeholder="Ciudad" readonly />
               </div>
             </div>
+            <input type="hidden" id="latitud" name="latitud" />
+            <input type="hidden" id="longitud" name="longitud" />
           </fieldset>
 
           <button type="submit" class="btn btn--primary auth__submit">Registrarse</button>
@@ -1066,6 +1036,119 @@
 
     </div>
   </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    (function () {
+      const mapaDiv = document.getElementById('map');
+      const estado = document.getElementById('map-status');
+      const pais = document.getElementById('pais');
+      const ciudad = document.getElementById('ciudad');
+      const latitud = document.getElementById('latitud');
+      const longitud = document.getElementById('longitud');
+
+      if (!window.L) {
+        estado.textContent = 'No se pudo cargar el mapa. Revisá tu conexión.';
+        return;
+      }
+
+      // Mapa inicial centrado en Latinoamérica
+      const mapa = L.map(mapaDiv).setView([-25, -60], 3);
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(mapa);
+
+      let marcador = null;
+      let ultimoPedido = 0;
+
+      function limpiarUbicacion() {
+        pais.value = '';
+        ciudad.value = '';
+        latitud.value = '';
+        longitud.value = '';
+      }
+
+      // Cuando la persona toca el mapa
+      mapa.on('click', function (e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+
+        // Marcador en el punto elegido
+        if (marcador) {
+          marcador.setLatLng(e.latlng);
+        } else {
+          marcador = L.circleMarker(e.latlng, {
+            radius: 9,
+            color: '#ffffff',
+            weight: 3,
+            fillColor: '#0284c7',
+            fillOpacity: 1
+          }).addTo(mapa);
+        }
+
+        estado.textContent = 'Buscando ubicación…';
+        const pedido = ++ultimoPedido;
+
+        // Nominatim (OpenStreetMap) traduce el punto en país y ciudad
+        const url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&addressdetails=1' +
+          '&accept-language=es&lat=' + lat + '&lon=' + lng;
+
+        fetch(url)
+          .then(function (respuesta) {
+            if (!respuesta.ok) {
+              throw new Error('Respuesta inválida');
+            }
+            return respuesta.json();
+          })
+          .then(function (datos) {
+            if (pedido !== ultimoPedido) {
+              return; // llegó una respuesta más nueva
+            }
+
+            const direccion = datos.address || {};
+            const nombrePais = direccion.country || '';
+            const nombreCiudad = direccion.city || direccion.town || direccion.village ||
+              direccion.municipality || direccion.county || direccion.state || '';
+
+            if (!nombrePais) {
+              limpiarUbicacion();
+              estado.textContent = 'No encontramos un país en ese punto. Probá en tierra firme.';
+              return;
+            }
+
+            if (!nombreCiudad) {
+              limpiarUbicacion();
+              estado.textContent = 'No encontramos la ciudad en ese punto. Probá con otro.';
+              return;
+            }
+
+            pais.value = nombrePais;
+            ciudad.value = nombreCiudad;
+            latitud.value = lat.toFixed(6);
+            longitud.value = lng.toFixed(6);
+            estado.textContent = 'Ubicación elegida: ' + nombreCiudad + ', ' + nombrePais;
+          })
+          .catch(function () {
+            if (pedido !== ultimoPedido) {
+              return;
+            }
+            limpiarUbicacion();
+            estado.textContent = 'No pudimos obtener la ubicación. Probá de nuevo.';
+          });
+      });
+
+
+      latitud.form.addEventListener('submit', function (e) {
+        if (!latitud.value) {
+          e.preventDefault();
+          estado.textContent = 'Elegí tu ubicación tocando el mapa.';
+          mapaDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    })();
+  </script>
 
 </body>
 </html>
