@@ -29,6 +29,7 @@ class RegistroModel
                     latitud,
                     longitud,
                     email,
+                    token_validacion,
                     foto_perfil
                 ) VALUES (
                     :nombre_usuario,
@@ -44,6 +45,7 @@ class RegistroModel
                     :latitud,
                     :longitud,
                     :email,
+                    :token_validacion,
                     :foto_perfil
                 )";
 
@@ -61,9 +63,17 @@ class RegistroModel
             ':latitud' => $datos['latitud'],
             ':longitud' => $datos['longitud'],
             ':email' => $datos['email'],
+            ':token_validacion' => $datos['token_validacion'],
             ':foto_perfil' => $datos['foto_perfil']
         ];
 
         return $this->database->execute($sql, $parametros);
+    }
+
+    public function activarUsuario(string $token){
+        $sql = "UPDATE usuarios 
+                SET estado = 1 
+                WHERE token_validacion = :token";
+        return $this->database->execute($sql, [':token' => $token]);
     }
 }
