@@ -4,8 +4,10 @@ namespace app\controller;
 
 use Log;
 use PDOException;
+use PHPMailer\PHPMailer\PHPMailer;
 use Redirect;
 use Request;
+use Mailer;
 
 class RegistroController
 {
@@ -16,10 +18,13 @@ class RegistroController
     private $model;
     private $render;
 
+    private $mailer;
+
     public function __construct($model, $render)
     {
         $this->model = $model;
         $this->render = $render;
+        $this->mailer = new Mailer();
     }
 
     public function show()
@@ -55,6 +60,9 @@ class RegistroController
 
         $this->validarSubidaDeFoto($foto);
 
+        $token= md5(uniqid(rand(), true));
+
+
         $datos = [
             'nombre_usuario' => Request::post('nombre_usuario'),
             'password' => $password,
@@ -69,11 +77,23 @@ class RegistroController
             'latitud' => $latitud,
             'longitud' => $longitud,
             'email' => Request::post('email'),
+            'token_validacion' => $token,
             'foto_perfil' => $foto
         ];
 
         try {
             $registroExitoso = $this->model->registrar($datos);
+
+            if ($registroExitoso === 1){
+                $link = "http://localhost/registro/validar?token=" . $token;
+                $cuerpo = "<h2>¡Bienvenido!</h2>";
+                $cuerpo .= "<p>Para empezar a jugar, hacé clic en el siguiente enlace para validar tu cuenta:</p>";
+                $cuerpo .= "<a href='$link'>Activar mi cuenta</a>";
+
+                $this->mailer->enviarMail($datos['email'] ,"Activa tu cuenta de Cerebrito", $cuerpo);
+
+                Redirect::to(BASE_URL . '/login/show?mensaje=revisa_tu_mail');
+            }
         } catch (PDOException $e) {
             Log::error($e->getMessage());
             $this->borrarFoto($foto);
@@ -90,6 +110,19 @@ class RegistroController
 
         Redirect::toIndex();
     }
+
+    public function validarCuenta()
+    {
+        $token = Request::get('token');
+
+        if ($token) {
+            $this->model->activarUsuario($token);
+            Redirect::to(BASE_URL . '/login/show?mensaje=cuenta_activada');
+        } else {
+            Redirect::toIndex();
+        }
+    }
+
 
     private function mensajeError($codigo)
     {

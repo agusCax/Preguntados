@@ -16,6 +16,8 @@ CREATE TABLE usuarios (
     latitud DECIMAL(10, 8) NOT NULL,
     longitud DECIMAL(11, 8) NOT NULL,
     email VARCHAR(254) NOT NULL,
+    estado BOOLEAN DEFAULT FALSE,
+    token_validacion VARCHAR(254),
     foto_perfil VARCHAR(255) NULL,
     CONSTRAINT uq_usuarios_email UNIQUE (email)
 );
