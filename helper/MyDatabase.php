@@ -9,19 +9,21 @@ class MyDatabase
         $this->conexion = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass); //agrego el charset para provocar que la db guarde bien las tildes, la ñ y los emojis
     }
 
-    public function queryOne(string $sql)
+    public function queryOne(string $sql, array $parameters = [])
     {
         Log::info($sql);
-        $resultado = $this->conexion->query($sql, PDO::FETCH_ASSOC);
-        $fila = $resultado->fetch();
+        $statement = $this->conexion->prepare($sql);
+        $statement->execute($parameters);
+        $fila = $statement->fetch(PDO::FETCH_ASSOC);
         return $fila === false ? null : $fila;
     }
 
-    public function queryAll(string $sql)
+    public function queryAll(string $sql, array $parameters = [])
     {
         Log::info($sql);
-        $resultado = $this->conexion->query($sql, PDO::FETCH_ASSOC);
-        return $resultado->fetchAll();
+        $statement = $this->conexion->prepare($sql);
+        $statement->execute($parameters);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function execute(string $sql, array $parameters = [])
