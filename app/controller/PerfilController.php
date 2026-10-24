@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controller;
+use Redirect;
 
 class PerfilController {
     private $renderer;
@@ -44,7 +45,7 @@ class PerfilController {
             ];
 
             $this->perfilModel->actualizarPerfil($userId, $datos);
-            header("Location: /perfil");
+            Redirect::to(BASE_URL . '/perfil/show');
             exit();
         }
     }
