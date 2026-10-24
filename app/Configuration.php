@@ -10,6 +10,8 @@ use app\controller\PreguntaController;
 use app\model\PreguntaModel;
 use app\model\LoginModel;
 use app\model\RegistroModel;
+use app\controller\PerfilController; // <--- Importar el controlador
+use app\model\PerfilModel;         // <--- Importar el modelo
 use MustacheRender;
 use MyDatabase;
 use phpmailer\src\PHPMailer;
