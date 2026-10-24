@@ -85,10 +85,21 @@ class RegistroController
             $registroExitoso = $this->model->registrar($datos);
 
             if ($registroExitoso === 1){
-                $link = "http://localhost/registro/validar?token=" . $token;
-                $cuerpo = "<h2>¡Bienvenido!</h2>";
-                $cuerpo .= "<p>Para empezar a jugar, hacé clic en el siguiente enlace para validar tu cuenta:</p>";
-                $cuerpo .= "<a href='$link'>Activar mi cuenta</a>";
+                $link = "http://localhost/proyectoWeb/registro/validar?token=" . $token;
+                $cuerpo =
+                    "<div style='font-family: \"Outfit\", Arial, sans-serif; background-color: #f7f9fb; padding: 40px 20px; color: #191c1e; text-align: center;'>
+                    <div style='max-width: 540px; margin: 0 auto; background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 32px; padding: 40px 20px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);'>
+                        
+                        <h2 style='color: #0284C7; font-size: 32px; font-weight: 800; margin-top: 0;'>¡Bienvenido a Cerebrito!</h2>
+                        
+                        <p style='font-size: 18px; font-weight: 500; color: #3f4850; margin-bottom: 30px; line-height: 26px;'>
+                            ¡Falta muy poco para empezar a jugar! Hacé clic en el siguiente enlace para validar tu cuenta y comenzar a sumar puntos.
+                        </p>
+                        
+                        <a href='{$link}' style='display: inline-block; background-color: #0284C7; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: 700; padding: 16px 32px; border-radius: 50px; border-bottom: 4px solid #0369A1;'>Activar mi cuenta</a>
+                        
+                    </div>
+                </div>";
 
                 $this->mailer->enviarMail($datos['email'] ,"Activa tu cuenta de Cerebrito", $cuerpo);
 

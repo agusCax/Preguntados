@@ -41,7 +41,7 @@ class Mailer
             return true;
 
         } catch (Exception $e) {
-            //ver como manejar las excepciones
+            Log::error("Fallo al enviar mail a {$destinatario} por el siguiente motivo: " . $e->getMessage());
             return false;
         }
     }
