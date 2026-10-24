@@ -666,6 +666,18 @@
       border: 2px solid #fecaca;
       border-radius: var(--radius-field);
     }
+
+    .auth__success {
+        margin-bottom: var(--space-md);
+        padding: 0.75rem 1rem;
+        font-family: var(--font-text);
+        font-weight: 700;
+        text-align: center;
+        color: #047857; /* Verde oscuro para el texto */
+        background-color: #ecfdf5; /* Verde muy clarito de fondo */
+        border: 2px solid #a7f3d0; /* Borde verde intermedio */
+        border-radius: var(--radius-field);
+    }
   </style>
 </head>
 <body>
@@ -693,6 +705,10 @@
                 {{#error}}
           <p class="auth__error" role="alert">{{error}}</p>
         {{/error}}
+
+          {{#mensaje_exito}}
+              <p class="auth__success" role="alert">{{mensaje_exito}}</p>
+          {{/mensaje_exito}}
 
         <form class="auth__form" action="{{base_url}}/login/login" method="post">
 

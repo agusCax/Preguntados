@@ -19,6 +19,17 @@ class LoginController
     public function show()
     {
         $data["error"] = Request::get('login_error') !== null ? "Usuario o contraseña incorrectos." : "";
+
+        $activacion = $_GET['activacion'] ?? null;
+        $data['mensaje_exito'] = "";
+
+        if ($activacion === 'revisa_tu_mail') {
+            $data['mensaje_exito'] = "¡Registro exitoso! Te enviamos un correo para activar tu cuenta.";
+        } elseif ($activacion === 'cuenta_activada') {
+            $data['mensaje_exito'] = "¡Tu cuenta ha sido activada! Ya podés iniciar sesión.";
+        }
+
+
         $this->render->renderiza("login", $data, false);
     }
 

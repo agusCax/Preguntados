@@ -85,7 +85,7 @@ class RegistroController
             $registroExitoso = $this->model->registrar($datos);
 
             if ($registroExitoso === 1){
-                $link = "http://localhost/proyectoWeb/registro/validar?token=" . $token;
+                $link = "http://localhost/proyectoWeb/registro/validarCuenta?token=" . $token;
                 $cuerpo =
                     "<div style='font-family: \"Outfit\", Arial, sans-serif; background-color: #f7f9fb; padding: 40px 20px; color: #191c1e; text-align: center;'>
                     <div style='max-width: 540px; margin: 0 auto; background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 32px; padding: 40px 20px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);'>
@@ -103,7 +103,7 @@ class RegistroController
 
                 $this->mailer->enviarMail($datos['email'] ,"Activa tu cuenta de Cerebrito", $cuerpo);
 
-                Redirect::to(BASE_URL . '/login/show?mensaje=revisa_tu_mail');
+                Redirect::to(BASE_URL . '/login/show?activacion=revisa_tu_mail');
             }
         } catch (PDOException $e) {
             Log::error($e->getMessage());
@@ -128,7 +128,7 @@ class RegistroController
 
         if ($token) {
             $this->model->activarUsuario($token);
-            Redirect::to(BASE_URL . '/login/show?mensaje=cuenta_activada');
+            Redirect::to(BASE_URL . '/login/show?activacion=cuenta_activada');
         } else {
             Redirect::toIndex();
         }
