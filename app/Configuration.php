@@ -12,7 +12,9 @@ use app\model\LoginModel;
 use app\model\RegistroModel;
 use MustacheRender;
 use MyDatabase;
+use phpmailer\src\PHPMailer;
 use Router;
+use Mailer;
 
 require_once __DIR__ . "/../helper/Autoloader.php";
 
@@ -59,8 +61,15 @@ class Configuration
     {
         return new RegistroController(
             $this->getRegistroModel(),
-            $this->getRender()
+            $this->getRender(),
+            $this->getMailer()
         );
+    }
+
+    public function getMailer(){
+        $config = parse_ini_file(__DIR__ . "/../config/config.ini", true);
+
+        return new Mailer($config["mailer"]);
     }
 
     private function getRegistroModel()

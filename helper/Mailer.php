@@ -8,20 +8,23 @@ class Mailer
 {
     private $mail;
 
-    public function __construct()
+    public function __construct($config)
     {
+        require_once __DIR__ . '/../vendor/phpmailer/src/Exception.php';
+        require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
+        require_once __DIR__ . '/../vendor/phpmailer/src/SMTP.php';
 
         //se instancia el mailer con true para habilitar las excepciones
         $this->mail = new PHPMailer(true);
 
         //configuraciones de server
         $this->mail->isSMTP();
-        $this->mail->Host = 'smtp.gmail.com'; //voy a usar gmail para probar - otra opcion es mailtrap
+        $this->mail->Host = $config['host'];
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = 'santiagojavier1903@gmail.com'; //la direccion a la que va a enviar el mail
-        $this->mail->Password = 'iwdommorqqjudfkn'; //contraseña de la aplicacion de esta cuenta^
+        $this->mail->Username = $config['username'];
+        $this->mail->Password = $config['password'];
         $this->mail->SMTPSecure = 'tls';
-        $this->mail->Port = 587; //puerto de gmail por default
+        $this->mail->Port = $config['port'];
 
         $this->mail->setFrom('no-reply@cerebrito.com', 'Cerebrito');
         $this->mail->isHTML(true);

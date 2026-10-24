@@ -20,11 +20,11 @@ class RegistroController
 
     private $mailer;
 
-    public function __construct($model, $render)
+    public function __construct($model, $render, $mailer)
     {
         $this->model = $model;
         $this->render = $render;
-        $this->mailer = new Mailer();
+        $this->mailer = $mailer;
     }
 
     public function show()
