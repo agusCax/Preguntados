@@ -1,9 +1,9 @@
 {{> header}}
 
 <div class="max-w-[540px] mx-auto bg-[#f7f9fb] min-h-screen text-[#191c1e] font-['Outfit'] pb-20">
-    <form action="index.php?controller=perfil&method=actualizar" method="POST">
+   <form action="{{base_url}}/perfil/actualizar" method="POST">
         <div class="flex justify-between items-center p-4 border-b border-[#e2e8f0] bg-white">
-            <a href="index.php?controller=perfil&method=show" class="text-2xl font-bold">&lt;</a>
+            <a href="{{base_url}}/perfil/show" class="text-2xl font-bold">&lt;</a>
             <button type="submit" class="text-[#0284C7] font-extrabold text-base">Guardar</button>
         </div>
 
