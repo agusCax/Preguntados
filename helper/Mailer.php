@@ -2,6 +2,7 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 class Mailer
 {
@@ -9,9 +10,6 @@ class Mailer
 
     public function __construct()
     {
-        require_once dirname(__DIR__) . '/vendor/phpmailer/src/PHPMailer.php';
-        require_once dirname(__DIR__) . '/vendor/phpmailer/src/SMTP.php';
-        require_once dirname(__DIR__) . '/vendor/phpmailer/src/Exception.php';
 
         //se instancia el mailer con true para habilitar las excepciones
         $this->mail = new PHPMailer(true);
