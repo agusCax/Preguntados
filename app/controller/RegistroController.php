@@ -86,20 +86,62 @@ class RegistroController
 
             if ($registroExitoso === 1){
                 $link = "http://localhost/proyectoWeb/registro/validarCuenta?token=" . $token;
-                $cuerpo =
-                    "<div style='font-family: \"Outfit\", Arial, sans-serif; background-color: #f7f9fb; padding: 40px 20px; color: #191c1e; text-align: center;'>
-                    <div style='max-width: 540px; margin: 0 auto; background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 32px; padding: 40px 20px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);'>
-                        
-                        <h2 style='color: #0284C7; font-size: 32px; font-weight: 800; margin-top: 0;'>¡Bienvenido a Cerebrito!</h2>
-                        
-                        <p style='font-size: 18px; font-weight: 500; color: #3f4850; margin-bottom: 30px; line-height: 26px;'>
-                            ¡Falta muy poco para empezar a jugar! Hacé clic en el siguiente enlace para validar tu cuenta y comenzar a sumar puntos.
-                        </p>
-                        
-                        <a href='{$link}' style='display: inline-block; background-color: #0284C7; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: 700; padding: 16px 32px; border-radius: 50px; border-bottom: 4px solid #0369A1;'>Activar mi cuenta</a>
-                        
-                    </div>
-                </div>";
+                $cuerpo = "
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+</head>
+<body style='margin: 0; padding: 0; background-color: #f8fafc; font-family: \"Outfit\", \"Nunito\", Arial, sans-serif;'>
+    <table width='100%' cellpadding='0' cellspacing='0' style='padding: 40px 20px;'>
+        <tr>
+            <td align='center'>
+                <table width='100%' cellpadding='0' cellspacing='0' style='max-width: 520px; background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 24px; overflow: hidden; box-shadow: 0 12px 24px rgba(3, 105, 161, 0.08);'>
+                    
+                    <!-- Encabezado -->
+                    <tr>
+                        <td style='background-color: #0284c7; padding: 35px 20px; text-align: center;'>
+                            <h1 style='color: #ffffff; margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -1px;'>Cerebrito</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Cuerpo principal (Con Entidades HTML para acentos y emojis) -->
+                    <tr>
+                        <td style='padding: 40px 30px; text-align: center;'>
+                            <h2 style='color: #0f172a; font-size: 24px; font-weight: 800; margin: 0 0 15px 0;'>&iexcl;Tu cuenta casi est&aacute; lista!</h2>
+                            
+                            <p style='font-size: 16px; color: #334155; line-height: 24px; margin: 0 0 25px 0; font-weight: 600;'>
+                                Est&aacute;s a un solo clic de unirte a nuestra comunidad. Demostr&aacute; tus conocimientos, respond&eacute; r&aacute;pido y escal&aacute; en el ranking general.
+                            </p>
+                            
+                            <!-- Caja destacada -->
+                            <div style='background-color: #f1f5ff; border-radius: 16px; padding: 20px; margin-bottom: 35px; text-align: left; border: 1px solid #e0f2fe;'>
+                                <p style='margin: 0 0 10px 0; color: #0369a1; font-weight: 800; font-size: 15px;'>&iquest;Qu&eacute; te espera adentro?</p>
+                                <p style='margin: 0; color: #334155; font-size: 15px; line-height: 26px; font-weight: 600;'>
+                                    &#128300; Ciencia &nbsp;|&nbsp; &#127963; Historia &nbsp;|&nbsp; &#127758; Geograf&iacute;a <br>
+                                    &#127912; Arte &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &#9917; Deportes &nbsp;|&nbsp; &#127916; Cine
+                                </p>
+                            </div>
+                            
+                            <a href='{$link}' style='display: inline-block; background-color: #10b981; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 800; padding: 16px 36px; border-radius: 50px; border-bottom: 4px solid #047857; text-transform: uppercase;'>Activar mi cuenta</a>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style='background-color: #f8fafc; padding: 25px 20px; text-align: center; border-top: 1px solid #e2e8f0;'>
+                            <p style='margin: 0; color: #64748b; font-size: 13px; font-weight: 600; line-height: 20px;'>
+                                Si no te registraste en Cerebrito, pod&eacute;s ignorar este correo sin problemas.<br>
+                                &copy; " . date('Y') . " Cerebrito. Todos los derechos reservados.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
 
                 $this->mailer->enviarMail($datos['email'] ,"Activa tu cuenta de Cerebrito", $cuerpo);
 
