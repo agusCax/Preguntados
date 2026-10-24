@@ -1,46 +1,376 @@
-{{> header}}
+<style>
+    /* Mobile: fondo blanco como el mockup. Tablet+: lienzo suave con tarjeta */
+    body {
+        background-color: #ffffff;
+    }
 
-<div class="max-w-[540px] mx-auto bg-[#f7f9fb] min-h-screen text-[#191c1e] font-['Outfit'] pb-20">
-   <form action="{{base_url}}/perfil/actualizar" method="POST">
-        <div class="flex justify-between items-center p-4 border-b border-[#e2e8f0] bg-white">
-            <a href="{{base_url}}/perfil/show" class="text-2xl font-bold">&lt;</a>
-            <button type="submit" class="text-[#0284C7] font-extrabold text-base">Guardar</button>
+    .ep,
+    .ep *,
+    .ep *::before,
+    .ep *::after {
+        box-sizing: border-box;
+    }
+
+    /* =========================================================
+       EDITAR PERFIL (mobile first)
+       ========================================================= */
+    .ep {
+        --ep-ink: var(--color-ink, #0f172a);
+        --ep-border: var(--color-border, #e2e8f0);
+        --ep-muted: #64748b;
+
+        max-width: 540px;
+        margin: 0 auto;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--ep-ink);
+        background-color: #ffffff;
+    }
+
+    .ep a:focus-visible,
+    .ep button:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    /* ---------- Barra superior: volver + Guardar ---------- */
+    .ep__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    }
+
+    .ep__back {
+        display: inline-grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        color: var(--ep-ink);
+        border-radius: 50%;
+        text-decoration: none;
+        transition: background-color 0.15s ease;
+    }
+
+    .ep__back:hover {
+        background-color: var(--color-shape, #f1f5ff);
+    }
+
+    .ep__save {
+        min-height: 44px;
+        padding: 0 1rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--color-primary, #0284c7);
+        background: transparent;
+        border: 0;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .ep__save:hover:not(:disabled) {
+        background-color: #e0f2fe;
+    }
+
+    /* Sin cambios todavía: gris, como el mockup */
+    .ep__save:disabled {
+        color: #94a3b8;
+        cursor: default;
+    }
+
+    /* ---------- Portada + avatar ---------- */
+    .ep__media {
+        position: relative;
+        margin-bottom: 3rem; /* lugar para la mitad del avatar que sobresale */
+    }
+
+    .ep__cover {
+        display: grid;
+        place-items: center;
+        height: 112px;
+        background-color: #64748b;
+        background-image: linear-gradient(180deg, #4b5563 0%, #6b7280 100%);
+    }
+
+    .ep__cover-btn,
+    .ep__avatar-btn {
+        display: grid;
+        place-items: center;
+        padding: 0;
+        color: #ffffff;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .ep__cover-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+    }
+
+    .ep__avatar {
+        position: absolute;
+        left: 1rem;
+        bottom: -42px;
+        width: 88px;
+        height: 88px;
+        background-color: #1e293b;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px var(--ep-border);
+        overflow: hidden;
+    }
+
+    .ep__avatar-letter {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        opacity: 0.3;
+    }
+
+    .ep__avatar-btn {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: rgba(15, 23, 42, 0.45);
+    }
+
+    /* ---------- Campos ---------- */
+    .ep__fields {
+        padding: 0 1rem 1rem;
+    }
+
+    .ep__field {
+        position: relative;
+        padding: 0.9rem 0 0.75rem;
+        border-bottom: 2px solid var(--ep-border);
+        transition: border-color 0.15s ease;
+    }
+
+    .ep__field:focus-within {
+        border-bottom-color: var(--color-primary, #0284c7);
+    }
+
+    .ep__label {
+        display: block;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--ep-muted);
+    }
+
+    .ep__input {
+        display: block;
+        width: 100%;
+        min-height: 2.25rem;
+        margin: 0.15rem 0 0;
+        padding: 0.25rem 3.75rem 0.25rem 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--ep-ink);
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .ep__input::placeholder {
+        color: #cbd5e1;
+        font-weight: 500;
+    }
+
+    /* Bio: área de varias líneas */
+    .ep__input--area {
+        min-height: 5.5rem;
+        resize: none;
+    }
+
+    /* Email: se muestra pero no se edita */
+    .ep__input[readonly] {
+        color: #94a3b8;
+        cursor: not-allowed;
+    }
+
+    .ep__count {
+        position: absolute;
+        right: 0;
+        bottom: 0.95rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .ep__field--area .ep__count {
+        bottom: 0.85rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ep__back,
+        .ep__save,
+        .ep__field {
+            transition: none;
+        }
+    }
+
+    /* =========================================================
+       TABLET Y DESKTOP (≥ 768px): tarjeta centrada (Nivel 1)
+       ========================================================= */
+    @media (min-width: 768px) {
+        body {
+            background-color: var(--color-canvas, #f8fafc);
+        }
+
+        .ep {
+            margin-top: 1.5rem;
+            overflow: hidden;
+            border: 2px solid var(--ep-border);
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+        }
+
+        .ep__top {
+            padding-inline: 0.75rem;
+        }
+
+        .ep__cover {
+            height: 128px;
+        }
+
+        .ep__avatar {
+            left: 1.5rem;
+        }
+
+        .ep__fields {
+            padding: 0 1.5rem 1.5rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .ep {
+            margin-top: 2rem;
+        }
+    }
+</style>
+
+<main class="ep">
+    <form action="{{base_url}}/perfil/actualizar" method="POST" id="ep-form" novalidate>
+
+        <!-- Barra superior -->
+        <div class="ep__top">
+            <a href="{{base_url}}/perfil/show" class="ep__back" aria-label="Volver al perfil">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+            </a>
+            <button type="submit" class="ep__save" id="ep-save">Guardar</button>
         </div>
 
-        <div class="relative bg-[#64748b] h-36 flex items-center justify-center">
-            <span class="text-white text-2xl">📷</span>
-            <div class="absolute -bottom-8 w-20 h-20 rounded-full bg-[#2d3133] text-white flex items-center justify-center text-3xl font-extrabold border-4 border-white shadow-md">
-                E
+        <!-- Portada y avatar -->
+        <div class="ep__media">
+            <div class="ep__cover">
+                <button type="button" class="ep__cover-btn" aria-label="Cambiar foto de portada">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="ep__avatar">
+                <span class="ep__avatar-letter" aria-hidden="true">{{inicial}}</span>
+                <button type="button" class="ep__avatar-btn" aria-label="Cambiar foto de perfil">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <div class="mt-12 px-4 space-y-6">
-            <div class="border-b border-[#e2e8f0] pb-2">
-                <label class="block text-sm text-[#707881] font-bold mb-1">Nombre</label>
-                <input type="text" name="nombre" value="" class="w-full bg-transparent outline-none font-medium text-[#0f172a]" placeholder="Tu nombre">
+        <!-- Campos -->
+        <div class="ep__fields">
+
+            <div class="ep__field">
+                <label class="ep__label" for="ep-nombre">Nombre</label>
+                <input class="ep__input" type="text" id="ep-nombre" name="nombre" value="{{nombre}}" maxlength="40" autocomplete="name">
+                <span class="ep__count" data-count-for="ep-nombre" aria-hidden="true"></span>
             </div>
 
-            <div class="border-b border-[#e2e8f0] pb-2">
-                <label class="block text-sm text-[#707881] font-bold mb-1">Usuario</label>
-                <input type="text" name="usuario" value="" class="w-full bg-transparent outline-none font-medium text-[#0f172a]" placeholder="Tu usuario">
+            <div class="ep__field">
+                <label class="ep__label" for="ep-usuario">Usuario</label>
+                <input class="ep__input" type="text" id="ep-usuario" name="usuario" value="{{usuario}}" maxlength="16" autocomplete="username" autocapitalize="none" spellcheck="false">
+                <span class="ep__count" data-count-for="ep-usuario" aria-hidden="true"></span>
             </div>
 
-            <div class="border-b border-[#e2e8f0] pb-2">
-                <label class="block text-sm text-[#707881] font-bold mb-1">Bio</label>
-                <input type="text" name="bio" value="" class="w-full bg-transparent outline-none font-medium text-[#0f172a]" placeholder="Escribe algo sobre ti">
+            <div class="ep__field ep__field--area">
+                <label class="ep__label" for="ep-bio">Bio</label>
+                <textarea class="ep__input ep__input--area" id="ep-bio" name="bio" maxlength="80" rows="3">{{bio}}</textarea>
+                <span class="ep__count" data-count-for="ep-bio" aria-hidden="true"></span>
             </div>
 
-            <div class="border-b border-[#e2e8f0] pb-2">
-                <label class="block text-sm text-[#707881] font-bold mb-1">Email</label>
-                <input type="email" name="email" value="" class="w-full bg-transparent outline-none font-medium text-[#0f172a]" placeholder="Tu email">
+            <div class="ep__field">
+                <label class="ep__label" for="ep-email">Email</label>
+                <input class="ep__input" type="email" id="ep-email" name="email" value="{{email}}" maxlength="80" readonly autocomplete="email">
+                <span class="ep__count" data-count-for="ep-email" aria-hidden="true"></span>
             </div>
 
-            <div class="border-b border-[#e2e8f0] pb-2">
-                <label class="block text-sm text-[#707881] font-bold mb-1">Ubicación</label>
-                <input type="text" name="ubicacion" value="" class="w-full bg-transparent outline-none font-medium text-[#0f172a]" placeholder="Tu ubicación">
+            <div class="ep__field">
+                <label class="ep__label" for="ep-ubicacion">Ubicación</label>
+                <input class="ep__input" type="text" id="ep-ubicacion" name="ubicacion" value="{{ubicacion}}" autocomplete="country-name">
             </div>
         </div>
+
     </form>
-</div>
+</main>
 
-{{> footer}}
+<script>
+    // Contadores de caracteres y "Guardar" activo solo si hubo cambios
+    (function () {
+        var form = document.getElementById('ep-form');
+        var guardar = document.getElementById('ep-save');
+        var campos = form.querySelectorAll('.ep__input');
+        var iniciales = {};
+
+        function actualizarContador(campo) {
+            var contador = form.querySelector('[data-count-for="' + campo.id + '"]');
+            if (contador) {
+                contador.textContent = campo.value.length + ' / ' + campo.maxLength;
+            }
+        }
+
+        function hayCambios() {
+            for (var i = 0; i < campos.length; i++) {
+                if (campos[i].value !== iniciales[campos[i].id]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        campos.forEach(function (campo) {
+            iniciales[campo.id] = campo.value;
+            actualizarContador(campo);
+
+            campo.addEventListener('input', function () {
+                actualizarContador(campo);
+                guardar.disabled = !hayCambios();
+            });
+        });
+
+        guardar.disabled = true;
+    })();
+</script>
