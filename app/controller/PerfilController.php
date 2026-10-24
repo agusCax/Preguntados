@@ -1,0 +1,51 @@
+<?php
+
+namespace app\controller;
+
+class PerfilController {
+    private $renderer;
+    private $perfilModel;
+
+    public function __construct($renderer, $perfilModel) {
+        $this->renderer = $renderer;
+        $this->perfilModel = $perfilModel;
+    }
+
+    public function show() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $userId = $_SESSION['user_id'] ?? 1;
+        $data = $this->perfilModel->obtenerDatosUsuario($userId);
+        $this->renderer->renderiza("perfil", $data); // <--- Solo "perfil"
+    }
+
+    public function editar() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $userId = $_SESSION['user_id'] ?? 1;
+        $data = $this->perfilModel->obtenerDatosUsuario($userId);
+        $this->renderer->renderiza("editarPerfil", $data); // <--- Solo "editarPerfil"
+    }
+
+    public function actualizar() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $userId = $_SESSION['user_id'] ?? 1;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $datos = [
+                'nombre' => $_POST['nombre'] ?? '',
+                'usuario' => $_POST['usuario'] ?? '',
+                'bio' => $_POST['bio'] ?? '',
+                'ubicacion' => $_POST['ubicacion'] ?? ''
+            ];
+
+            $this->perfilModel->actualizarPerfil($userId, $datos);
+            header("Location: /perfil");
+            exit();
+        }
+    }
+}
