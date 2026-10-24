@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cerebrito | Pregunta</title>
 
-    <!-- Fuentes: Outfit (números/etiquetas), Fredoka (pregunta y respuestas), Nunito (texto) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -36,14 +35,13 @@
             padding: 0;
         }
 
-        /* El color de la categoría (--cat): fuerte arriba, tono muy claro abajo */
         body {
             min-height: 100vh;
             min-height: 100dvh;
             font-family: var(--font-text);
             color: var(--color-ink);
-            background-color: #eef2ff; /* respaldo para navegadores viejos */
-            background-color: color-mix(in srgb, var(--cat) 16%, #ffffff);
+            background-color: #eef2ff;
+            background-color: color-mix(in srgb, var(--cat, #0284c7) 16%, #ffffff);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
@@ -60,12 +58,10 @@
             border: 0;
         }
 
-        /* ---------- Parte de arriba (color de la categoría) ---------- */
         .q__top {
             position: relative;
             padding: 1rem 1rem 4.5rem;
-            background-color: var(--cat);
-            /* Brillo diagonal + rayas suaves para que no sea un color plano */
+            background-color: var(--cat, #0284c7);
             background-image:
                     linear-gradient(160deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
                     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.09) 0 14px, rgba(255, 255, 255, 0) 14px 28px);
@@ -87,7 +83,6 @@
             gap: 0.75rem;
         }
 
-        /* Píldoras blancas con base 3D: se leen bien sobre cualquier color de categoría */
         .q__exit,
         .q__score,
         .q__cat {
@@ -120,7 +115,6 @@
             box-shadow: 0 0 0 transparent;
         }
 
-        /* Puntaje: pastilla blanca (como las demás) para que se vea con cualquier color de categoría; la estrella rebota */
         .q__score {
             font-size: 1.15rem;
         }
@@ -131,7 +125,6 @@
             animation: star-bounce 2.4s ease-in-out infinite;
         }
 
-        /* Categoría: sticker un poco inclinado */
         .q__cat {
             justify-self: center;
             font-size: 1.1rem;
@@ -143,7 +136,6 @@
             font-size: 1.35rem;
         }
 
-        /* ---------- Tiempo ---------- */
         .q__timer {
             display: flex;
             align-items: center;
@@ -169,7 +161,6 @@
             transition: width 1s linear, background-color 0.3s ease;
         }
 
-        /* Número del tiempo: reloj redondo */
         .q__seconds {
             display: grid;
             place-items: center;
@@ -187,7 +178,6 @@
             box-shadow: 0 4px 0 rgba(15, 23, 42, 0.22);
         }
 
-        /* Últimos segundos: rojo, la barra parpadea y el reloj late */
         .q__timer.is-low .q__fill {
             background-color: var(--color-wrong);
             background-image: none;
@@ -200,7 +190,6 @@
             animation: heartbeat 0.5s ease-in-out infinite alternate;
         }
 
-        /* ---------- Pregunta y opciones ---------- */
         .q__body {
             position: relative;
             display: grid;
@@ -226,7 +215,6 @@
             animation: drop-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
 
-        /* Signo de pregunta que asoma por la esquina de la tarjeta */
         .q__question::after {
             content: "?";
             position: absolute;
@@ -250,10 +238,9 @@
             gap: 0.9rem;
         }
 
-        /* Opciones blancas: borde y base 3D finos con el color de la categoría */
         .q__option {
             --opt-bg: var(--color-white);
-            --opt-edge: var(--cat);
+            --opt-edge: var(--cat, #0284c7);
             --opt-ink: var(--color-ink);
 
             display: flex;
@@ -282,7 +269,7 @@
         .q__option:nth-child(4) { animation-delay: 0.45s; }
 
         .q__option:hover {
-            --opt-bg: color-mix(in srgb, var(--cat) 8%, #ffffff);
+            --opt-bg: color-mix(in srgb, var(--cat, #0284c7) 8%, #ffffff);
             transform: translateY(-3px);
             box-shadow: 0 8px 0 var(--opt-edge);
         }
@@ -292,14 +279,6 @@
             box-shadow: 0 0 0 var(--opt-edge);
         }
 
-        .q__option:focus-visible,
-        .q__exit:focus-visible,
-        .q__report-btn:focus-visible {
-            outline: 4px solid var(--color-ink);
-            outline-offset: 3px;
-        }
-
-        /* La letra va en una moneda blanca con borde del color de la categoría (se lee con cualquier color) */
         .q__letter {
             display: grid;
             place-items: center;
@@ -310,8 +289,8 @@
             font-size: 1.15rem;
             font-weight: 800;
             color: var(--color-ink);
-            background-color: color-mix(in srgb, var(--cat) 18%, #ffffff);
-            border: 3px solid var(--cat);
+            background-color: color-mix(in srgb, var(--cat, #0284c7) 18%, #ffffff);
+            border: 3px solid var(--cat, #0284c7);
             border-radius: 50%;
         }
 
@@ -320,42 +299,14 @@
             line-height: 1.2;
         }
 
-        /* Estados para cuando se muestre el resultado de la respuesta */
-        .q__option.is-correct {
-            --opt-bg: #d1fae5;
-            --opt-edge: var(--color-correct);
-            animation: celebrate 0.6s ease both;
-        }
-
-        .q__option.is-wrong {
-            --opt-bg: #fee2e2;
-            --opt-edge: var(--color-wrong);
-            animation: shake 0.45s ease both;
-        }
-
-        .q__option:disabled {
-            cursor: default;
-        }
-
-        .q__option:disabled:not(.is-correct):not(.is-wrong) {
-            opacity: 0.55;
-        }
-
-        .q__option:disabled:hover,
-        .q__option:disabled:active {
-            transform: none;
-            box-shadow: 0 5px 0 var(--opt-edge);
-        }
-
-        /* ---------- Mascota ---------- */
         .q__mascot {
             display: none;
         }
 
-        /* ---------- Reportar ---------- */
         .q__report {
             display: flex;
             justify-content: center;
+            margin-top: 1rem;
         }
 
         .q__report-btn {
@@ -381,7 +332,6 @@
             border-color: var(--color-wrong);
         }
 
-        /* ---------- Animaciones ---------- */
         @keyframes pop-in {
             from { opacity: 0; transform: scale(0.8) translateY(14px); }
             to   { opacity: 1; transform: none; }
@@ -407,28 +357,6 @@
             to   { transform: scale(1.14); }
         }
 
-        @keyframes celebrate {
-            0%   { transform: scale(1); }
-            40%  { transform: scale(1.06) rotate(-1deg); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        /* ---------- Tablet y desktop (≥ 768px) ---------- */
         @media (min-width: 768px) {
             .q__top {
                 padding: 1.5rem 1.5rem 5.5rem;
@@ -437,6 +365,11 @@
             .q__body {
                 gap: 2rem;
                 margin-top: -3.75rem;
+            }
+
+            .q__body > * {
+                position: relative;
+                z-index: 1;
             }
 
             .q__question {
@@ -454,7 +387,6 @@
                 font-size: 1.3rem;
             }
 
-            /* Cerebrito se asoma al costado en pantallas grandes */
             .q__mascot {
                 position: fixed;
                 right: 2vw;
@@ -466,11 +398,6 @@
                 pointer-events: none;
                 animation: star-bounce 3s ease-in-out infinite;
             }
-
-            .q__body > * {
-                position: relative;
-                z-index: 1;
-            }
         }
     </style>
 </head>
@@ -478,7 +405,6 @@
 
 <main class="q">
 
-    <!-- Parte de arriba: color de la categoría, puntaje y tiempo -->
     <header class="q__top">
         <div class="q__top-inner">
 
@@ -503,7 +429,6 @@
                 <span>{{categoria_nombre}}</span>
             </p>
 
-            <!-- Tiempo: la barra y el número son solo visuales, el servidor controla el tiempo real -->
             <div class="q__timer" id="timer" role="timer" aria-label="Tiempo restante" data-total="{{segundos_totales}}" data-restante="{{segundos_restantes}}">
                 <div class="q__track">
                     <div class="q__fill" id="timer-fill"></div>
@@ -518,8 +443,8 @@
 
         <h1 class="q__question" id="pregunta">{{pregunta_texto}}</h1>
 
-        <!-- Respuestas -->
-        <form id="form-respuesta" method="post" action="{{base_url}}/siguiente_pregunta/show">
+        <!-- Enviar a responder para procesar la opción elegida -->
+        <form id="form-respuesta" method="post" action="{{base_url}}/pregunta/responder">
             <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />
             <input type="hidden" name="tiempo_agotado" id="tiempo-agotado" value="0" />
 
@@ -532,7 +457,6 @@
                 {{/respuestas}}
             </div>
         </form>
-
 
         <form class="q__report" method="post" action="{{base_url}}/reportar/show">
             <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />
@@ -552,7 +476,6 @@
 </main>
 
 <script>
-    // Solo mejora la experiencia: la validación real del tiempo la hace el servidor
     (function () {
         const timer = document.getElementById('timer');
         const fill = document.getElementById('timer-fill');
@@ -560,29 +483,22 @@
         const form = document.getElementById('form-respuesta');
         const agotado = document.getElementById('tiempo-agotado');
 
-        const total = Number(timer.dataset.total);
-        let restante = Number(timer.dataset.restante);
+        const total = Number(timer.dataset.total) || 10;
+        let restante = Number(timer.dataset.restante) || 10;
 
         function actualizar() {
             const visible = Math.max(restante, 0);
             segundos.textContent = visible;
-            fill.style.width = (visible / total * 100) + '%';
+            fill.style.width = ((visible / total) * 100) + '%';
             timer.classList.toggle('is-low', restante <= 5);
         }
 
-
-        // Por ahora se envía el formulario sin respuesta, marcando tiempo_agotado = 1.
         function tiempoAgotado() {
             agotado.value = '1';
             form.submit();
         }
 
         actualizar();
-
-        if (restante <= 0) {
-            tiempoAgotado();
-            return;
-        }
 
         const reloj = setInterval(function () {
             restante -= 1;
