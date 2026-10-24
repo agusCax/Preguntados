@@ -16,9 +16,14 @@ class PerfilModel {
             [':id' => $userId]
         );
 
+        $nombre = 'Emanuel Ruiz';
+        $nombreUsuario = $usuario['nombre_usuario'] ?? '';
+
         return [
-            'nombre' => 'Emanuel Ruiz',
-            'usuario' => $usuario['nombre_usuario'] ?? '',
+            'nombre' => $nombre,
+            'usuario' => $nombreUsuario,
+            // Letra del avatar: primera letra del nombre (o del usuario si no hay nombre)
+            'inicial' => mb_strtoupper(mb_substr($nombre !== '' ? $nombre : $nombreUsuario, 0, 1)),
             'email' => 'maanuu.rd@gmail.com',
             'ubicacion' => 'Argentina',
             'bio' => '¡Apasionado por las trivia y los desafíos!',
