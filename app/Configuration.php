@@ -6,6 +6,8 @@ use app\controller\InicioController;
 use app\controller\LoginController;
 use app\controller\RegistroController;
 use app\model\InicioModel;
+use app\controller\PreguntaController;
+use app\model\PreguntaModel;
 use app\model\LoginModel;
 use app\model\RegistroModel;
 use MustacheRender;
@@ -27,6 +29,21 @@ class Configuration
         return new LoginController(
             $this->getLoginModel(),
             $this->getRender()
+        );
+    }
+
+    public function getPreguntaController()
+    {
+        return new PreguntaController(
+            $this->getPreguntaModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getPreguntaModel()
+    {
+        return new PreguntaModel(
+            $this->getDatabase()
         );
     }
 

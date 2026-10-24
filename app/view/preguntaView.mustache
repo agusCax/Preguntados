@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cerebrito | Pregunta</title>
+
+    <!-- Fuentes: Outfit (números/etiquetas), Fredoka (pregunta y respuestas), Nunito (texto) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --color-primary: #0284c7;
+            --color-primary-dark: #0369a1;
+            --color-ink: #0f172a;
+            --color-ink-soft: #334155;
+            --color-white: #ffffff;
+            --color-border: #e2e8f0;
+            --color-correct: #10b981;
+            --color-wrong: #ef4444;
+
+            --font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+            --font-display: "Fredoka", "Outfit", system-ui, sans-serif;
+            --font-text: "Nunito", "Outfit", system-ui, sans-serif;
+
+            --radius-full: 9999px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* El color de la categoría (--cat): fuerte arriba, tono muy claro abajo */
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: var(--font-text);
+            color: var(--color-ink);
+            background-color: #eef2ff; /* respaldo para navegadores viejos */
+            background-color: color-mix(in srgb, var(--cat) 16%, #ffffff);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ---------- Parte de arriba (color de la categoría) ---------- */
+        .q__top {
+            position: relative;
+            padding: 1rem 1rem 4.5rem;
+            background-color: var(--cat);
+            /* Brillo diagonal + rayas suaves para que no sea un color plano */
+            background-image:
+                    linear-gradient(160deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
+                    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.09) 0 14px, rgba(255, 255, 255, 0) 14px 28px);
+            border-radius: 0 0 2.5rem 2.5rem;
+            box-shadow: 0 8px 0 rgba(15, 23, 42, 0.16);
+        }
+
+        .q__top-inner {
+            display: grid;
+            gap: 0.9rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .q__bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        /* Píldoras blancas con base 3D: se leen bien sobre cualquier color de categoría */
+        .q__exit,
+        .q__score,
+        .q__cat {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 44px;
+            padding: 0 1.1rem;
+            font-family: var(--font-family);
+            font-weight: 800;
+            color: var(--color-ink);
+            background-color: var(--color-white);
+            border-radius: var(--radius-full);
+            box-shadow: 0 4px 0 rgba(15, 23, 42, 0.22);
+        }
+
+        .q__exit {
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .q__exit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(15, 23, 42, 0.22);
+        }
+
+        .q__exit:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        /* Puntaje: pastilla blanca (como las demás) para que se vea con cualquier color de categoría; la estrella rebota */
+        .q__score {
+            font-size: 1.15rem;
+        }
+
+        .q__star {
+            display: inline-block;
+            font-size: 1.3rem;
+            animation: star-bounce 2.4s ease-in-out infinite;
+        }
+
+        /* Categoría: sticker un poco inclinado */
+        .q__cat {
+            justify-self: center;
+            font-size: 1.1rem;
+            transform: rotate(-2deg);
+            animation: pop-in 0.5s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        .q__cat-icon {
+            font-size: 1.35rem;
+        }
+
+        /* ---------- Tiempo ---------- */
+        .q__timer {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .q__track {
+            flex: 1;
+            height: 22px;
+            padding: 3px;
+            background-color: rgba(15, 23, 42, 0.28);
+            border-radius: var(--radius-full);
+            box-shadow: inset 0 3px 0 rgba(15, 23, 42, 0.18);
+        }
+
+        .q__fill {
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            background-color: #ffffff;
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.55));
+            border-radius: var(--radius-full);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+
+        /* Número del tiempo: reloj redondo */
+        .q__seconds {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--color-ink);
+            background-color: var(--color-white);
+            border: 4px solid var(--color-ink);
+            border-radius: 50%;
+            box-shadow: 0 4px 0 rgba(15, 23, 42, 0.22);
+        }
+
+        /* Últimos segundos: rojo, la barra parpadea y el reloj late */
+        .q__timer.is-low .q__fill {
+            background-color: var(--color-wrong);
+            background-image: none;
+            animation: blink 0.5s ease-in-out infinite alternate;
+        }
+
+        .q__timer.is-low .q__seconds {
+            color: var(--color-wrong);
+            border-color: var(--color-wrong);
+            animation: heartbeat 0.5s ease-in-out infinite alternate;
+        }
+
+        /* ---------- Pregunta y opciones ---------- */
+        .q__body {
+            position: relative;
+            display: grid;
+            gap: 1.5rem;
+            max-width: 720px;
+            margin: -3rem auto 0;
+            padding: 0 1rem 2.5rem;
+        }
+
+        .q__question {
+            position: relative;
+            padding: 1.75rem 1.25rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            line-height: 1.25;
+            font-weight: 700;
+            text-align: center;
+            color: var(--color-ink);
+            background-color: var(--color-white);
+            border: 4px solid var(--color-ink);
+            border-radius: 1.75rem;
+            box-shadow: 0 8px 0 var(--color-ink);
+            animation: drop-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        /* Signo de pregunta que asoma por la esquina de la tarjeta */
+        .q__question::after {
+            content: "?";
+            position: absolute;
+            top: -22px;
+            right: -6px;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            color: var(--color-ink);
+            background-color: #facc15;
+            border: 4px solid var(--color-ink);
+            border-radius: 50%;
+            transform: rotate(14deg);
+        }
+
+        .q__options {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        /* Opciones blancas: borde y base 3D finos con el color de la categoría */
+        .q__option {
+            --opt-bg: var(--color-white);
+            --opt-edge: var(--cat);
+            --opt-ink: var(--color-ink);
+
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            width: 100%;
+            min-height: 68px;
+            padding: 0.6rem 1rem;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-align: left;
+            color: var(--opt-ink);
+            background-color: var(--opt-bg);
+            border: 2px solid var(--opt-edge);
+            border-radius: 1.25rem;
+            box-shadow: 0 5px 0 var(--opt-edge);
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+            animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        .q__option:nth-child(1) { animation-delay: 0.15s; }
+        .q__option:nth-child(2) { animation-delay: 0.25s; }
+        .q__option:nth-child(3) { animation-delay: 0.35s; }
+        .q__option:nth-child(4) { animation-delay: 0.45s; }
+
+        .q__option:hover {
+            --opt-bg: color-mix(in srgb, var(--cat) 8%, #ffffff);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 var(--opt-edge);
+        }
+
+        .q__option:active {
+            transform: translateY(5px);
+            box-shadow: 0 0 0 var(--opt-edge);
+        }
+
+        .q__option:focus-visible,
+        .q__exit:focus-visible,
+        .q__report-btn:focus-visible {
+            outline: 4px solid var(--color-ink);
+            outline-offset: 3px;
+        }
+
+        /* La letra va en una moneda blanca con borde del color de la categoría (se lee con cualquier color) */
+        .q__letter {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            font-family: var(--font-family);
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--color-ink);
+            background-color: color-mix(in srgb, var(--cat) 18%, #ffffff);
+            border: 3px solid var(--cat);
+            border-radius: 50%;
+        }
+
+        .q__text {
+            flex: 1;
+            line-height: 1.2;
+        }
+
+        /* Estados para cuando se muestre el resultado de la respuesta */
+        .q__option.is-correct {
+            --opt-bg: #d1fae5;
+            --opt-edge: var(--color-correct);
+            animation: celebrate 0.6s ease both;
+        }
+
+        .q__option.is-wrong {
+            --opt-bg: #fee2e2;
+            --opt-edge: var(--color-wrong);
+            animation: shake 0.45s ease both;
+        }
+
+        .q__option:disabled {
+            cursor: default;
+        }
+
+        .q__option:disabled:not(.is-correct):not(.is-wrong) {
+            opacity: 0.55;
+        }
+
+        .q__option:disabled:hover,
+        .q__option:disabled:active {
+            transform: none;
+            box-shadow: 0 5px 0 var(--opt-edge);
+        }
+
+        /* ---------- Mascota ---------- */
+        .q__mascot {
+            display: none;
+        }
+
+        /* ---------- Reportar ---------- */
+        .q__report {
+            display: flex;
+            justify-content: center;
+        }
+
+        .q__report-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-height: 40px;
+            padding: 0 1rem;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-ink-soft);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px dashed var(--color-ink-soft);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .q__report-btn:hover {
+            color: var(--color-wrong);
+            background-color: var(--color-white);
+            border-color: var(--color-wrong);
+        }
+
+        /* ---------- Animaciones ---------- */
+        @keyframes pop-in {
+            from { opacity: 0; transform: scale(0.8) translateY(14px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        @keyframes drop-in {
+            from { opacity: 0; transform: translateY(-24px) scale(0.96); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        @keyframes star-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%      { transform: translateY(-3px) rotate(12deg); }
+        }
+
+        @keyframes blink {
+            from { opacity: 1; }
+            to   { opacity: 0.55; }
+        }
+
+        @keyframes heartbeat {
+            from { transform: scale(1); }
+            to   { transform: scale(1.14); }
+        }
+
+        @keyframes celebrate {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.06) rotate(-1deg); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* ---------- Tablet y desktop (≥ 768px) ---------- */
+        @media (min-width: 768px) {
+            .q__top {
+                padding: 1.5rem 1.5rem 5.5rem;
+            }
+
+            .q__body {
+                gap: 2rem;
+                margin-top: -3.75rem;
+            }
+
+            .q__question {
+                padding: 2.5rem 3rem;
+                font-size: 2rem;
+            }
+
+            .q__options {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.1rem;
+            }
+
+            .q__option {
+                min-height: 88px;
+                font-size: 1.3rem;
+            }
+
+            /* Cerebrito se asoma al costado en pantallas grandes */
+            .q__mascot {
+                position: fixed;
+                right: 2vw;
+                bottom: 1.5vh;
+                z-index: 0;
+                display: block;
+                width: clamp(110px, 14vw, 200px);
+                height: auto;
+                pointer-events: none;
+                animation: star-bounce 3s ease-in-out infinite;
+            }
+
+            .q__body > * {
+                position: relative;
+                z-index: 1;
+            }
+        }
+    </style>
+</head>
+<body style="--cat: {{categoria_color}};">
+
+<main class="q">
+
+    <!-- Parte de arriba: color de la categoría, puntaje y tiempo -->
+    <header class="q__top">
+        <div class="q__top-inner">
+
+            <div class="q__bar">
+                <a href="{{base_url}}/inicio/show" class="q__exit">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="19" y1="12" x2="5" y2="12" />
+                        <polyline points="12 19 5 12 12 5" />
+                    </svg>
+                    Salir
+                </a>
+
+                <p class="q__score">
+                    <span class="q__star" aria-hidden="true">⭐</span>
+                    <span>{{puntaje}}</span>
+                    <span class="sr-only">puntos</span>
+                </p>
+            </div>
+
+            <p class="q__cat">
+                <span class="q__cat-icon" aria-hidden="true">{{categoria_icono}}</span>
+                <span>{{categoria_nombre}}</span>
+            </p>
+
+            <!-- Tiempo: la barra y el número son solo visuales, el servidor controla el tiempo real -->
+            <div class="q__timer" id="timer" role="timer" aria-label="Tiempo restante" data-total="{{segundos_totales}}" data-restante="{{segundos_restantes}}">
+                <div class="q__track">
+                    <div class="q__fill" id="timer-fill"></div>
+                </div>
+                <span class="q__seconds" id="timer-seconds">{{segundos_restantes}}</span>
+            </div>
+
+        </div>
+    </header>
+
+    <section class="q__body">
+
+        <h1 class="q__question" id="pregunta">{{pregunta_texto}}</h1>
+
+        <!-- Respuestas -->
+        <form id="form-respuesta" method="post" action="{{base_url}}/siguiente_pregunta/show">
+            <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />
+            <input type="hidden" name="tiempo_agotado" id="tiempo-agotado" value="0" />
+
+            <div class="q__options" role="group" aria-labelledby="pregunta">
+                {{#respuestas}}
+                    <button type="submit" class="q__option" name="respuesta_id" value="{{id}}">
+                        <span class="q__letter">{{letra}}</span>
+                        <span class="q__text">{{texto}}</span>
+                    </button>
+                {{/respuestas}}
+            </div>
+        </form>
+
+
+        <form class="q__report" method="post" action="{{base_url}}/reportar/show">
+            <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />
+            <button type="submit" class="q__report-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                    <line x1="4" y1="22" x2="4" y2="15" />
+                </svg>
+                Reportar pregunta
+            </button>
+        </form>
+
+    </section>
+
+    <img class="q__mascot" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" aria-hidden="true" />
+
+</main>
+
+<script>
+    // Solo mejora la experiencia: la validación real del tiempo la hace el servidor
+    (function () {
+        const timer = document.getElementById('timer');
+        const fill = document.getElementById('timer-fill');
+        const segundos = document.getElementById('timer-seconds');
+        const form = document.getElementById('form-respuesta');
+        const agotado = document.getElementById('tiempo-agotado');
+
+        const total = Number(timer.dataset.total);
+        let restante = Number(timer.dataset.restante);
+
+        function actualizar() {
+            const visible = Math.max(restante, 0);
+            segundos.textContent = visible;
+            fill.style.width = (visible / total * 100) + '%';
+            timer.classList.toggle('is-low', restante <= 5);
+        }
+
+
+        // Por ahora se envía el formulario sin respuesta, marcando tiempo_agotado = 1.
+        function tiempoAgotado() {
+            agotado.value = '1';
+            form.submit();
+        }
+
+        actualizar();
+
+        if (restante <= 0) {
+            tiempoAgotado();
+            return;
+        }
+
+        const reloj = setInterval(function () {
+            restante -= 1;
+            actualizar();
+
+            if (restante <= 0) {
+                clearInterval(reloj);
+                tiempoAgotado();
+            }
+        }, 1000);
+    })();
+</script>
+</body>
+</html>
