@@ -10,9 +10,15 @@ class PerfilModel {
     }
 
     public function obtenerDatosUsuario($userId) {
+
+        $usuario = $this->db->queryOne(
+            "SELECT nombre_usuario FROM usuarios WHERE id = :id",
+            [':id' => $userId]
+        );
+
         return [
             'nombre' => 'Emanuel Ruiz',
-            'usuario' => 'maanuu.rd',
+            'usuario' => $usuario['nombre_usuario'] ?? '',
             'email' => 'maanuu.rd@gmail.com',
             'ubicacion' => 'Argentina',
             'bio' => '¡Apasionado por las trivia y los desafíos!',
