@@ -267,7 +267,7 @@ $hdUsuario = isset($_SESSION['usuario'])
         <a href="<?= BASE_URL ?>/inicio/show" class="hd__brand">Cerebrito</a>
 
         <nav class="hd__nav" aria-label="Navegación principal">
-            <a href="index.php?controller=inicio&method=show"
+            <a href="<?= BASE_URL ?>/inicio/show"
                class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>"<?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
             <a href="<?= BASE_URL ?>/ranking/show"
                class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>"<?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
