@@ -1,89 +1,637 @@
-{{> header}}
+<style>
+    /* Fondo suave de las pantallas con sesión (igual que inicioView) */
+    body {
+        background-color: var(--color-canvas, #f8fafc);
+    }
 
-<div class="max-w-[540px] mx-auto p-4 bg-[#f7f9fb] min-h-screen text-[#191c1e] font-['Outfit'] pb-20">
-    <div class="flex justify-between items-center mb-6">
-        <a href="{{base_url}}/inicio/show" class="text-2xl font-bold">&lt;</a>
-        <h1 class="text-lg font-bold">Perfil</h1>
-        <button class="text-xl">≡</button>
-    </div>
+    .pf,
+    .pf *,
+    .pf *::before,
+    .pf *::after {
+        box-sizing: border-box;
+    }
 
-    <div class="flex items-center gap-4 mb-4">
-        <div class="relative">
-            <div class="w-20 h-20 rounded-full bg-[#2d3133] text-white flex items-center justify-center text-3xl font-extrabold border-4 border-[#0284C7]">
-                E
-            </div>
-            <span class="absolute bottom-0 right-0 bg-[#0284C7] p-1.5 rounded-full text-white text-xs">📷</span>
-        </div>
-        <div>
-            <div class="flex items-center gap-2">
-                <span class="font-extrabold text-lg">@{{usuario}}</span>
-                <span class="text-sm">✏️</span>
-            </div>
-            <div class="text-sm text-[#3f4850] mt-1">
-                <strong>{{seguidores}}</strong> Seguidores &nbsp;&nbsp; <strong>{{seguidos}}</strong> Seguidos
-            </div>
-        </div>
-    </div>
+    /* =========================================================
+       PERFIL (mobile first)
+       Columna centrada de 540px máx
+       ========================================================= */
+    .pf {
+        --pf-pad: 1rem;
+        --pf-ink: var(--color-ink, #0f172a);
+        --pf-ink-soft: var(--color-ink-soft, #334155);
+        --pf-border: var(--color-border, #e2e8f0);
 
-    <div class="flex gap-3 mb-6">
-        <button class="flex-1 bg-white border-2 border-[#bfc7d2] text-[#0f172a] py-2.5 rounded-full font-bold shadow-[0_3px_0_#94A3B8]">
-            Compartir
-        </button>
-        <a href="{{base_url}}/perfil/editar" class="flex-1 bg-[#0284C7] text-white py-2.5 rounded-full font-bold text-center shadow-[0_4px_0_#0369A1] block">
-            Editar perfil
+        max-width: 540px;
+        margin: 0 auto;
+        padding: 0.5rem var(--pf-pad) 0;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--pf-ink);
+    }
+
+    .pf button,
+    .pf a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .pf a:focus-visible,
+    .pf button:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    /* ---------- Barra superior: volver + menú ---------- */
+    .pf__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 -0.5rem 0.5rem;
+    }
+
+    .pf__icon-btn {
+        display: inline-grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        color: var(--pf-ink);
+        background: transparent;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .pf__icon-btn:hover {
+        background-color: var(--color-shape, #f1f5ff);
+    }
+
+    /* ---------- Cabecera: avatar + usuario + seguidores ---------- */
+    .pf__head {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .pf__avatar {
+        position: relative;
+        flex-shrink: 0;
+        width: 84px;
+        height: 84px;
+    }
+
+    .pf__avatar-img {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 2.5rem;
+        line-height: 1;
+        font-weight: 800;
+        color: #ffffff;
+        background-color: #475569;
+        border: 4px solid var(--color-primary, #0284c7);
+        border-radius: 50%;
+    }
+
+    .pf__avatar-cam {
+        position: absolute;
+        right: -4px;
+        bottom: -2px;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: var(--pf-ink);
+        background-color: #ffffff;
+        border: 2px solid var(--pf-border);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .pf__who {
+        min-width: 0;
+    }
+
+    .pf__name {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin: 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.4rem;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+    }
+
+    .pf__name-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pf__name-edit {
+        display: inline-grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        color: var(--pf-ink);
+        border-radius: 50%;
+        text-decoration: none;
+    }
+
+    .pf__name-edit:hover {
+        background-color: var(--color-shape, #f1f5ff);
+    }
+
+    .pf__follow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1rem;
+        margin: 0.25rem 0 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--pf-ink);
+    }
+
+    /* ---------- Botones: Compartir / Editar perfil ---------- */
+    .pf__actions {
+        display: flex;
+        gap: 0.75rem;
+        margin: 1.5rem 0 1.75rem;
+    }
+
+    .pf__btn {
+        --lip: 4px;
+
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 1rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        border: 2px solid var(--pf-ink);
+        border-radius: 9999px;
+        box-shadow: 0 var(--lip) 0 var(--pf-shadow);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+    }
+
+    .pf__btn:hover {
+        filter: brightness(1.05);
+    }
+
+    .pf__btn:active {
+        transform: translateY(var(--lip));
+        box-shadow: 0 0 0 transparent;
+    }
+
+    /* Tactile primary (variante tinta) */
+    .pf__btn--dark {
+        --pf-shadow: #020617;
+
+        color: #ffffff;
+        background-color: var(--pf-ink);
+    }
+
+    /* Ghost / neutral */
+    .pf__btn--ghost {
+        --lip: 3px;
+        --pf-shadow: #94a3b8;
+
+        color: var(--pf-ink);
+        background-color: #ffffff;
+    }
+
+    /* ---------- Pestañas ---------- */
+    .pf__tabs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        border-bottom: 2px solid var(--pf-border);
+    }
+
+    .pf__tab {
+        min-height: 48px;
+        padding: 0 1.25rem;
+        margin-bottom: -2px;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1rem;
+        font-weight: 700;
+        color: #64748b;
+        background: transparent;
+        border: 0;
+        border-bottom: 4px solid transparent;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pf__tab:hover {
+        color: var(--pf-ink);
+    }
+
+    .pf__tab[aria-selected="true"] {
+        color: var(--pf-ink);
+        border-bottom-color: var(--pf-ink);
+    }
+
+    /* ---------- Panel: Desempeño ---------- */
+    .pf__panel[hidden] {
+        display: none;
+    }
+
+    .pf__section-title {
+        margin: 1rem 0 0;
+        text-align: center;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.25rem;
+        line-height: 1.2;
+        font-weight: 800;
+    }
+
+    .pf__level {
+        margin: 1.5rem 0 0;
+        text-align: center;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 3rem;
+        line-height: 1;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .pf__level-text {
+        margin: 0.5rem 0 0;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    /* ---------- Especialidad / La más desafiante ---------- */
+    .pf__stats {
+        display: grid;
+        gap: 1.5rem;
+        margin: 2rem 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .pf__stat {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background-color: #ffffff;
+        border: 2px solid var(--pf-border);
+        border-radius: 2rem;
+        box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+
+    /* La segunda tarjeta lleva la mascota a la izquierda*/
+    .pf__stat--alt {
+        flex-direction: row-reverse;
+    }
+
+    .pf__stat--amber {
+        --accent: var(--color-secondary, #f59e0b);
+        --accent-ink: #d97706;
+    }
+
+    .pf__stat--green {
+        --accent: var(--color-tertiary, #10b981);
+        --accent-ink: #059669;
+    }
+
+    .pf__stat-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .pf__stat-label {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--pf-ink-soft);
+    }
+
+    .pf__stat-cat {
+        margin: 0.15rem 0 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.5rem;
+        line-height: 1.1;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--accent-ink);
+    }
+
+    .pf__stat-pct {
+        margin: 0.5rem 0 0.4rem;
+        font-size: 1rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .pf__bar {
+        height: 14px;
+        overflow: hidden;
+        background-color: var(--pf-border);
+        border-radius: 9999px;
+    }
+
+    .pf__bar-fill {
+        display: block;
+        width: var(--pct, 0%);
+        height: 100%;
+        background-color: var(--accent);
+        border-radius: 9999px;
+    }
+
+    .pf__stat-icon {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 96px;
+        height: 96px;
+        font-size: 3.25rem;
+        line-height: 1;
+        background-color: #e2e8f0;
+        background-color: color-mix(in srgb, var(--accent) 16%, #ffffff);
+        border-radius: 50%;
+    }
+
+    /* ---------- Totales de partidas ---------- */
+    .pf__totals {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin: 2rem 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .pf__total {
+        padding: 0.25rem 0.25rem;
+        text-align: center;
+    }
+
+    .pf__total + .pf__total {
+        border-left: 1px solid var(--pf-border);
+    }
+
+    .pf__total-num {
+        display: block;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.75rem;
+        line-height: 1.2;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .pf__total-label {
+        display: block;
+        margin-top: 0.15rem;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    /* ---------- Logros ---------- */
+    .pf__achievements {
+        margin: 2.5rem 0 0;
+        text-align: center;
+    }
+
+    .pf__achievements-title {
+        margin: 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.75rem;
+        line-height: 1.2;
+        font-weight: 800;
+    }
+
+    .pf__achievements-text {
+        margin: 0.35rem 0 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    /* ---------- Panel: Preguntas (vacío por ahora) ---------- */
+    .pf__empty {
+        margin: 2.5rem 0 0;
+        padding: 2rem 1rem;
+        text-align: center;
+        font-weight: 600;
+        color: #64748b;
+        background-color: #ffffff;
+        border: 2px dashed var(--color-border, #e2e8f0);
+        border-radius: 2rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .pf__btn,
+        .pf__tab,
+        .pf__icon-btn {
+            transition: none;
+        }
+    }
+
+    /* =========================================================
+       TABLET (≥ 768px)
+       ========================================================= */
+    @media (min-width: 768px) {
+        .pf {
+            --pf-pad: 1.5rem;
+            padding-top: 1.5rem;
+        }
+
+        .pf__avatar {
+            width: 96px;
+            height: 96px;
+        }
+
+        .pf__avatar-img {
+            font-size: 2.9rem;
+        }
+
+        .pf__name {
+            font-size: 1.6rem;
+        }
+
+        .pf__stat {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .pf__stat-icon {
+            width: 110px;
+            height: 110px;
+            font-size: 3.75rem;
+        }
+
+        .pf__stat-cat {
+            font-size: 1.75rem;
+        }
+
+        .pf__total-num {
+            font-size: 2rem;
+        }
+
+        .pf__total-label {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* ---------- Desktop (≥ 1024px) ---------- */
+    @media (min-width: 1024px) {
+        .pf {
+            padding-top: 2rem;
+        }
+    }
+</style>
+
+<main class="pf">
+
+    <!-- Barra superior -->
+    <div class="pf__top">
+        <a href="{{base_url}}/inicio/show" class="pf__icon-btn" aria-label="Volver al inicio">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
         </a>
+
+        <button type="button" class="pf__icon-btn" aria-label="Menú">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+        </button>
     </div>
 
-    <div class="flex border-b border-[#e2e8f0] mb-6 text-center font-bold">
-        <div class="flex-1 pb-2 border-b-4 border-[#0284C7] text-[#0284C7]">Desempeño</div>
-        <div class="flex-1 pb-2 text-[#707881]">Preguntas</div>
-    </div>
-
-    <div class="text-center mb-8">
-        <h2 class="text-3xl font-extrabold tracking-tight">Nivel {{nivel}}</h2>
-        <p class="text-sm text-[#3f4850] mt-1">Has respondido {{preguntasCorrectas}} preguntas correctamente</p>
-    </div>
-
-    <div class="bg-white p-4 rounded-3xl border-2 border-[#e2e8f0] shadow-sm mb-4 flex items-center justify-between">
-        <div>
-            <span class="text-xs font-bold text-[#707881] block mb-1">Tu especialidad</span>
-            <span class="text-lg font-extrabold text-[#F59E0B]">{{especialidad}}</span>
-            <p class="text-sm font-bold text-[#0f172a] mt-1">{{especialidadAciertos}}% aciertos</p>
-            <div class="w-48 bg-[#e2e8f0] h-3 rounded-full mt-2 overflow-hidden">
-                <div class="bg-[#F59E0B] h-full rounded-full" style="width: {{especialidadAciertos}}%;"></div>
-            </div>
+    <!-- Cabecera del perfil -->
+    <section class="pf__head" aria-label="Datos del perfil">
+        <div class="pf__avatar">
+            <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
+            <button type="button" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                </svg>
+            </button>
         </div>
-        <div class="text-4xl">🏈</div>
+
+        <div class="pf__who">
+            <h1 class="pf__name">
+                <span class="pf__name-text">@{{usuario}}</span>
+                <a href="{{base_url}}/perfil/editar" class="pf__name-edit" aria-label="Editar perfil">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                </a>
+            </h1>
+            <p class="pf__follow">
+                <span>{{seguidores}} Seguidores</span>
+                <span>{{seguidos}} Seguidos</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Acciones -->
+    <div class="pf__actions">
+        <button type="button" class="pf__btn pf__btn--dark">Compartir</button>
+        <a href="{{base_url}}/perfil/editar" class="pf__btn pf__btn--ghost">Editar perfil</a>
     </div>
 
-    <div class="bg-white p-4 rounded-3xl border-2 border-[#e2e8f0] shadow-sm mb-6 flex items-center justify-between">
-        <div>
-            <span class="text-xs font-bold text-[#707881] block mb-1">La más desafiante</span>
-            <span class="text-lg font-extrabold text-[#10B981]">{{desafiante}}</span>
-            <p class="text-sm font-bold text-[#0f172a] mt-1">{{desafianteAciertos}}% aciertos</p>
-            <div class="w-48 bg-[#e2e8f0] h-3 rounded-full mt-2 overflow-hidden">
-                <div class="bg-[#10B981] h-full rounded-full" style="width: {{desafianteAciertos}}%;"></div>
-            </div>
-        </div>
-        <div class="text-4xl">🧪</div>
+    <!-- Pestañas -->
+    <div class="pf__tabs" role="tablist" aria-label="Secciones del perfil">
+        <button type="button" class="pf__tab" role="tab" id="pf-tab-desempeno" aria-controls="pf-panel-desempeno" aria-selected="true">Desempeño</button>
+        <button type="button" class="pf__tab" role="tab" id="pf-tab-preguntas" aria-controls="pf-panel-preguntas" aria-selected="false" tabindex="-1">Preguntas</button>
     </div>
 
-    <div class="bg-white py-4 px-2 rounded-3xl border-2 border-[#e2e8f0] flex justify-around text-center mb-8">
-        <div>
-            <div class="text-xl font-extrabold">{{partidasGanadas}}</div>
-            <div class="text-xs text-[#707881]">Partidas ganadas</div>
-        </div>
-        <div class="border-r border-[#e2e8f0]"></div>
-        <div>
-            <div class="text-xl font-extrabold">{{partidasPerdidas}}</div>
-            <div class="text-xs text-[#707881]">Partidas perdidas</div>
-        </div>
-        <div class="border-r border-[#e2e8f0]"></div>
-        <div>
-            <div class="text-xl font-extrabold">{{partidasRendidas}}</div>
-            <div class="text-xs text-[#707881]">Partidas rendidas</div>
-        </div>
-    </div>
-</div>
+    <!-- Panel: Desempeño -->
+    <section class="pf__panel" id="pf-panel-desempeno" role="tabpanel" aria-labelledby="pf-tab-desempeno">
+        <h2 class="pf__section-title">Desempeño</h2>
 
-{{> footer}}
+        <p class="pf__level">Nivel {{nivel}}</p>
+        <p class="pf__level-text">Has respondido {{preguntasCorrectas}} preguntas correctamente</p>
+
+        <ul class="pf__stats">
+            <li class="pf__stat pf__stat--amber">
+                <div class="pf__stat-body">
+                    <p class="pf__stat-label">Tu especialidad</p>
+                    <p class="pf__stat-cat">{{especialidad}}</p>
+                    <p class="pf__stat-pct">{{especialidadAciertos}}% aciertos</p>
+                    <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{especialidadAciertos}}" aria-label="Aciertos en {{especialidad}}">
+                        <span class="pf__bar-fill" style="--pct: {{especialidadAciertos}}%;"></span>
+                    </div>
+                </div>
+                <div class="pf__stat-icon" aria-hidden="true">🏈</div>
+            </li>
+
+            <li class="pf__stat pf__stat--green pf__stat--alt">
+                <div class="pf__stat-body">
+                    <p class="pf__stat-label">La más desafiante</p>
+                    <p class="pf__stat-cat">{{desafiante}}</p>
+                    <p class="pf__stat-pct">{{desafianteAciertos}}% aciertos</p>
+                    <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{desafianteAciertos}}" aria-label="Aciertos en {{desafiante}}">
+                        <span class="pf__bar-fill" style="--pct: {{desafianteAciertos}}%;"></span>
+                    </div>
+                </div>
+                <div class="pf__stat-icon" aria-hidden="true">🧪</div>
+            </li>
+        </ul>
+
+        <ul class="pf__totals">
+            <li class="pf__total">
+                <span class="pf__total-num">{{partidasGanadas}}</span>
+                <span class="pf__total-label">Partidas ganadas</span>
+            </li>
+            <li class="pf__total">
+                <span class="pf__total-num">{{partidasPerdidas}}</span>
+                <span class="pf__total-label">Partidas perdidas</span>
+            </li>
+            <li class="pf__total">
+                <span class="pf__total-num">{{partidasRendidas}}</span>
+                <span class="pf__total-label">Partidas rendidas</span>
+            </li>
+        </ul>
+
+        <section class="pf__achievements" aria-labelledby="pf-logros">
+            <h2 class="pf__achievements-title" id="pf-logros">Logros</h2>
+            <p class="pf__achievements-text">Tienes {{logrosObtenidos}} de {{totalLogros}} logros</p>
+        </section>
+    </section>
+
+    <!-- Panel: Preguntas -->
+    <section class="pf__panel" id="pf-panel-preguntas" role="tabpanel" aria-labelledby="pf-tab-preguntas" hidden>
+        <p class="pf__empty">Todavía no hay preguntas para mostrar.</p>
+    </section>
+
+</main>
+
+<script>
+    // Pestañas del perfil (Desempeño / Preguntas)
+    (function () {
+        var tabs = document.querySelectorAll('.pf__tab');
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                tabs.forEach(function (other) {
+                    var activa = other === tab;
+                    other.setAttribute('aria-selected', activa ? 'true' : 'false');
+                    other.tabIndex = activa ? 0 : -1;
+                    document.getElementById(other.getAttribute('aria-controls')).hidden = !activa;
+                });
+            });
+        });
+    })();
+</script>
