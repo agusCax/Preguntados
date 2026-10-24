@@ -18,6 +18,7 @@ class InicioController
     public function show()
     {
         if(isset($_SESSION['usuario'])){
+            $data['nombre_usuario'] = $_SESSION['usuario'];
             $data['usuarios'] = $this->model->getInicio();
             $this->render->renderiza("inicio", $data);
         }else{
