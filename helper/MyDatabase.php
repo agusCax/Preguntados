@@ -6,7 +6,7 @@ class MyDatabase
 
     public function __construct($host, $user, $pass, $db)
     {
-        $this->conexion = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+        $this->conexion = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass); //agrego el charset para provocar que la db guarde bien las tildes, la ñ y los emojis
     }
 
     public function queryOne(string $sql)
