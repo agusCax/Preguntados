@@ -12,6 +12,7 @@ $hdUsuario = isset($_SESSION['usuario'])
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script src="https://cdn.tailwindcss.com"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cerebrito</title>
@@ -264,27 +265,27 @@ $hdUsuario = isset($_SESSION['usuario'])
 <header class="hd">
     <div class="hd__bar">
 
-        <a href="<?= BASE_URL ?>/inicio/show" class="hd__brand">Cerebrito</a>
+        <a href="index.php?controller=inicio&method=show" class="hd__brand">Cerebrito</a>
 
         <nav class="hd__nav" aria-label="Navegación principal">
-            <a href="<?= BASE_URL ?>/inicio/show"
+            <a href="index.php?controller=inicio&method=show"
                class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>"<?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
-            <a href="<?= BASE_URL ?>/ranking/show"
+            <a href="index.php?controller=ranking&method=show"
                class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>"<?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
         </nav>
 
         <?php if ($hdUsuario !== null): ?>
             <div class="hd__user">
-                <!-- Por ahora es solo un círculo que representa la foto de perfil, luego lo modificaremos mejor -->
-                <span class="hd__avatar" title="@<?= $hdUsuario ?>">
+                <!-- Avatar hacia el perfil -->
+                <a href="index.php?controller=perfil&method=show" class="hd__avatar" title="Perfil de @<?= $hdUsuario ?>">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
                     <span class="sr-only">Perfil de @<?= $hdUsuario ?></span>
-                </span>
+                </a>
 
-                <a href="<?= BASE_URL ?>/login/logout" class="hd__logout" aria-label="Salir">
+                <a href="index.php?controller=login&method=logout" class="hd__logout" aria-label="Salir">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
