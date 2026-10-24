@@ -117,4 +117,11 @@ class Configuration
     {
         return new Router($this, "inicio", "show");
     }
+
+    public function getPerfilController() {
+        return new PerfilController(
+            $this->getRender(),
+            new PerfilModel($this->getDatabase())
+        );
+    }
 }
