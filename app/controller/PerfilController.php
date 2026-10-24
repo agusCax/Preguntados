@@ -16,7 +16,7 @@ class PerfilController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['usuario_id'] ?? null;
         $data = $this->perfilModel->obtenerDatosUsuario($userId);
         $this->renderer->renderiza("perfil", $data); // <--- Solo "perfil"
     }
@@ -25,7 +25,7 @@ class PerfilController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['usuario_id'] ?? null;
         $data = $this->perfilModel->obtenerDatosUsuario($userId);
         $this->renderer->renderiza("editarPerfil", $data); // <--- Solo "editarPerfil"
     }
@@ -34,7 +34,7 @@ class PerfilController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['usuario_id'] ?? null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $datos = [
