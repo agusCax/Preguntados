@@ -19,14 +19,14 @@ class Mailer
 
         //configuraciones de server
         $this->mail->isSMTP();
-        $this->mail->Host = $config['host'];
+        $this->mail->Host = $config['mailer_host'];
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = $config['username'];
-        $this->mail->Password = $config['password'];
+        $this->mail->Username = $config['mailer_username'];
+        $this->mail->Password = $config['mailer_password'];
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port = $config['port'];
+        $this->mail->Port = $config['mailer_port'];
         $this->mail->CharSet = 'UTF-8';
-        $this->mail->setFrom($config['username'], 'Cerebrito');
+        $this->mail->setFrom($config['mailer_username'], 'Cerebrito');
         $this->mail->isHTML(true);
     }
 
