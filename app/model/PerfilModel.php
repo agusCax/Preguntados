@@ -38,8 +38,6 @@ class PerfilModel {
             'bio' => '¡Apasionado por las trivia y los desafíos!',
             'nivel' => 17,
             'preguntasCorrectas' => 174,
-            'seguidores' => 1,
-            'seguidos' => 1,
             'especialidad' => 'DEPORTES',
             'especialidadAciertos' => 97,
             'desafiante' => 'CIENCIA',
