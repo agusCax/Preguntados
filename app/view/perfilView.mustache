@@ -570,7 +570,12 @@
     <!-- Cabecera del perfil -->
     <section class="pf__head" aria-label="Datos del perfil">
         <div class="pf__avatar">
-            <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
+            {{#foto}}
+                <img class="pf__avatar-img" src="{{base_url}}/{{foto}}" alt="Foto de perfil de @{{usuario}}">
+            {{/foto}}
+            {{^foto}}
+                <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
+            {{/foto}}
             {{#esPropietario}}
                 <button type="button" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
