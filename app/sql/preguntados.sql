@@ -19,6 +19,7 @@ CREATE TABLE usuarios (
                           estado BOOLEAN DEFAULT FALSE,
                           token_validacion VARCHAR(254),
                           foto_perfil VARCHAR(255) NULL,
+                          bio VARCHAR(80) NULL,
                           CONSTRAINT uq_usuarios_email UNIQUE (email)
 );
 
