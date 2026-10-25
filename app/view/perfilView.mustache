@@ -444,6 +444,38 @@
         }
     }
 
+    /* Modal de error*/
+    .error {
+      margin-bottom: var(--space-md);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-text);
+      font-weight: 700;
+      text-align: center;
+      color: #b91c1c;
+      background-color: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: var(--radius-field);
+    }
+
+    .pf__error-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0 1.75rem;
+    }
+
+    .pf__error-state .error {
+        width: 100%;
+        margin: 0;
+    }
+
+    .pf__error-state .pf__btn {
+        flex: none;
+        border-color: var(--color-border, #e2e8f0);
+        color: var(--color-ink-soft, #334155);
+    }
+
     /* =========================================================
        TABLET (≥ 768px)
        ========================================================= */
@@ -515,28 +547,40 @@
             </svg>
         </button>
     </div>
+    
+    {{#error}}
+        <div class="pf__error-state">
+            <p class="error" role="alert">{{error}}</p>
+            <a href="{{base_url}}/perfil/show" class="pf__btn pf__btn--ghost">Volver a mi perfil</a>
+        </div>
+    {{/error}}
 
+    {{^error}} 
     <!-- Cabecera del perfil -->
     <section class="pf__head" aria-label="Datos del perfil">
         <div class="pf__avatar">
             <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
-            <button type="button" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                    <circle cx="12" cy="13" r="4" />
-                </svg>
-            </button>
+            {{#esPropietario}}
+                <button type="button" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                    </svg>
+                </button>
+            {{/esPropietario}}
         </div>
 
         <div class="pf__who">
             <h1 class="pf__name">
                 <span class="pf__name-text">@{{usuario}}</span>
-                <a href="{{base_url}}/perfil/editar" class="pf__name-edit" aria-label="Editar perfil">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                </a>
+                {{#esPropietario}}
+                    <a href="{{base_url}}/perfil/editar" class="pf__name-edit" aria-label="Editar perfil">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                    </a>
+                {{/esPropietario}}
             </h1>
             <p class="pf__follow">
                 <span>{{seguidores}} Seguidores</span>
@@ -546,10 +590,12 @@
     </section>
 
     <!-- Acciones -->
-    <div class="pf__actions">
-        <button type="button" class="pf__btn pf__btn--dark">Compartir</button>
-        <a href="{{base_url}}/perfil/editar" class="pf__btn pf__btn--ghost">Editar perfil</a>
-    </div>
+    {{#esPropietario}}
+        <div class="pf__actions">
+            <a href="{{base_url}}/perfil/compartir" class="pf__btn pf__btn--dark">Compartir</a>
+            <a href="{{base_url}}/perfil/editar" class="pf__btn pf__btn--ghost">Editar perfil</a>
+        </div>
+    {{/esPropietario}}
 
     <!-- Pestañas -->
     <div class="pf__tabs" role="tablist" aria-label="Secciones del perfil">
@@ -615,7 +661,7 @@
     <section class="pf__panel" id="pf-panel-preguntas" role="tabpanel" aria-labelledby="pf-tab-preguntas" hidden>
         <p class="pf__empty">Todavía no hay preguntas para mostrar.</p>
     </section>
-
+    {{/error}}
 </main>
 
 <script>

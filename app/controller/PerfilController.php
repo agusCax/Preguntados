@@ -2,6 +2,7 @@
 
 namespace app\controller;
 use Redirect;
+use Request;
 
 class PerfilController {
     private $renderer;
@@ -18,6 +19,7 @@ class PerfilController {
         }
         $userId = $_SESSION['usuario_id'] ?? null;
         $data = $this->perfilModel->obtenerDatosUsuario($userId);
+        $data['esPropietario']  = true;
         $this->renderer->renderiza("perfil", $data); // <--- Solo "perfil"
     }
 
@@ -50,4 +52,43 @@ class PerfilController {
             exit();
         }
     }
+
+    //QR
+    public function compartir() {
+        $userId = $_SESSION['usuario_id'] ?? null;
+        
+        $urlQr = $this->perfilModel->obtenerRutaImagenQr($userId);
+        $data = ['urlQr' => $urlQr];
+
+        $this->renderer->renderiza("compartirPerfil", $data); 
+    }
+
+    public function showUsuario() {
+        $usuarioLogueado = $_SESSION['usuario_id'] ?? null;
+
+        if ($usuarioLogueado === null) {
+            Redirect::to(BASE_URL . '/login/show');
+            exit();
+        }
+
+        $usuarioAMostrar = Request::get('usuario_id');
+
+        if($usuarioAMostrar === null){
+            $data['error']  = 'El enlace del perfil no es válido.';
+            $this->renderer->renderiza('perfil', $data);
+            return;
+        }
+        
+        $data = $this->perfilModel->obtenerDatosUsuario($usuarioAMostrar);
+
+        if($data === null){
+            $data['error']  = 'No se encontró el usuario buscado.';
+            $this->renderer->renderiza('perfil', $data);
+            return;
+        }
+
+        $data['esPropietario'] = (int) $usuarioLogueado === (int) $usuarioAMostrar ? true : false;
+
+        $this->renderer->renderiza("perfil", $data); 
+    } 
 }

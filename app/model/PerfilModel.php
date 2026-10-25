@@ -2,6 +2,9 @@
 
 namespace app\model;
 
+use Log;
+use QrLib;
+
 class PerfilModel {
     private $db;
 
@@ -15,6 +18,10 @@ class PerfilModel {
             "SELECT nombre_usuario, nombre_1, email, pais FROM usuarios WHERE id = :id",
             [':id' => $userId]
         );
+
+        if ($usuario === null) {
+            return null;
+        }
 
         $nombre = $usuario['nombre_1'] ?? '';
         $nombreUsuario = $usuario['nombre_usuario'] ?? '';
@@ -52,7 +59,7 @@ class PerfilModel {
                 SET nombre_usuario = :nombreUsuario,
                     nombre_1 = :nombreNuevo,
                         pais = :paisNuevo
-                          WHERE id = :id",
+                        WHERE id = :id",
             [
             ':nombreUsuario' => $datos['usuario'] ?? '',
                 ':nombreNuevo' => $datos['nombre'] ?? '',
@@ -62,4 +69,22 @@ class PerfilModel {
             );
             return true;
         }
+
+    public function obtenerRutaImagenQr($userId){
+
+        $qrDir = dirname(__DIR__, 2) . '/public/qr/'; //Busca ubicación donde se guardará el código QR
+        if (!is_dir($qrDir) && !mkdir($qrDir, 0755, true) && !is_dir($qrDir)) { //De no encontrarla, intenta crear la carpeta
+            Log::error("No se pudo crear la carpeta para los códigos QR.");
+            return "";
+        }
+
+        $data = APP_URL . BASE_URL . '/perfil/showUsuario?usuario_id=' . $userId;
+        $filename = $qrDir . 'usuario_id_' . $userId . '.png'; 
+
+        QrLib::generarQr($data, $filename); 
+
+        $urlQr = BASE_URL . '/public/qr/' . 'usuario_id_' . $userId . '.png';
+
+        return $urlQr; 
+    }
 }

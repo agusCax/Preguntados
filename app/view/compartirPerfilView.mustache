@@ -1,0 +1,119 @@
+<style>
+    body {
+        background-color: #ffffff;
+    }
+
+    .cp,
+    .cp *,
+    .cp *::before,
+    .cp *::after {
+        box-sizing: border-box;
+    }
+
+    .cp {
+        max-width: 540px;
+        min-height: 50vh;
+        margin: 0 auto;
+        padding: 1.5rem 1rem;
+        color: var(--color-ink, #0f172a);
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+    }
+
+    .cp__top {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+    }
+
+    .cp__back {
+        display: inline-grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        color: var(--color-ink, #0f172a);
+        border-radius: 50%;
+        text-decoration: none;
+        transition: background-color 0.15s ease;
+    }
+
+    .cp__back:hover {
+        background-color: var(--color-shape, #f1f5ff);
+    }
+
+    .cp__back:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    .cp__panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem 1rem;
+    }
+
+    .cp__title {
+        margin: 0;
+        color: var(--color-ink, #0f172a);
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: clamp(1.25rem, 5vw, 1.75rem);
+        font-weight: 800;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .cp__qr {
+        display: block;
+        width: min(68vw, 256px);
+        height: auto;
+        border-radius: 1rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cp__back {
+            transition: none;
+        }
+    }
+
+    @media (min-width: 768px) {
+        body {
+            background-color: var(--color-canvas, #f8fafc);
+        }
+
+        .cp {
+            margin-top: 1.5rem;
+            padding: 2rem;
+            background-color: #ffffff;
+            border: 2px solid var(--color-border, #e2e8f0);
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+        }
+
+        .cp__panel {
+            padding: 1.5rem 0;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .cp {
+            margin-top: 2rem;
+        }
+    }
+</style>
+
+<main class="cp">
+    <div class="cp__top">
+        <a href="{{base_url}}/perfil/show" class="cp__back" aria-label="Volver al perfil">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </a>
+    </div>
+    {{#urlQr}}
+        <section class="cp__panel">
+            <h1 class="cp__title">¡Compartí tu perfil <br>con otros jugadores!</h1>
+            <img class="cp__qr" src="{{urlQr}}" alt="Código QR de mi perfil">
+        </section>
+    {{/urlQr}}
+</main>
