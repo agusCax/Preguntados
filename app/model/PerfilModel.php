@@ -46,7 +46,20 @@ class PerfilModel {
     }
 
     public function actualizarPerfil($userId, $datos) {
-        // Aquí agregarías la lógica de actualización en tu base de datos
-        return true;
-    }
+
+        $this->db->execute(
+            "UPDATE usuarios 
+                SET nombre_usuario = :nombreUsuario,
+                    nombre_1 = :nombreNuevo,
+                        pais = :paisNuevo
+                          WHERE id = :id",
+            [
+            ':nombreUsuario' => $datos['usuario'] ?? '',
+                ':nombreNuevo' => $datos['nombre'] ?? '',
+                ':paisNuevo' => $datos['ubicacion'] ?? '',
+                    ':id' => $userId
+                ]
+            );
+            return true;
+        }
 }
