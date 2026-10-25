@@ -1,4 +1,6 @@
 <style>
+    @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+
     /* Fondo suave de las pantallas con sesión (igual que inicioView) */
     body {
         background-color: var(--color-canvas, #f8fafc);
@@ -245,6 +247,23 @@
     /* ---------- Panel: Desempeño ---------- */
     .pf__panel[hidden] {
         display: none;
+    }
+
+    .pf .map {
+        position: relative;
+        z-index: 0;
+        height: 240px;
+        overflow: hidden;
+        background-color: #f1f5f9;
+        border: 2px solid var(--pf-border);
+        border-radius: 0.75rem;
+    }
+
+    .pf .field__hint {
+        margin: 0.5rem 0 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--pf-ink-soft);
     }
 
     .pf__section-title {
@@ -601,6 +620,7 @@
     <div class="pf__tabs" role="tablist" aria-label="Secciones del perfil">
         <button type="button" class="pf__tab" role="tab" id="pf-tab-desempeno" aria-controls="pf-panel-desempeno" aria-selected="true">Desempeño</button>
         <button type="button" class="pf__tab" role="tab" id="pf-tab-preguntas" aria-controls="pf-panel-preguntas" aria-selected="false" tabindex="-1">Preguntas</button>
+        <button type="button" class="pf__tab" role="tab" id="pf-tab-ubicacion" aria-controls="pf-panel-ubicacion" aria-selected="false" tabindex="-1">Ubicación</button>
     </div>
 
     <!-- Panel: Desempeño -->
@@ -661,11 +681,28 @@
     <section class="pf__panel" id="pf-panel-preguntas" role="tabpanel" aria-labelledby="pf-tab-preguntas" hidden>
         <p class="pf__empty">Todavía no hay preguntas para mostrar.</p>
     </section>
+
+    <!-- Panel: Ubicación -->
+    <section class="pf__panel" id="pf-panel-ubicacion" role="tabpanel" aria-labelledby="pf-tab-ubicacion" hidden>
+        <h2 class="pf__section-title">Ubicación</h2>
+        <div
+            id="map"
+            class="map"
+            data-latitude="{{latitud}}"
+            data-longitude="{{longitud}}"
+            role="img"
+            aria-label="Mapa con la ubicación del perfil"
+        ></div>
+        <p class="field__hint" id="map-status" aria-live="polite"></p>
+    </section>
     {{/error}}
 </main>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // Pestañas del perfil (Desempeño / Preguntas)
+    var mapaUbicacion = null;
+
+    // Pestañas del perfil
     (function () {
         var tabs = document.querySelectorAll('.pf__tab');
 
@@ -677,7 +714,52 @@
                     other.tabIndex = activa ? 0 : -1;
                     document.getElementById(other.getAttribute('aria-controls')).hidden = !activa;
                 });
+
+                if (tab.id === 'pf-tab-ubicacion' && mapaUbicacion) {
+                    window.requestAnimationFrame(function () {
+                        mapaUbicacion.invalidateSize();
+                    });
+                }
             });
         });
     })();
-</script>
+
+    // Mapa de ubicación del perfil
+    (function () {
+      const mapaDiv = document.getElementById('map');
+      const estado = document.getElementById('map-status');
+
+      if (!mapaDiv || !estado) {
+        return;
+      }
+
+      if (!window.L) {
+        estado.textContent = 'No se pudo cargar el mapa. Revisá tu conexión.';
+        return;
+      }
+
+      const latitud = Number(mapaDiv.dataset.latitude);
+      const longitud = Number(mapaDiv.dataset.longitude);
+      const coordenadasValidas = mapaDiv.dataset.latitude !== '' &&
+        mapaDiv.dataset.longitude !== '' &&
+        Number.isFinite(latitud) &&
+        Number.isFinite(longitud) &&
+        latitud >= -90 && latitud <= 90 &&
+        longitud >= -180 && longitud <= 180;
+      const centro = coordenadasValidas ? [latitud, longitud] : [-25, -60];
+      const mapa = L.map(mapaDiv).setView(centro, coordenadasValidas ? 13 : 3);
+      mapaUbicacion = mapa;
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(mapa);
+
+      if (coordenadasValidas) {
+        L.marker(centro).addTo(mapa);
+        estado.textContent = 'Ubicación del perfil.';
+      } else {
+        estado.textContent = 'No hay coordenadas disponibles para mostrar.';
+      }
+    })();
+  </script>
