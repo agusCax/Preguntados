@@ -53,8 +53,8 @@ class PreguntaController
             'categoria_icono'    => $pregunta['icono'] ?? '❓',
             'categoria_nombre'   => $pregunta['categoria'] ?? 'General',
             'puntaje'            => $_SESSION['puntaje'] ?? 0,
-            'segundos_totales'   => 10,
-            'segundos_restantes' => 10,
+            'segundos_totales'   => 30,
+            'segundos_restantes' => 30,
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas
