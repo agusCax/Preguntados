@@ -197,7 +197,7 @@
         resize: none;
     }
 
-    /* Email: se muestra pero no se edita */
+    /* Email | Nombre: se muestra pero no se edita */
     .ep__input[readonly] {
         color: #94a3b8;
         cursor: not-allowed;
@@ -306,7 +306,7 @@
 
             <div class="ep__field">
                 <label class="ep__label" for="ep-nombre">Nombre Completo</label>
-                <input class="ep__input" type="text" id="ep-nombre" name="nombre" value="{{nombre}}" maxlength="40" autocomplete="name">
+                <input class="ep__input" type="text" id="ep-nombre" name="nombre" value="{{nombre}}" maxlength="40" readonly autocomplete="name">
                 <span class="ep__count" data-count-for="ep-nombre" aria-hidden="true"></span>
             </div>
 
