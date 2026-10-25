@@ -23,10 +23,10 @@ class Mailer
         $this->mail->SMTPAuth = true;
         $this->mail->Username = $config['username'];
         $this->mail->Password = $config['password'];
-        $this->mail->SMTPSecure = 'tls';
+        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mail->Port = $config['port'];
-
-        $this->mail->setFrom('no-reply@cerebrito.com', 'Cerebrito');
+        $this->mail->CharSet = 'UTF-8';
+        $this->mail->setFrom($config['username'], 'Cerebrito');
         $this->mail->isHTML(true);
     }
 
