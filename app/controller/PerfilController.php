@@ -45,6 +45,7 @@ class PerfilController {
             ];
 
             $this->perfilModel->actualizarPerfil($userId, $datos);
+            $_SESSION['usuario'] = $datos['usuario'];
             Redirect::to(BASE_URL . '/perfil/show');
             exit();
         }
