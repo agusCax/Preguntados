@@ -15,7 +15,7 @@ class PerfilModel {
     public function obtenerDatosUsuario($userId) {
 
         $usuario = $this->db->queryOne(
-            "SELECT nombre_usuario, nombre_1, email, pais FROM usuarios WHERE id = :id",
+            "SELECT nombre_usuario, nombre_1, email, pais, bio FROM usuarios WHERE id = :id",
             [':id' => $userId]
         );
 
@@ -27,6 +27,7 @@ class PerfilModel {
         $nombreUsuario = $usuario['nombre_usuario'] ?? '';
         $emailUsuario = $usuario['email'] ?? '';
         $paisUsuario = $usuario['pais'] ?? '';
+        $bioUsuario = $usuario['bio'] ?? '';
 
         return [
             'nombre' => $nombre,
@@ -35,7 +36,7 @@ class PerfilModel {
             'inicial' => mb_strtoupper(mb_substr($nombre !== '' ? $nombre : $nombreUsuario, 0, 1)),
             'email' => $emailUsuario,
             'ubicacion' => $paisUsuario,
-            'bio' => '¡Apasionado por las trivia y los desafíos!',
+            'bio' => $bioUsuario,
             'nivel' => 17,
             'preguntasCorrectas' => 174,
             'especialidad' => 'DEPORTES',
@@ -56,12 +57,14 @@ class PerfilModel {
             "UPDATE usuarios 
                 SET nombre_usuario = :nombreUsuario,
                     nombre_1 = :nombreNuevo,
-                        pais = :paisNuevo
+                        pais = :paisNuevo,
+                        bio = :bioNuevo
                         WHERE id = :id",
             [
             ':nombreUsuario' => $datos['usuario'] ?? '',
                 ':nombreNuevo' => $datos['nombre'] ?? '',
                 ':paisNuevo' => $datos['ubicacion'] ?? '',
+                ':bioNuevo' => $datos['bio'] ?? '',
                     ':id' => $userId
                 ]
             );
