@@ -16,8 +16,13 @@ class LoginModel
         $passwordHash = md5($password);
 
         // A propósito sin prepared statements: lo arreglamos en la clase de refactor
-        $sql = "SELECT id, nombre_usuario FROM usuarios WHERE nombre_usuario = '$usuario' AND password = '$passwordHash'";
+        $sql = "SELECT id, nombre_usuario, estado FROM usuarios WHERE nombre_usuario = '$usuario' AND password = '$passwordHash'";
 
-        return $this->database->queryOne($sql);
+        $userData = $this->database->queryOne($sql);
+
+        if($userData['estado'] === 0) {
+            return 'inactivo';
+        }
+        return $userData;
     }
 }
