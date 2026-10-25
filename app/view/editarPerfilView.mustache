@@ -104,6 +104,14 @@
         cursor: pointer;
     }
 
+    .ep__avatar-foto {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
     .ep__cover-btn {
         width: 48px;
         height: 48px;
@@ -226,6 +234,8 @@
         }
     }
 
+
+
     /* =========================================================
        TABLET Y DESKTOP (≥ 768px): tarjeta centrada (Nivel 1)
        ========================================================= */
@@ -291,7 +301,12 @@
             </div>
 
             <div class="ep__avatar">
-                <span class="ep__avatar-letter" aria-hidden="true">{{inicial}}</span>
+                {{#foto}}
+                    <img class="ep__avatar-foto" src="{{base_url}}/{{foto}}" alt="">
+                {{/foto}}
+                {{^foto}}
+                    <span class="ep__avatar-letter" aria-hidden="true">{{inicial}}</span>
+                {{/foto}}
                 <button type="button" class="ep__avatar-btn" aria-label="Cambiar foto de perfil">
                     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
