@@ -85,7 +85,7 @@ class RegistroController
             $registroExitoso = $this->model->registrar($datos);
 
             if ($registroExitoso === 1){
-                $link = "http://localhost/proyectoWeb/registro/validarCuenta?token=" . $token;
+                $link = APP_URL . BASE_URL . "/registro/validarCuenta?token=" . $token;
                 $cuerpo = "
 <html lang='es'>
 <head>
