@@ -68,14 +68,23 @@ class PerfilModel {
                         WHERE id = :id",
             [
             ':nombreUsuario' => $datos['usuario'] ?? '',
-                ':nombreNuevo' => $datos['nombre'] ?? '',
-                ':paisNuevo' => $datos['ubicacion'] ?? '',
-                ':bioNuevo' => $datos['bio'] ?? '',
-                    ':id' => $userId
-                ]
-            );
-            return true;
-        }
+                   ':nombreNuevo' => $datos['nombre'] ?? '',
+                         ':paisNuevo' => $datos['ubicacion'] ?? '',
+                                 ':bioNuevo' => $datos['bio'] ?? '',
+                                      ':id' => $userId
+                                                                        ]
+                                                                    );
+                                                                    return true;
+                                                                }
+
+    public function guardarFotoPerfil($userId, $ruta) {
+        return $this->db->execute(
+            "UPDATE usuarios 
+                    SET foto_perfil = :foto 
+                        WHERE id = :id",
+                             [':foto' => $ruta, ':id' => $userId]
+                                                                    );
+                                                                }
 
     public function obtenerRutaImagenQr($userId){
 
