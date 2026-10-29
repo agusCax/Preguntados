@@ -90,5 +90,36 @@ class PerfilController {
         $data['esPropietario'] = (int) $usuarioLogueado === (int) $usuarioAMostrar ? true : false;
 
         $this->renderer->renderiza("perfil", $data); 
-    } 
+    }
+
+    public function subirFoto() {
+        $userId = $_SESSION['usuario_id'] ?? null;
+        $foto = $_FILES['foto'] ?? null;
+
+        // Sin sesión, sin archivo o con error de subida: volver al perfil
+        if ($userId === null || $foto === null || $foto['error'] !== UPLOAD_ERR_OK) {
+            Redirect::to(BASE_URL . '/perfil/show');
+        }
+
+        // Solo imágenes, de hasta 2 MB
+        $extension = strtolower(pathinfo($foto['name'], PATHINFO_EXTENSION));
+        $permitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($extension, $permitidas) || $foto['size'] > 2 * 1024 * 1024) {
+            Redirect::to(BASE_URL . '/perfil/show');
+        }
+
+        // Crear la carpeta si no existe
+        $carpeta = dirname(__DIR__, 2) . '/public/uploads/';
+        if (!is_dir($carpeta)) {
+            mkdir($carpeta, 0755, true);
+        }
+
+        // Nombre propio (no el original) con la hora, para evitar el caché del navegador
+        $nombreArchivo = 'perfil_' . $userId . '_' . time() . '.' . $extension;
+        move_uploaded_file($foto['tmp_name'], $carpeta . $nombreArchivo);
+
+        $this->perfilModel->guardarFotoPerfil($userId, 'public/uploads/' . $nombreArchivo);
+        Redirect::to(BASE_URL . '/perfil/show');
+    }
 }
