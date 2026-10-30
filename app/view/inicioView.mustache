@@ -471,15 +471,15 @@
         <ol class="pd">
             {{#podio}}
                 <li class="pd__item">
-                    <div class="pd__box{{^hay}} is-empty{{/hay}}">
+                    <div class="pd__box{{^hayJugador}} is-empty{{/hayJugador}}">
                         <span class="pd__badge"><span class="sr-only">Puesto </span>{{posicion}}</span>
-                        {{#hay}}
+                        {{#hayJugador}}
                             <p class="pd__name" title="@{{nombre}}">@{{nombre}}</p>
                             <p class="pd__score"><span aria-hidden="true">⭐</span> {{puntaje}} <span class="sr-only">puntos</span></p>
-                        {{/hay}}
-                        {{^hay}}
+                        {{/hayJugador}}
+                        {{^hayJugador}}
                             <p class="pd__empty">Libre</p>
-                        {{/hay}}
+                        {{/hayJugador}}
                     </div>
                 </li>
             {{/podio}}
