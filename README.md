@@ -155,6 +155,18 @@ Como `config.ini` no se sube, **hay que crearlo manualmente en el servidor** con
 
 ---
 
+##  Funcionamiento del juego
+
+- Responder preguntas de categorías (Ciencia, Historia, Geografía, Arte, Deportes, Cine) aleatorias del tipo ABCD, dentro de una partida de 15 preguntas totales.
+- Cada respuesta válida acumula 1 (un) punto. Ante una respuesta incorrecta, la partida se termina, se indica la opción correcta, y se hace el recuento de puntos acumulados. 
+
+##  Reglas de negocio 
+- Los usuarios no verán preguntas que ya hayan visto, salvo que ya no haya más preguntas.
+- Nivel de dificultad de las preguntas: Si la pregunta se responde bien más del 70% de las veces, es fácil. Si se responde menos del 30% es dificil.
+- Nivel de dificulad manejada por el jugador: De acuerdo al porcentaje de preguntas difíciles que responde correctamente.
+
+---
+
 ## 👥 Equipo
 
 - Emanuel Abel Ruiz Díaz
