@@ -15,7 +15,7 @@ class PerfilModel {
     public function obtenerDatosUsuario($userId) {
 
         $usuario = $this->db->queryOne(
-            "SELECT nombre_usuario, nombre_1, email, pais, bio, latitud, longitud, foto_perfil FROM usuarios WHERE id = :id",
+            "SELECT nombre_usuario, nombre_1, email, pais, ciudad, bio, latitud, longitud, foto_perfil FROM usuarios WHERE id = :id",
             [':id' => $userId]
         );
 
@@ -27,6 +27,7 @@ class PerfilModel {
         $nombreUsuario = $usuario['nombre_usuario'] ?? '';
         $emailUsuario = $usuario['email'] ?? '';
         $paisUsuario = $usuario['pais'] ?? '';
+        $ciudadUsuario = $usuario['ciudad'] ?? '';
         $bioUsuario = $usuario['bio'] ?? '';
         $latitud = $usuario['latitud'] ?? null;
         $longitud = $usuario['longitud'] ?? null;
@@ -40,6 +41,7 @@ class PerfilModel {
             'foto' => $fotoPerfil,
             'email' => $emailUsuario,
             'ubicacion' => $paisUsuario,
+            'ciudad' => $ciudadUsuario,
             'latitud' => $latitud,
             'longitud' => $longitud,
             'bio' => $bioUsuario,

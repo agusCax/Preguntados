@@ -14,8 +14,8 @@
     }
 
     /* =========================================================
-       PERFIL (mobile first)
-       Columna centrada de 540px máx
+    PERFIL (mobile first)
+    Columna centrada de 540px máx
        ========================================================= */
     .pf {
         --pf-pad: 1rem;
@@ -252,6 +252,7 @@
     .pf .map {
         position: relative;
         z-index: 0;
+        margin-top: 0.75rem;
         height: 240px;
         overflow: hidden;
         background-color: #f1f5f9;
@@ -684,6 +685,8 @@
             class="map"
             data-latitude="{{latitud}}"
             data-longitude="{{longitud}}"
+            data-city="{{ciudad}}"
+            data-country="{{ubicacion}}"
             role="img"
             aria-label="Mapa con la ubicación del perfil"
         ></div>
@@ -720,40 +723,42 @@
 
     // Mapa de ubicación del perfil
     (function () {
-      const mapaDiv = document.getElementById('map');
-      const estado = document.getElementById('map-status');
+    const mapaDiv = document.getElementById('map');
+    const estado = document.getElementById('map-status');
 
-      if (!mapaDiv || !estado) {
+    if (!mapaDiv || !estado) {
         return;
-      }
+    }
 
-      if (!window.L) {
+    if (!window.L) {
         estado.textContent = 'No se pudo cargar el mapa. Revisá tu conexión.';
         return;
-      }
+    }
 
-      const latitud = Number(mapaDiv.dataset.latitude);
-      const longitud = Number(mapaDiv.dataset.longitude);
-      const coordenadasValidas = mapaDiv.dataset.latitude !== '' &&
+    const latitud = Number(mapaDiv.dataset.latitude);
+    const longitud = Number(mapaDiv.dataset.longitude);
+    const ciudad = mapaDiv.dataset.city;
+    const pais = mapaDiv.dataset.country;
+    const coordenadasValidas = mapaDiv.dataset.latitude !== '' &&
         mapaDiv.dataset.longitude !== '' &&
         Number.isFinite(latitud) &&
         Number.isFinite(longitud) &&
         latitud >= -90 && latitud <= 90 &&
         longitud >= -180 && longitud <= 180;
-      const centro = coordenadasValidas ? [latitud, longitud] : [-25, -60];
-      const mapa = L.map(mapaDiv).setView(centro, coordenadasValidas ? 13 : 3);
-      mapaUbicacion = mapa;
+    const centro = coordenadasValidas ? [latitud, longitud] : [-25, -60];
+    const mapa = L.map(mapaDiv).setView(centro, coordenadasValidas ? 13 : 3);
+    mapaUbicacion = mapa;
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '&copy; OpenStreetMap'
-      }).addTo(mapa);
+    }).addTo(mapa);
 
-      if (coordenadasValidas) {
+    if (coordenadasValidas) {
         L.marker(centro).addTo(mapa);
-        estado.textContent = 'Ubicación del perfil.';
-      } else {
+        estado.textContent = ciudad + ', ' + pais + '.';
+    } else {
         estado.textContent = 'No hay coordenadas disponibles para mostrar.';
-      }
+    }
     })();
-  </script>
+</script>
