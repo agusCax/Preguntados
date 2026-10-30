@@ -250,6 +250,203 @@
             width: 240px;
         }
     }
+    /* ---------- Podio: los 3 jugadores con más puntos ---------- */
+    .pd {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        align-items: end;
+        gap: 0.5rem;
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 3.75rem 0 0;
+        list-style: none;
+        border-bottom: 8px solid var(--color-border, #e2e8f0);
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    /* El 1° va en el medio, el 2° a la izquierda y el 3° a la derecha (el HTML queda en orden de ranking) */
+    .pd__item {
+        --pd-bg: #fef3c7;
+        --pd-edge: #f59e0b;
+        --pd-badge: #fbbf24;
+        --pd-h: 11rem;
+
+        order: 2;
+        min-width: 0;
+    }
+
+    .pd__item:nth-child(2) {
+        --pd-bg: #e0f2fe;
+        --pd-edge: #0ea5e9;
+        --pd-badge: #7dd3fc;
+        --pd-h: 9rem;
+
+        order: 1;
+    }
+
+    .pd__item:nth-child(3) {
+        --pd-bg: #ffedd5;
+        --pd-edge: #fb923c;
+        --pd-badge: #fdba74;
+        --pd-h: 7.5rem;
+
+        order: 3;
+    }
+
+    .pd__box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        height: var(--pd-h);
+        padding: 1.75rem 0.35rem 0.5rem;
+        text-align: center;
+        background-color: var(--pd-bg);
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 55%);
+        border: 2px solid var(--pd-edge);
+        border-bottom: 0;
+        border-radius: 1.1rem 1.1rem 0 0;
+        animation: pd-rise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .pd__item:nth-child(1) .pd__box { animation-delay: 0.25s; }
+    .pd__item:nth-child(2) .pd__box { animation-delay: 0.1s; }
+    .pd__item:nth-child(3) .pd__box { animation-delay: 0.4s; }
+
+    /* Medalla con el número de posición */
+    .pd__badge {
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        transform: translateX(-50%);
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-ink, #0f172a);
+        background-color: var(--pd-badge);
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px var(--pd-edge);
+    }
+
+    /* Corona para el que va ganando */
+    .pd__item:nth-child(1) .pd__box::before {
+        content: "👑";
+        position: absolute;
+        top: -64px;
+        left: 50%;
+        font-size: 1.7rem;
+        line-height: 1;
+        animation: pd-crown 2.4s ease-in-out infinite;
+    }
+
+    .pd__name {
+        max-width: 100%;
+        margin: 0;
+        overflow: hidden;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pd__score {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        min-height: 30px;
+        margin: 0;
+        padding: 0 0.6rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
+        background-color: #ffffff;
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--pd-edge);
+    }
+
+    .pd__empty {
+        margin: 0;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    .pd__box.is-empty {
+        opacity: 0.6;
+    }
+
+    .pd__box.is-empty::before {
+        display: none;
+    }
+
+    .pd__note {
+        margin: 1rem 0 0;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    @keyframes pd-rise {
+        from { opacity: 0; transform: translateY(40px); }
+    }
+
+    @keyframes pd-crown {
+        0%, 100% { transform: translateX(-50%) translateY(0) rotate(-8deg); }
+        50%      { transform: translateX(-50%) translateY(-5px) rotate(8deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .pd__box,
+        .pd__item:nth-child(1) .pd__box::before {
+            animation: none;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .pd {
+            gap: 1rem;
+            padding-top: 4.25rem;
+        }
+
+        .pd__item { --pd-h: 14rem; }
+        .pd__item:nth-child(2) { --pd-h: 11.5rem; }
+        .pd__item:nth-child(3) { --pd-h: 9.5rem; }
+
+        .pd__box {
+            padding-top: 2.1rem;
+        }
+
+        .pd__badge {
+            top: -26px;
+            width: 52px;
+            height: 52px;
+            font-size: 1.8rem;
+        }
+
+        .pd__item:nth-child(1) .pd__box::before {
+            top: -72px;
+            font-size: 2.1rem;
+        }
+
+        .pd__name {
+            font-size: 1.05rem;
+        }
+
+        .pd__score {
+            min-height: 36px;
+            padding: 0 0.9rem;
+            font-size: 1.15rem;
+        }
+    }
 </style>
 
 <div class="ini">
@@ -265,6 +462,33 @@
         <img class="ini__hero-img" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
     </section>
 
+
+    <!-- Podio: los 3 jugadores con más puntos -->
+    <section class="ini__section" aria-labelledby="ini-podio">
+        <h2 class="ini__section-title" id="ini-podio">Podio</h2>
+        <p class="ini__section-text">Los jugadores con más puntos acumulados.</p>
+
+        <ol class="pd">
+            {{#podio}}
+                <li class="pd__item">
+                    <div class="pd__box{{^hay}} is-empty{{/hay}}">
+                        <span class="pd__badge"><span class="sr-only">Puesto </span>{{posicion}}</span>
+                        {{#hay}}
+                            <p class="pd__name" title="@{{nombre}}">@{{nombre}}</p>
+                            <p class="pd__score"><span aria-hidden="true">⭐</span> {{puntaje}} <span class="sr-only">puntos</span></p>
+                        {{/hay}}
+                        {{^hay}}
+                            <p class="pd__empty">Libre</p>
+                        {{/hay}}
+                    </div>
+                </li>
+            {{/podio}}
+        </ol>
+
+        {{^hayPodio}}
+            <p class="pd__note">Todavía nadie sumó puntos. ¡Sé el primero en el podio!</p>
+        {{/hayPodio}}
+    </section>
 
     <section class="ini__section" aria-labelledby="ini-categorias">
         <h2 class="ini__section-title" id="ini-categorias">Categorías</h2>
@@ -284,7 +508,7 @@
         <p class="ini__section-text">Usuarios recuperados de la base de datos.</p>
         <ul class="ini__users">
             {{#usuarios}}
-            <li class="ini__user">{{nombre_usuario}}</li>
+                <li class="ini__user">{{nombre_usuario}}</li>
             {{/usuarios}}
         </ul>
     </section>
