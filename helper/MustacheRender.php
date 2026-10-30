@@ -12,7 +12,8 @@ class MustacheRender
     {
         $this->viewPath = dirname(__DIR__) . "/app/view";
         $this->mustache = new Mustache_Engine([
-            "loader" => new Mustache_Loader_FilesystemLoader($this->viewPath, ["extension" => ".mustache"])
+            "loader" => new Mustache_Loader_FilesystemLoader($this->viewPath, ["extension" => ".mustache"]),
+            "partials_loader" => new Mustache_Loader_FilesystemLoader($this->viewPath, ["extension" => ".mustache"])
         ]);
     }
 

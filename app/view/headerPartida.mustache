@@ -1,0 +1,44 @@
+{{#pantalla_pregunta}}
+<header class="q__top">
+    <div class="q__top-inner">
+        <div class="q__bar">
+            <a href="{{base_url}}/inicio/show" class="q__exit">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
+                Salir
+            </a>
+
+            <p class="q__score">
+                <span class="q__star" aria-hidden="true">⭐</span>
+                <span>{{puntaje}}</span>
+                <span class="sr-only">puntos</span>
+            </p>
+        </div>
+
+        <p class="q__cat">
+            <span class="q__cat-icon" aria-hidden="true">{{categoria_icono}}</span>
+            <span>{{categoria_nombre}}</span>
+        </p>
+
+        <div class="q__timer" id="timer" role="timer" aria-label="Tiempo restante" data-total="{{segundos_totales}}" data-restante="{{segundos_restantes}}">
+            <div class="q__track">
+                <div class="q__fill" id="timer-fill"></div>
+            </div>
+            <span class="q__seconds" id="timer-seconds">{{segundos_restantes}}</span>
+        </div>
+    </div>
+</header>
+{{/pantalla_pregunta}}
+{{#pantalla_resultado}}
+<header class="result__top">
+    <div class="result__top-inner">
+        <a class="result__exit" href="{{base_url}}/inicio/show">← Inicio</a>
+        <p class="result__score" aria-label="Estrellas obtenidas: {{puntaje}}">
+            <span class="result__star" aria-hidden="true">⭐</span>
+            <span>{{puntaje}}</span>
+        </p>
+    </div>
+</header>
+{{/pantalla_resultado}}

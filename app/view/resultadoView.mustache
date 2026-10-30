@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cerebrito | Resultado de la partida</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --color-ink: #0f172a;
+            --color-ink-soft: #334155;
+            --font-family: "Outfit", system-ui, sans-serif;
+            --font-display: "Fredoka", "Outfit", system-ui, sans-serif;
+            --font-text: "Nunito", "Outfit", system-ui, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: 0;
+            color: var(--color-ink);
+            background: linear-gradient(135deg, #e0f2fe 0%, #e0f2fe 55%, #fff4dc 100%);
+            font-family: var(--font-text);
+        }
+
+        .result__top {
+            position: relative;
+            min-height: 257px;
+            padding: 1rem 1rem 4.5rem;
+            background-color: #7dd3fc;
+            background-image:
+                linear-gradient(160deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.09) 0 14px, rgba(255, 255, 255, 0) 14px 28px);
+            border-radius: 0 0 2.5rem 2.5rem;
+            box-shadow: 0 8px 0 rgba(15, 23, 42, 0.16);
+        }
+
+        .result--ganada {
+            background: linear-gradient(135deg, rgb(220, 252, 231) 0%, #bbf7d0 55%, #fff4dc 100%);
+        }
+
+        .result--ganada .result__top {
+            background-color: #4ade80;
+        }
+
+        .result--ganada .result__title {
+            color: #15803d;
+        }
+
+        .result--perdida {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 55%, #fff4dc 100%);
+        }
+
+        .result--perdida .result__top {
+            background-color: #7dd3fc;
+        }
+
+        .result--perdida .result__title {
+            color: #0369a1;
+        }
+
+        .result--tiempo {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 55%, #fff4dc 100%);
+        }
+
+        .result--tiempo .result__top {
+            background-color: #f87171;
+        }
+
+        .result--tiempo .result__title {
+            color: #b91c1c;
+        }
+
+        .result__top-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .result__exit,
+        .result__score {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 44px;
+            padding: 0 1.1rem;
+            color: var(--color-ink);
+            background: #ffffff;
+            border-radius: 9999px;
+            box-shadow: 0 4px 0 rgba(15, 23, 42, 0.18);
+            font-family: var(--font-family);
+            font-weight: 800;
+        }
+
+        .result__exit {
+            text-decoration: none;
+        }
+
+        .result__score {
+            margin: 0;
+            font-size: 1.15rem;
+        }
+
+        .result__star {
+            font-size: 1.3rem;
+        }
+
+        .result__content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            justify-items: center;
+            gap: 1rem;
+            width: min(100% - 2rem, 34rem);
+            margin: -3rem auto 0;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.5rem;
+            box-shadow: 0 12px 32px rgb(15 23 42 / 10%);
+        }
+
+        .result__title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 6vw, 2.5rem);
+            font-weight: 700;
+        }
+
+        .result__message {
+            margin: 0;
+            color: #475569;
+            font-size: 1.05rem;
+        }
+
+        .result__points {
+            margin: 0;
+            font-family: var(--font-family);
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .result__actions {
+            display: grid;
+            justify-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .result__button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: min(100%, 18rem);
+            min-height: 48px;
+            padding: 0.65rem 1.25rem;
+            border-radius: 9999px;
+            font-family: var(--font-family);
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .result__button--play {
+            color: var(--color-ink);
+            background: #f59e0b;
+            box-shadow: 0 4px 0 #b45309;
+        }
+
+        .result__button--home {
+            color: #ffffff;
+            background: #0284c7;
+            box-shadow: 0 4px 0 #0369a1;
+        }
+
+        .result--ganada .result__button--play{
+            color: #14532d;
+            background: #86efac;
+            box-shadow: 0 4px 0 #16a34a;
+        }
+
+        .result--ganada .result__button--home{
+            color: #14532d;
+            background: #d3f5e0;
+            box-shadow: 0 4px 0 #16a34a;
+        }
+
+        .result--perdida .result__button--play{
+            color: #0c4a6e;
+            background: #7dd3fc;
+            box-shadow: 0 4px 0 #0284c7;
+        }
+
+        .result--perdida .result__button--home{
+            color: #0c4a6e;
+            background: #bfe2f1;
+            box-shadow: 0 4px 0 #0284c7;
+        }
+
+        .result--tiempo .result__button--play {
+            color: #7f1d1d;
+            background: #fca5a5;
+            box-shadow: 0 4px 0 #dc2626;
+        }
+
+        .result--tiempo .result__button--home{
+            color: #7f1d1d;
+            background: #f3c3c3;
+            box-shadow: 0 4px 0 #dc2626;
+        }
+
+        .result__button:hover {
+            transform: translateY(-2px);
+        }
+
+        .result__button:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        .result__button:focus-visible,
+        .result__exit:focus-visible {
+            outline: 3px solid #0f172a;
+            outline-offset: 3px;
+        }
+
+        .game__mascot {
+            display: block;
+            width: clamp(100px, 30vw, 145px);
+            height: auto;
+            margin: 1.5rem auto 1rem;
+        }
+
+        .game__footer {
+            position: relative;
+            z-index: 0;
+        }
+
+        @media (min-width: 768px) {
+            .result__top {
+                min-height: 281px;
+                padding: 1.5rem 1.5rem 5.5rem;
+            }
+
+            .result__content {
+                margin-top: -3.75rem;
+                padding: 2.5rem;
+            }
+
+            .game__mascot {
+                position: fixed;
+                right: 2vw;
+                bottom: 1.5vh;
+                z-index: 0;
+                width: clamp(110px, 14vw, 200px);
+                margin: 0;
+                pointer-events: none;
+            }
+        }
+    </style>
+</head>
+<body class="result--{{resultado_tipo}}">
+    {{> headerPartida}}
+
+    <main class="result__content">
+        <h1 class="result__title">{{resultado_titulo}}</h1>
+        <p class="result__message">{{resultado_mensaje}}</p>
+        <p class="result__points">Puntaje obtenido: {{puntaje}}</p>
+        <nav class="result__actions" aria-label="Opciones de partida">
+            <a class="result__button result__button--play" href="{{base_url}}/pregunta/show">Jugar otra partida</a>
+            <a class="result__button result__button--home" href="{{base_url}}/inicio/show">Volver al inicio</a>
+        </nav>
+    </main>
+
+    {{> footerPartida}}
+</body>
+</html>

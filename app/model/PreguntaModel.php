@@ -24,8 +24,8 @@ class PreguntaModel
     {
         $this->database->execute(
             "UPDATE partidas
-                SET estado = 'terminada', puntaje = :puntaje, fecha_fin = NOW()
-              WHERE id = :id",
+            SET estado = 'terminada', puntaje = :puntaje, fecha_fin = NOW()
+            WHERE id = :id",
             [':puntaje' => $puntaje, ':id' => $idPartida]
         );
     }
@@ -36,8 +36,8 @@ class PreguntaModel
     {
         $pendiente = $this->database->queryOne(
             "SELECT pregunta_id FROM partida_preguntas
-              WHERE partida_id = :partida_id AND respondida_en IS NULL
-              LIMIT 1",
+            WHERE partida_id = :partida_id AND respondida_en IS NULL
+            LIMIT 1",
             [':partida_id' => $idPartida]
         );
 
@@ -46,13 +46,13 @@ class PreguntaModel
         } else {
             $sorteada = $this->database->queryOne(
                 "SELECT p.id
-                   FROM preguntas p
-                  WHERE p.estado = 'activa'
-                    AND p.id NOT IN (
-                        SELECT pregunta_id FROM partida_preguntas WHERE partida_id = :partida_id
-                    )
-                  ORDER BY RAND()
-                  LIMIT 1",
+                FROM preguntas p
+                WHERE p.estado = 'activa'
+                AND p.id NOT IN (
+                    SELECT pregunta_id FROM partida_preguntas WHERE partida_id = :partida_id
+                )
+                ORDER BY RAND()
+                LIMIT 1",
                 [':partida_id' => $idPartida]
             );
 
@@ -69,9 +69,9 @@ class PreguntaModel
 
         $pregunta = $this->database->queryOne(
             "SELECT p.id, p.texto, c.nombre AS categoria, c.color, c.icono
-               FROM preguntas p
-               JOIN categorias c ON c.id = p.categoria_id
-              WHERE p.id = :id",
+            FROM preguntas p
+            JOIN categorias c ON c.id = p.categoria_id
+            WHERE p.id = :id",
             [':id' => $idPregunta]
         );
 
@@ -95,8 +95,8 @@ class PreguntaModel
 
         $this->database->execute(
             "UPDATE partida_preguntas
-                SET respuesta_id = :respuesta_id, fue_correcta = :correcta, respondida_en = NOW()
-              WHERE partida_id = :partida_id AND pregunta_id = :pregunta_id",
+            SET respuesta_id = :respuesta_id, fue_correcta = :correcta, respondida_en = NOW()
+            WHERE partida_id = :partida_id AND pregunta_id = :pregunta_id",
             [
                 ':respuesta_id' => $opcion ? $idRespuesta : null,
                 ':correcta'     => $esCorrecta ? 1 : 0,
@@ -113,9 +113,19 @@ class PreguntaModel
     {
         $this->database->execute(
             "UPDATE partida_preguntas
-                SET fue_correcta = 0, respondida_en = NOW()
-              WHERE partida_id = :partida_id AND pregunta_id = :pregunta_id",
+            SET fue_correcta = 0, respondida_en = NOW()
+            WHERE partida_id = :partida_id AND pregunta_id = :pregunta_id",
             [':partida_id' => $idPartida, ':pregunta_id' => $idPregunta]
+        );
+    }
+
+    public function obtenerPreguntasRespondidas($idPartida)
+    {
+        return $this->database->queryAll(
+            "SELECT pregunta_id, respuesta_id, fue_correcta, respondida_en
+            FROM partida_preguntas
+            WHERE partida_id = :partida_id AND respondida_en IS NOT NULL",
+            [':partida_id' => $idPartida]
         );
     }
 }

@@ -8,6 +8,7 @@ class PreguntaController
 {
     private $render;
     private $preguntaModel;
+    private const MAX_PREGUNTAS_POR_PARTIDA = 10;
 
     public function __construct($preguntaModel, $render)
     {
@@ -21,6 +22,8 @@ class PreguntaController
             Redirect::to(BASE_URL . '/login/show');
             exit();
         }
+        
+        //PENDIENTE: Si hay partida en curso?
 
         // Si no hay partida en curso, se crea una en la base y se guarda su id (INT)
         if (!isset($_SESSION['partida_activa'])) {
@@ -29,13 +32,25 @@ class PreguntaController
         }
 
         $idPartida = $_SESSION['partida_activa'];
+        $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
+
+        if (count($preguntasRespondidas) >= self::MAX_PREGUNTAS_POR_PARTIDA) {
+            $this->terminarPartida(
+                'Partida terminada',
+                'Completaste todas las preguntas de esta partida.',
+                'ganada'
+            );
+        }
+
         $pregunta = $this->preguntaModel->obtenerPreguntaParaPartida($idPartida);
 
         if (!$pregunta) {
             // No quedan preguntas: se cierra la partida con el puntaje actual
-            $this->terminarPartida();
-            Redirect::to(BASE_URL . '/inicio/show');
-            exit();
+            $this->terminarPartida(
+                'Partida terminada',
+                'No quedan más preguntas disponibles.',
+                'ganada'
+            );
         }
 
         $letras = ['A', 'B', 'C', 'D'];
@@ -49,6 +64,7 @@ class PreguntaController
         }
 
         $datos = [
+            'pantalla_pregunta'   => true,
             'categoria_color'    => $pregunta['color'] ?? '#0284c7',
             'categoria_icono'    => $pregunta['icono'] ?? '❓',
             'categoria_nombre'   => $pregunta['categoria'] ?? 'General',
@@ -82,9 +98,11 @@ class PreguntaController
 
         if ($tiempoAgotado || !$idRespuesta) {
             $this->preguntaModel->registrarTiempoAgotado($idPartida, $idPregunta);
-            $this->terminarPartida();
-            Redirect::to(BASE_URL . '/inicio/show');
-            exit();
+            $this->terminarPartida(
+                'Se acabó el tiempo',
+                'La partida terminó porque se agotó el tiempo.',
+                'tiempo'
+            );
         }
 
         $esCorrecta = $this->preguntaModel->registrarRespuesta($idPartida, $idPregunta, $idRespuesta);
@@ -93,17 +111,33 @@ class PreguntaController
             $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
             Redirect::to(BASE_URL . '/pregunta/show');
         } else {
-            $this->terminarPartida();
-            Redirect::to(BASE_URL . '/inicio/show');
+            $this->terminarPartida(
+                'Respuesta incorrecta',
+                'La partida terminó porque la respuesta no era correcta.',
+                'perdida'
+            );
         }
         exit();
     }
 
-    private function terminarPartida()
+    private function terminarPartida($titulo, $mensaje, $tipoResultado)
     {
+        $puntaje = $_SESSION['puntaje'] ?? 0;
+
         if (isset($_SESSION['partida_activa'])) {
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
+        
         unset($_SESSION['partida_activa'], $_SESSION['puntaje']);
+        
+        $this->render->renderiza('resultado', [
+            'pantalla_resultado' => true,
+            'resultado_titulo' => $titulo,
+            'resultado_mensaje' => $mensaje,
+            'resultado_tipo' => $tipoResultado,
+            'puntaje' => $puntaje
+        ], false);
+
+        exit();
     }
 }
