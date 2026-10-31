@@ -142,10 +142,12 @@ class PreguntaModel
 
     public function obtenerPorcentajePreguntaCorrecta($idPregunta){
 
-        $sql = "SELECT COUNT(*) AS total_intentos, SUM(pp.fue_correcta) AS total_correctas
-        FROM partida_preguntas pp
-        WHERE pregunta_id = :pregunta_id AND respondida_en IS NOT NULL,
-        ['pregunta_id' => $idPregunta]";
+        $sql = $this->database->queryOne(
+            "SELECT COUNT(*) AS total_intentos, SUM(pp.fue_correcta) AS total_correctas
+            FROM partida_preguntas pp
+            WHERE pregunta_id = :pregunta_id AND respondida_en IS NOT NULL",
+        [':pregunta_id' => $idPregunta]
+        );
 
         $totalIntentos = (int)$sql['total_intentos'];
 
