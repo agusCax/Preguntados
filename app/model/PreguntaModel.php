@@ -60,7 +60,18 @@ class PreguntaModel
                 return null; // no quedan preguntas
             }
 
+
             $idPregunta = $sorteada['id'];
+
+            $porcentajeDificultad = $this->obtenerPorcentajePreguntaCorrecta($idPregunta);
+
+
+            $dificultadPregunta = match (true) {
+                $porcentajeDificultad >= 70.00 => 'Facil',
+                $porcentajeDificultad <= 30.00 => 'Dificil',
+                default => 'Regular',
+            };
+
             $this->database->execute(
                 "INSERT INTO partida_preguntas (partida_id, pregunta_id) VALUES (:partida_id, :pregunta_id)",
                 [':partida_id' => $idPartida, ':pregunta_id' => $idPregunta]
@@ -128,4 +139,42 @@ class PreguntaModel
             [':partida_id' => $idPartida]
         );
     }
+
+    public function obtenerPorcentajePreguntaCorrecta($idPregunta){
+
+        $sql = "SELECT COUNT(*) AS total_intentos, SUM(pp.fue_correcta) AS total_correctas
+        FROM partida_preguntas pp
+        WHERE pregunta_id = :pregunta_id AND respondida_en IS NOT NULL,
+        ['pregunta_id' => $idPregunta]";
+
+        $totalIntentos = (int)$sql['total_intentos'];
+
+        $totalCorrectas = (int)$sql['total_correctas'];
+
+        $porcentajeCorrectas = ($totalCorrectas / $totalIntentos) * 100;
+
+        return round($porcentajeCorrectas,2);
+    }
+
+    //SEGUIR HACIENDO ESTA FUNCION
+    // agus dijo que se puede hacer totalpartidasganadas(=10 puntos/totalpartidas)
+
+
+    public function obtenerPorcentajeRespuestasUsuarios($usuarioId){
+        $sql = "SELECT COUNT(*) AS total_partidas, SUM(p.puntaje) AS total_correctas
+        FROM partidas p
+        WHERE usuario_id = :usuario_id AND estado = 'terminada',
+        ['usuario_id' => $usuarioId]";
+
+        $totalPartidas = (int)$sql['total_partidas'];
+
+        $totalCorrectas = (int)$sql['total_correctas'];
+
+        $porcentajeCorrectas = ($totalCorrectas / $totalIntentos) * 100;
+
+        return round($porcentajeCorrectas,2);
+
+    }
+
+
 }
