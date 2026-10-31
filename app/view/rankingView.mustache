@@ -20,7 +20,7 @@
     .rk {
         --rk-pad: 1rem;
 
-        max-width: 1120px;
+        max-width: 880px;
         margin: 0 auto;
         padding: 1.5rem var(--rk-pad) 3rem;
         font-family: var(--font-text, "Nunito", system-ui, sans-serif);
@@ -254,15 +254,13 @@
         }
     }
 
-    /* ---------- Desktop (≥ 1024px): ranking general a la izquierda, mis partidas a la derecha ---------- */
+    /* ---------- Desktop (≥ 1024px): más aire; las tablas siguen una debajo de la otra ---------- */
     @media (min-width: 1024px) {
         .rk {
             --rk-pad: 2.5rem;
         }
 
         .rk__grid {
-            grid-template-columns: 1.45fr 1fr;
-            align-items: start;
             gap: 2rem;
         }
     }
@@ -271,7 +269,7 @@
 <main class="rk">
 
     <header class="rk__head">
-        <h1 class="rk__title">🏆 Ranking</h1>
+        <h1 class="rk__title">Ranking</h1>
         <p class="rk__lead">Puntos acumulados de todas las partidas terminadas.</p>
     </header>
 
@@ -323,7 +321,7 @@
                     <span class="rk__chip rk__chip--me">Tu puesto <strong>#{{miPosicion}}</strong></span>
                 {{/miPosicion}}
                 <span class="rk__chip">Terminadas <strong>{{misPartidasTerminadas}}</strong></span>
-                <span class="rk__chip">Mejor <strong>⭐ {{miMejor}}</strong></span>
+                <span class="rk__chip">Mejor <strong>⭐ {{miMejorPartida}}</strong></span>
                 <span class="rk__chip">Total <strong>⭐ {{miTotal}}</strong></span>
             </div>
 
