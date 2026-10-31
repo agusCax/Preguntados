@@ -1,0 +1,364 @@
+<style>
+    /* Fondo suave de las pantallas con sesión */
+    body {
+        background-color: var(--color-canvas, #f8fafc);
+    }
+
+    .rk,
+    .rk *,
+    .rk *::before,
+    .rk *::after {
+        box-sizing: border-box;
+    }
+
+    .rk h1,
+    .rk h2,
+    .rk p {
+        margin: 0;
+    }
+
+    .rk {
+        --rk-pad: 1rem;
+
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 1.5rem var(--rk-pad) 3rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--color-ink, #0f172a);
+    }
+
+    .rk__head {
+        margin-bottom: 1.25rem;
+    }
+
+    .rk__title {
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 2rem;
+        line-height: 1.1;
+        font-weight: 700;
+        color: var(--color-primary-dark, #0369a1);
+    }
+
+    .rk__lead {
+        margin-top: 0.3rem;
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    .rk__grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .rk__h2 {
+        margin-bottom: 0.75rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    /* ---------- Resumen de mis partidas ---------- */
+    .rk__chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .rk__chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        min-height: 36px;
+        padding: 0 0.9rem;
+        font-weight: 700;
+        color: var(--color-ink-soft, #334155);
+        background-color: #ffffff;
+        border: 2px solid var(--color-border, #e2e8f0);
+        border-radius: 9999px;
+    }
+
+    .rk__chip strong {
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
+    }
+
+    .rk__chip--me {
+        background-color: #e0f2fe;
+        border-color: var(--color-primary, #0284c7);
+    }
+
+    /* ---------- Tablas ---------- */
+    .rk__scroll {
+        max-height: 32rem;
+        overflow: auto;
+        background-color: #ffffff;
+        border: 2px solid var(--color-border, #e2e8f0);
+        border-radius: 1.25rem;
+        box-shadow: 0 5px 0 var(--color-border, #e2e8f0);
+    }
+
+    .rk__scroll:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    .rk__table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+    .rk__table th,
+    .rk__table td {
+        padding: 0.7rem 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .rk__table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #64748b;
+        background-color: var(--color-shape, #f1f5ff);
+        border-bottom: 2px solid var(--color-border, #e2e8f0);
+    }
+
+    .rk__table tbody tr:last-child > * {
+        border-bottom: 0;
+    }
+
+    .rk__table tbody tr:hover > * {
+        background-color: #f8fafc;
+    }
+
+    .rk__num {
+        text-align: right !important;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Puesto: los 3 primeros llevan los mismos colores que el podio */
+    .rk__pos {
+        display: inline-grid;
+        place-items: center;
+        min-width: 32px;
+        height: 32px;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 800;
+        color: var(--color-ink-soft, #334155);
+        background-color: #f1f5f9;
+        border-radius: 50%;
+    }
+
+    .rk__pos--1 { background-color: #fbbf24; color: #0f172a; box-shadow: 0 0 0 2px #f59e0b; }
+    .rk__pos--2 { background-color: #7dd3fc; color: #0f172a; box-shadow: 0 0 0 2px #0ea5e9; }
+    .rk__pos--3 { background-color: #fdba74; color: #0f172a; box-shadow: 0 0 0 2px #fb923c; }
+
+    .rk__player {
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .rk__player a {
+        color: var(--color-ink, #0f172a);
+        text-decoration: none;
+    }
+
+    .rk__player a:hover {
+        color: var(--color-primary-dark, #0369a1);
+        text-decoration: underline;
+    }
+
+    .rk__player a:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    .rk__me {
+        display: inline-block;
+        margin-left: 0.35rem;
+        padding: 0.05rem 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #ffffff;
+        background-color: var(--color-primary, #0284c7);
+        border-radius: 9999px;
+    }
+
+    .rk__score {
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 800;
+    }
+
+    /* La fila del usuario que está mirando */
+    .rk__row.is-me > * {
+        background-color: #e0f2fe;
+    }
+
+    .rk__row.is-me > *:first-child {
+        box-shadow: inset 4px 0 0 var(--color-primary, #0284c7);
+    }
+
+    .rk__live {
+        display: inline-block;
+        padding: 0.15rem 0.6rem;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #92400e;
+        background-color: #fef3c7;
+        border-radius: 9999px;
+    }
+
+    .rk__empty {
+        padding: 1.25rem;
+        font-weight: 700;
+        text-align: center;
+        color: #64748b;
+        background-color: #ffffff;
+        border: 2px dashed var(--color-border, #e2e8f0);
+        border-radius: 1.25rem;
+    }
+
+    .rk__empty a {
+        color: var(--color-primary-dark, #0369a1);
+        font-weight: 800;
+    }
+
+    /* ---------- Tablet (≥ 768px) ---------- */
+    @media (min-width: 768px) {
+        .rk {
+            --rk-pad: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .rk__title {
+            font-size: 2.6rem;
+        }
+
+        .rk__table {
+            font-size: 1rem;
+        }
+
+        .rk__table th,
+        .rk__table td {
+            padding: 0.8rem 1rem;
+        }
+    }
+
+    /* ---------- Desktop (≥ 1024px): ranking general a la izquierda, mis partidas a la derecha ---------- */
+    @media (min-width: 1024px) {
+        .rk {
+            --rk-pad: 2.5rem;
+        }
+
+        .rk__grid {
+            grid-template-columns: 1.45fr 1fr;
+            align-items: start;
+            gap: 2rem;
+        }
+    }
+</style>
+
+<main class="rk">
+
+    <header class="rk__head">
+        <h1 class="rk__title">🏆 Ranking</h1>
+        <p class="rk__lead">Puntos acumulados de todas las partidas terminadas.</p>
+    </header>
+
+    <div class="rk__grid">
+
+        <!-- Ranking general: todos los jugadores -->
+        <section aria-labelledby="rk-general">
+            <h2 class="rk__h2" id="rk-general">Ranking general</h2>
+
+            {{#hayRanking}}
+                <div class="rk__scroll" tabindex="0" role="region" aria-labelledby="rk-general">
+                    <table class="rk__table">
+                        <caption class="sr-only">Jugadores ordenados por puntaje total</caption>
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Jugador</th>
+                            <th scope="col" class="rk__num">Partidas</th>
+                            <th scope="col" class="rk__num">Puntaje</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#ranking}}
+                            <tr class="rk__row{{#esYo}} is-me{{/esYo}}">
+                                <td><span class="rk__pos{{#medalla}} rk__pos--{{medalla}}{{/medalla}}">{{posicion}}</span></td>
+                                <th scope="row" class="rk__player">
+                                    <a href="{{base_url}}/perfil/showUsuario?usuario_id={{id}}">@{{nombre}}</a>{{#esYo}}<span class="rk__me">Vos</span>{{/esYo}}
+                                </th>
+                                <td class="rk__num">{{cantidad_partidas}}</td>
+                                <td class="rk__num rk__score"><span aria-hidden="true">⭐</span> {{puntaje}}</td>
+                            </tr>
+                        {{/ranking}}
+                        </tbody>
+                    </table>
+                </div>
+            {{/hayRanking}}
+
+            {{^hayRanking}}
+                <p class="rk__empty">Todavía no hay jugadores en el ranking.</p>
+            {{/hayRanking}}
+        </section>
+
+        <!-- Mis partidas: puntaje de cada una -->
+        <section aria-labelledby="rk-mias">
+            <h2 class="rk__h2" id="rk-mias">Mis partidas</h2>
+
+            <div class="rk__chips">
+                {{#miPosicion}}
+                    <span class="rk__chip rk__chip--me">Tu puesto <strong>#{{miPosicion}}</strong></span>
+                {{/miPosicion}}
+                <span class="rk__chip">Terminadas <strong>{{misPartidasTerminadas}}</strong></span>
+                <span class="rk__chip">Mejor <strong>⭐ {{miMejor}}</strong></span>
+                <span class="rk__chip">Total <strong>⭐ {{miTotal}}</strong></span>
+            </div>
+
+            {{#hayMisPartidas}}
+                <div class="rk__scroll" tabindex="0" role="region" aria-labelledby="rk-mias">
+                    <table class="rk__table">
+                        <caption class="sr-only">Partidas jugadas, de la más nueva a la más vieja</caption>
+                        <thead>
+                        <tr>
+                            <th scope="col">Partida</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col" class="rk__num">Puntaje</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#misPartidas}}
+                            <tr>
+                                <th scope="row" class="rk__player">#{{numero}}</th>
+                                <td>{{fecha}}</td>
+                                <td class="rk__num rk__score">
+                                    {{#terminada}}<span aria-hidden="true">⭐</span> {{puntaje}}{{/terminada}}
+                                    {{^terminada}}<span class="rk__live">En curso</span>{{/terminada}}
+                                </td>
+                            </tr>
+                        {{/misPartidas}}
+                        </tbody>
+                    </table>
+                </div>
+            {{/hayMisPartidas}}
+
+            {{^hayMisPartidas}}
+                <p class="rk__empty">Todavía no jugaste ninguna partida. <a href="{{base_url}}/inicio/show">¡Tocá Jugar para empezar!</a></p>
+            {{/hayMisPartidas}}
+        </section>
+
+    </div>
+
+</main>
