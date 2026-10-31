@@ -10,8 +10,10 @@ use app\controller\PreguntaController;
 use app\model\PreguntaModel;
 use app\model\LoginModel;
 use app\model\RegistroModel;
-use app\controller\PerfilController; // <--- Importar el controlador
-use app\model\PerfilModel;         // <--- Importar el modelo
+use app\controller\PerfilController;
+use app\model\PerfilModel;
+use app\controller\RankingController;
+use app\model\RankingModel;
 use MustacheRender;
 use MyDatabase;
 use phpmailer\src\PHPMailer;
@@ -122,6 +124,22 @@ class Configuration
         return new PerfilController(
             $this->getRender(),
             new PerfilModel($this->getDatabase())
+        );
+    }
+
+    // Ranking
+    public function getRankingController()
+    {
+        return new RankingController(
+            $this->getRankingModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getRankingModel()
+    {
+        return new RankingModel(
+            $this->getDatabase()
         );
     }
 }
