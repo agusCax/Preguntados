@@ -42,9 +42,9 @@ class RankingController
         foreach ($jugadores as $i => $jugador) {
             $posicion = $i + 1;
             $puntaje = (int) $jugador['puntaje_total'];
-            $esYo = (int) $jugador['id'] === (int) $usuarioId;
+            $soyYo = (int) $jugador['id'] === (int) $usuarioId;
 
-            if ($esYo) {
+            if ($soyYo) {
                 $miPosicion = $posicion;
                 $miTotal = $puntaje;
             }
@@ -57,7 +57,7 @@ class RankingController
                 'puntaje' => $puntaje,
                 // Solo los 3 primeros con puntos llevan una medalla
                 'medalla' => ($puntaje > 0 && $posicion <= 3) ? $posicion : false,
-                'esYo' => $esYo
+                'soyYo' => $soyYo
             ];
         }
 
