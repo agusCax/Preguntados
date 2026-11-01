@@ -11,12 +11,15 @@ class PreguntaModel
     {
         $this->database = $database;
     }
+
+
     public function crearPartida($idUsuario)
     {
         $this->database->execute(
             "INSERT INTO partidas (usuario_id) VALUES (:usuario_id)",
             [':usuario_id' => $idUsuario]
         );
+
         return (int)$this->database->lastInsertId();
     }
 
@@ -44,33 +47,41 @@ class PreguntaModel
         if ($pendiente) {
             $idPregunta = $pendiente['pregunta_id'];
         } else {
-            $sorteada = $this->database->queryOne(
+            $idUsuario = $this->obtenerIdUsuarioDePartida($idPartida);
+
+            // 1) Preguntas que el usuario nunca vio, en ninguna partida
+            $candidatas = $this->database->queryAll(
                 "SELECT p.id
                 FROM preguntas p
                 WHERE p.estado = 'activa'
                 AND p.id NOT IN (
-                    SELECT pregunta_id FROM partida_preguntas WHERE partida_id = :partida_id
+                    SELECT pp.pregunta_id
+                    FROM partida_preguntas pp
+                    JOIN partidas pa ON pa.id = pp.partida_id
+                    WHERE pa.usuario_id = :usuario_id
                 )
-                ORDER BY RAND()
-                LIMIT 1",
-                [':partida_id' => $idPartida]
+                ORDER BY RAND()",
+                [':usuario_id' => $idUsuario]
             );
 
-            if (!$sorteada) {
+            // 2) Si ya las vio todas, se permiten repetidas (menos las de esta partida)
+            if (!$candidatas) {
+                $candidatas = $this->database->queryAll(
+                    "SELECT p.id
+                    FROM preguntas p
+                    WHERE p.estado = 'activa'
+                    AND p.id NOT IN (
+                        SELECT pregunta_id FROM partida_preguntas WHERE partida_id = :partida_id
+                    )
+                    ORDER BY RAND()",
+                    [':partida_id' => $idPartida]
+                );}
+
+            if (!$candidatas) {
                 return null; // no quedan preguntas
             }
 
-
-            $idPregunta = $sorteada['id'];
-
-            $porcentajeDificultad = $this->obtenerPorcentajePreguntaCorrecta($idPregunta);
-
-
-            $dificultadPregunta = match (true) {
-                $porcentajeDificultad >= 70.00 => 'Facil',
-                $porcentajeDificultad <= 30.00 => 'Dificil',
-                default => 'Regular',
-            };
+            $idPregunta = $this->elegirPreguntaSegunNivel($candidatas, $idUsuario);
 
             $this->database->execute(
                 "INSERT INTO partida_preguntas (partida_id, pregunta_id) VALUES (:partida_id, :pregunta_id)",
@@ -140,41 +151,90 @@ class PreguntaModel
         );
     }
 
-    public function obtenerPorcentajePreguntaCorrecta($idPregunta){
 
-        $sql = "SELECT COUNT(*) AS total_intentos, SUM(pp.fue_correcta) AS total_correctas
-        FROM partida_preguntas pp
-        WHERE pregunta_id = :pregunta_id AND respondida_en IS NOT NULL,
-        ['pregunta_id' => $idPregunta]";
+    // % de veces que se respondió bien la pregunta (50 si es nueva y nadie la respondió)
+    public function obtenerPorcentajePreguntaCorrecta($idPregunta)
+    {
+        $sql = $this->database->queryOne(
+            "SELECT COUNT(*) AS total_intentos, SUM(pp.fue_correcta) AS total_correctas
+            FROM partida_preguntas pp
+            WHERE pregunta_id = :pregunta_id AND respondida_en IS NOT NULL",
+            [':pregunta_id' => $idPregunta]
+        );
 
         $totalIntentos = (int)$sql['total_intentos'];
-
         $totalCorrectas = (int)$sql['total_correctas'];
 
-        $porcentajeCorrectas = ($totalCorrectas / $totalIntentos) * 100;
+        if ($totalIntentos === 0) {
+            return 50.00; // si la pregunta sorteada tiene 0 intentes, osea, es nueva, queda la DIFULTAD REGULAR, POR AHORA
+        }
 
-        return round($porcentajeCorrectas,2);
+        return round(($totalCorrectas / $totalIntentos) * 100, 2);
     }
 
     //SEGUIR HACIENDO ESTA FUNCION
     // agus dijo que se puede hacer totalpartidasganadas(=10 puntos/totalpartidas)
 
+    // Clasifica la pregunta: Facil (>= 70%), Dificil (<= 30%) o Regular
+    public function obtenerDificultadPregunta($idPregunta)
+    {
+        $porcentaje = $this->obtenerPorcentajePreguntaCorrecta($idPregunta);
 
-    public function obtenerPorcentajeRespuestasUsuarios($usuarioId){
-        $sql = "SELECT COUNT(*) AS total_partidas, SUM(p.puntaje) AS total_correctas
-        FROM partidas p
-        WHERE usuario_id = :usuario_id AND estado = 'terminada',
-        ['usuario_id' => $usuarioId]";
-
-        $totalPartidas = (int)$sql['total_partidas'];
-
-        $totalCorrectas = (int)$sql['total_correctas'];
-
-        $porcentajeCorrectas = ($totalCorrectas / $totalIntentos) * 100;
-
-        return round($porcentajeCorrectas,2);
-
+        return match (true) {
+            $porcentaje >= 70.00 => 'Facil',
+            $porcentaje <= 30.00 => 'Dificil',
+            default              => 'Regular',
+        };
     }
 
 
+    private function obtenerIdUsuarioDePartida($idPartida)
+    {
+        $fila = $this->database->queryOne(
+            "SELECT usuario_id FROM partidas WHERE id = :id",
+            [':id' => $idPartida]
+        );
+
+        return (int)$fila['usuario_id'];
+    }
+
+    // % de aciertos del jugador en todo su historial (50 si es nuevo)
+    public function obtenerNivelDelJugador($idUsuario)
+    {
+        $datos = $this->database->queryOne(
+            "SELECT COUNT(*) AS total, SUM(pp.fue_correcta) AS correctas
+            FROM partida_preguntas pp
+            JOIN partidas pa ON pa.id = pp.partida_id
+            WHERE pa.usuario_id = :usuario_id AND pp.respondida_en IS NOT NULL",
+            [':usuario_id' => $idUsuario]
+        );
+
+        $total = (int)$datos['total'];
+
+        if ($total === 0) {
+            return 50.00; // jugador nuevo: nivel regular
+        }
+
+        return round(((int)$datos['correctas'] / $total) * 100, 2);
+    }
+
+    // Jugador que acierta mucho recibe preguntas difíciles; el que acierta poco recibe fáciles.
+    private function elegirPreguntaSegunNivel($candidatas, $idUsuario)
+    {
+        $nivel = $this->obtenerNivelDelJugador($idUsuario);
+
+        $dificultadBuscada = match (true) {
+            $nivel >= 70.00 => 'Dificil',
+            $nivel <= 30.00 => 'Facil',
+            default         => 'Regular',
+        };
+
+        foreach ($candidatas as $candidata) {
+            if ($this->obtenerDificultadPregunta($candidata['id']) === $dificultadBuscada) {
+                return $candidata['id'];
+            }
+        }
+
+        return $candidatas[0]['id']; // si no hay de ese nivel, cualquiera
+    }
 }
