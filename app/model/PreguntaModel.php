@@ -33,6 +33,7 @@ class PreguntaModel
         );
     }
 
+
     // Si ya hay una pregunta entregada y sin responder en la partida (ej: F5), la devuelve.
     // Si no, sortea una nueva que no se haya usado en la partida y la registra.
     public function obtenerPreguntaParaPartida($idPartida)
@@ -46,6 +47,7 @@ class PreguntaModel
 
         if ($pendiente) {
             $idPregunta = $pendiente['pregunta_id'];
+
         } else {
             $idUsuario = $this->obtenerIdUsuarioDePartida($idPartida);
 
@@ -75,7 +77,8 @@ class PreguntaModel
                     )
                     ORDER BY RAND()",
                     [':partida_id' => $idPartida]
-                );}
+                );
+            }
 
             if (!$candidatas) {
                 return null; // no quedan preguntas
