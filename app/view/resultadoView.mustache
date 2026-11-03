@@ -287,5 +287,9 @@
     </main>
 
     {{> footerPartida}}
+
+    {{#sonido}}
+    <audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
+    {{/sonido}}
 </body>
 </html>
