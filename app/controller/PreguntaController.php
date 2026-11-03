@@ -10,6 +10,8 @@ class PreguntaController
     private $preguntaModel;
     private const MAX_PREGUNTAS_POR_PARTIDA = 10;
 
+    private const SEGUNDOS_POR_PREGUNTA = 30;
+
     public function __construct($preguntaModel, $render)
     {
         $this->preguntaModel = $preguntaModel;
@@ -22,7 +24,7 @@ class PreguntaController
             Redirect::to(BASE_URL . '/login/show');
             exit();
         }
-        
+
         //PENDIENTE: Si hay partida en curso?
 
         // Si no hay partida en curso, se crea una en la base y se guarda su id (INT)
@@ -53,6 +55,25 @@ class PreguntaController
             );
         }
 
+        // Se guarda el inicio solo si la pregunta es nueva, para que recargar (F5) no reinicie el tiempo
+        if (($_SESSION['pregunta_actual'] ?? null) != $pregunta['id']) {
+            $_SESSION['pregunta_actual'] = $pregunta['id'];
+            $_SESSION['inicio_pregunta'] = time();
+        }
+
+        $segundos_usados = time() - $_SESSION['inicio_pregunta'];
+        $segundos_restantes = max(0, self::SEGUNDOS_POR_PREGUNTA - $segundos_usados);
+
+        // Si el tiempo ya se agotó (ej: recargó la página tarde), se termina la partida
+        if ($segundos_restantes <= 0) {
+            $this->preguntaModel->registrarTiempoAgotado($idPartida, $pregunta['id']);
+            $this->terminarPartida(
+                'Se acabó el tiempo',
+                'La partida terminó porque se agotó el tiempo.',
+                'tiempo'
+            );
+        }
+
         $letras = ['A', 'B', 'C', 'D'];
         $respuestasFormateadas = [];
         foreach ($pregunta['opciones'] as $index => $opcion) {
@@ -69,8 +90,8 @@ class PreguntaController
             'categoria_icono'    => $pregunta['icono'] ?? '❓',
             'categoria_nombre'   => $pregunta['categoria'] ?? 'General',
             'puntaje'            => $_SESSION['puntaje'] ?? 0,
-            'segundos_totales'   => 30,
-            'segundos_restantes' => 30,
+            'segundos_totales'   => self::SEGUNDOS_POR_PREGUNTA,
+            'segundos_restantes' => $segundos_restantes,
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas
@@ -90,6 +111,8 @@ class PreguntaController
         $idPregunta = $_POST['pregunta_id'] ?? null;
         $idRespuesta = $_POST['respuesta_id'] ?? null;
         $tiempoAgotado = ($_POST['tiempo_agotado'] ?? '0') === '1';
+        $segundosUsados = time() - ($_SESSION['inicio_pregunta'] ?? time());
+        $tiempoAgotado = $tiempoAgotado || $segundosUsados > self::SEGUNDOS_POR_PREGUNTA;
 
         if (!$idPregunta) {
             Redirect::to(BASE_URL . '/pregunta/show');
@@ -128,7 +151,7 @@ class PreguntaController
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
         
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje']);
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta']);
         
         $this->render->renderiza('resultado', [
             'pantalla_resultado' => true,
