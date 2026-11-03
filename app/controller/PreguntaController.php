@@ -33,6 +33,10 @@ class PreguntaController
             $_SESSION['puntaje'] = 0;
         }
 
+        // Sonido pendiente de la respuesta anterior (se usa una sola vez, así F5 no lo repite)
+        $sonido = $_SESSION['sonido'] ?? '';
+        unset($_SESSION['sonido']);
+
         $idPartida = $_SESSION['partida_activa'];
         $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
 
@@ -94,7 +98,8 @@ class PreguntaController
             'segundos_restantes' => $segundos_restantes,
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
-            'respuestas'         => $respuestasFormateadas
+            'respuestas'         => $respuestasFormateadas,
+            'sonido'             => $sonido
         ];
 
         $this->render->renderiza("pregunta", $datos, false);
@@ -132,6 +137,7 @@ class PreguntaController
 
         if ($esCorrecta) {
             $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
+            $_SESSION['sonido'] = 'correcta'; // suena al cargar la siguiente pregunta
             Redirect::to(BASE_URL . '/pregunta/show');
         } else {
             $this->terminarPartida(
@@ -151,9 +157,13 @@ class PreguntaController
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
         
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta']);
-        
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['sonido']);
+
+        // Completar la partida suena como acierto; perder o quedarse sin tiempo, como error
+        $sonido = ($tipoResultado === 'ganada') ? 'correcta' : 'incorrecta';
+
         $this->render->renderiza('resultado', [
+            'sonido' => $sonido,
             'pantalla_resultado' => true,
             'resultado_titulo' => $titulo,
             'resultado_mensaje' => $mensaje,
