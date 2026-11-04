@@ -38,6 +38,10 @@ class PreguntaController
         $sonido = $_SESSION['sonido'] ?? '';
         unset($_SESSION['sonido']);
 
+        // Efecto (animación) pendiente de la respuesta anterior, también se usa una sola vez
+        $efecto = $_SESSION['efecto'] ?? null;
+        unset($_SESSION['efecto']);
+
         $idPartida = $_SESSION['partida_activa'];
         $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
 
@@ -101,7 +105,8 @@ class PreguntaController
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas,
-            'sonido'             => $sonido
+            'sonido'             => $sonido,
+            'efecto'             => $efecto
         ];
 
         $this->render->renderiza("pregunta", $datos, false);
@@ -186,12 +191,14 @@ class PreguntaController
         if ($esCorrecta) {
             $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
             $_SESSION['sonido'] = 'correcta';
+            $_SESSION['efecto'] = ['clase' => 'correcta', 'texto' => '+1'];
             $_SESSION['contadorCorrectas'] = ($_SESSION['contadorCorrectas'] ?? 0) + 1; //CONTADOR
 
             //BONO
             if ($_SESSION['contadorCorrectas'] === 5) {
                 $_SESSION['puntaje'] += 5;
                 $_SESSION['contadorCorrectas'] = 0; //REINICIA
+                $_SESSION['efecto'] = ['clase' => 'bono', 'texto' => '+6 ¡Bono!'];
             }
             Redirect::to(BASE_URL . '/pregunta/show');
 
@@ -201,7 +208,8 @@ class PreguntaController
             $this->terminarPartida(
                 'Respuesta incorrecta',
                 'La partida terminó porque la respuesta no era correcta.',
-                'perdida'
+                'perdida',
+                $penalizacion
             );
         }
         exit();
@@ -220,7 +228,7 @@ class PreguntaController
     }
 
 
-    private function terminarPartida($titulo, $mensaje, $tipoResultado)
+    private function terminarPartida($titulo, $mensaje, $tipoResultado, $penalizacion = 0)
     {
         $puntaje = $_SESSION['puntaje'] ?? 0;
 
@@ -228,7 +236,7 @@ class PreguntaController
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
 
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje'], $_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contadorCorrectas'], $_SESSION['sonido']);
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'], $_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contadorCorrectas'], $_SESSION['sonido'], $_SESSION['efecto']);
 
         $sonido = ($tipoResultado === 'ganada') ? 'correcta' : 'incorrecta';
 
@@ -240,7 +248,8 @@ class PreguntaController
             'resultado_titulo' => $titulo,
             'resultado_mensaje' => $mensaje,
             'resultado_tipo' => $tipoResultado,
-            'puntaje' => $puntaje
+            'puntaje' => $puntaje,
+            'penalizacion' => $penalizacion
         ], false);
 
         exit();
