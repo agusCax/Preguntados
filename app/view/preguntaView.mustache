@@ -400,6 +400,41 @@
             }
         }
 
+        /* Racha hacia el bono */
+        .q__racha {
+            display: grid;
+            gap: 0.4rem;
+            text-align: center;
+        }
+
+        .q__racha-texto {
+            margin: 0;
+            font-family: var(--font-family);
+            font-weight: 800;
+            color: var(--color-ink);
+        }
+
+        .q__racha-barra {
+            height: 16px;
+            padding: 3px;
+            background-color: rgba(15, 23, 42, 0.2);
+            border-radius: var(--radius-full);
+        }
+
+        .q__racha-relleno {
+            width: var(--ancho);
+            height: 100%;
+            background-color: #f59e0b;
+            border-radius: var(--radius-full);
+            animation: llenar 0.6s ease-out;
+        }
+
+        @keyframes llenar {
+            from {
+                width: 0;
+            }
+        }
+
         /* Cartel animado de puntos (+1, bono) */
         .efecto {
             position: fixed;
@@ -461,6 +496,13 @@
                 {{/respuestas}}
             </div>
         </form>
+
+        <div class="q__racha">
+            <p class="q__racha-texto">Racha: {{racha}} de {{racha_total}} para el bono</p>
+            <div class="q__racha-barra">
+                <div class="q__racha-relleno" style="--ancho: {{racha_porcentaje}}%;"></div>
+            </div>
+        </div>
 
         <form class="q__report" method="post" action="{{base_url}}/reportar/show">
             <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />

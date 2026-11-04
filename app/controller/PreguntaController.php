@@ -12,6 +12,9 @@ class PreguntaController
 
     private const SEGUNDOS_POR_PREGUNTA = 30;
 
+    // Cuántas respuestas correctas hacen falta para ganar el bono
+    private const CORRECTAS_PARA_BONO = 5;
+
     public function __construct($preguntaModel, $render)
     {
         $this->preguntaModel = $preguntaModel;
@@ -94,6 +97,9 @@ class PreguntaController
             ];
         }
 
+        // Racha de respuestas correctas hacia el bono (para la barra de la pantalla)
+        $racha = $_SESSION['contadorCorrectas'] ?? 0;
+
         $datos = [
             'pantalla_pregunta'   => true,
             'categoria_color'    => $pregunta['color'] ?? '#0284c7',
@@ -106,7 +112,10 @@ class PreguntaController
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas,
             'sonido'             => $sonido,
-            'efecto'             => $efecto
+            'efecto'             => $efecto,
+            'racha'              => $racha,
+            'racha_total'        => self::CORRECTAS_PARA_BONO,
+            'racha_porcentaje'   => $racha * 100 / self::CORRECTAS_PARA_BONO
         ];
 
         $this->render->renderiza("pregunta", $datos, false);
@@ -195,7 +204,7 @@ class PreguntaController
             $_SESSION['contadorCorrectas'] = ($_SESSION['contadorCorrectas'] ?? 0) + 1; //CONTADOR
 
             //BONO
-            if ($_SESSION['contadorCorrectas'] === 5) {
+            if ($_SESSION['contadorCorrectas'] === self::CORRECTAS_PARA_BONO) {
                 $_SESSION['puntaje'] += 5;
                 $_SESSION['contadorCorrectas'] = 0; //REINICIA
                 $_SESSION['efecto'] = ['clase' => 'bono', 'texto' => '+6 ¡Bono!'];
