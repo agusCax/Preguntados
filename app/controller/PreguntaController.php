@@ -214,11 +214,19 @@ class PreguntaController
         } else {
             $penalizacion = $this->penalizacionIncorrectas($idPregunta);
             $_SESSION['puntaje'] = max(0,($_SESSION['puntaje'] ?? 0)- $penalizacion);
+
+            // Mensaje que explica por qué se perdieron puntos
+            $dificultad = $this->preguntaModel->obtenerDificultadPregunta($idPregunta);
+            $nombresDificultad = ['Facil' => 'fácil', 'Regular' => 'regular', 'Dificil' => 'difícil'];
+            $mensajePenalizacion = 'Respondiste mal una pregunta ' . $nombresDificultad[$dificultad]
+                . ', por eso la penalización fue de ' . $penalizacion
+                . ($penalizacion === 1 ? ' punto.' : ' puntos.');
+
             $this->terminarPartida(
                 'Respuesta incorrecta',
                 'La partida terminó porque la respuesta no era correcta.',
                 'perdida',
-                $penalizacion
+                $mensajePenalizacion
             );
         }
         exit();
@@ -237,7 +245,7 @@ class PreguntaController
     }
 
 
-    private function terminarPartida($titulo, $mensaje, $tipoResultado, $penalizacion = 0)
+    private function terminarPartida($titulo, $mensaje, $tipoResultado, $mensajePenalizacion = '')
     {
         $puntaje = $_SESSION['puntaje'] ?? 0;
 
@@ -258,7 +266,7 @@ class PreguntaController
             'resultado_mensaje' => $mensaje,
             'resultado_tipo' => $tipoResultado,
             'puntaje' => $puntaje,
-            'penalizacion' => $penalizacion
+            'penalizacion_mensaje' => $mensajePenalizacion
         ], false);
 
         exit();
