@@ -31,18 +31,20 @@ class PreguntaController
         if (!isset($_SESSION['partida_activa'])) {
             $_SESSION['partida_activa'] = $this->preguntaModel->crearPartida($_SESSION['usuario_id']);
             $_SESSION['puntaje'] = 0;
+            $_SESSION['contadorCorrectas'] = 0;
         }
 
         $idPartida = $_SESSION['partida_activa'];
         $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
 
+        /*
         if (count($preguntasRespondidas) >= self::MAX_PREGUNTAS_POR_PARTIDA) {
             $this->terminarPartida(
                 'Partida terminada',
                 'Completaste todas las preguntas de esta partida.',
                 'ganada'
             );
-        }
+        }*/
 
         $pregunta = $this->preguntaModel->obtenerPreguntaParaPartida($idPartida);
 
@@ -99,7 +101,7 @@ class PreguntaController
 
         $this->render->renderiza("pregunta", $datos, false);
     }
-
+/*
     public function responder()
     {
         if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['partida_activa'])) {
@@ -142,6 +144,74 @@ class PreguntaController
         }
         exit();
     }
+    */
+
+    public function responder()
+    {
+
+        if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['partida_activa'])) {
+            Redirect::to(BASE_URL . '/login/show');
+            exit();
+        }
+
+        $idPartida = $_SESSION['partida_activa'];
+        $idPregunta = $_POST['pregunta_id'] ?? null;
+        $idRespuesta = $_POST['respuesta_id'] ?? null;
+        $tiempoAgotado = ($_POST['tiempo_agotado'] ?? '0') === '1';
+        $segundosUsados = time() - ($_SESSION['inicio_pregunta'] ?? time());
+        $tiempoAgotado = $tiempoAgotado || $segundosUsados > self::SEGUNDOS_POR_PREGUNTA;
+
+        if (!$idPregunta) {
+            Redirect::to(BASE_URL . '/pregunta/show');
+            exit();
+        }
+
+        if ($tiempoAgotado || !$idRespuesta) {
+            $this->preguntaModel->registrarTiempoAgotado($idPartida, $idPregunta);
+            $this->terminarPartida(
+                'Se acabó el tiempo',
+                'La partida terminó porque se agotó el tiempo.',
+                'tiempo'
+            );
+        }
+
+        $esCorrecta = $this->preguntaModel->registrarRespuesta($idPartida, $idPregunta, $idRespuesta);
+
+        if ($esCorrecta) {
+            $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
+            $_SESSION['contadorCorrectas'] = ($_SESSION['contadorCorrectas'] ?? 0) + 1; //CONTADOR
+
+            //BONO
+            if ($_SESSION['contadorCorrectas'] === 5) {
+                $_SESSION['puntaje'] += 5;
+                $_SESSION['contadorCorrectas'] = 0; //REINICIA
+            }
+            Redirect::to(BASE_URL . '/pregunta/show');
+
+        } else {
+            $penalizacion = $this->penalizacionIncorrectas($idPregunta);
+            $_SESSION['puntaje'] = max(0,($_SESSION['puntaje'] ?? 0)- $penalizacion);
+            $this->terminarPartida(
+                'Respuesta incorrecta',
+                'La partida terminó porque la respuesta no era correcta.',
+                'perdida'
+            );
+        }
+        exit();
+    }
+
+    // Cuántos puntos resta fallar una pregunta, según su dificultad
+    private function penalizacionIncorrectas($idPregunta)
+    {
+        $dificultad = $this->preguntaModel->obtenerDificultadPregunta($idPregunta);
+
+        return match ($dificultad) {
+            'Facil'   => 3,
+            'Regular' => 2,
+            'Dificil' => 1,
+        };
+    }
+
 
     private function terminarPartida($titulo, $mensaje, $tipoResultado)
     {
@@ -151,7 +221,7 @@ class PreguntaController
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
         
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta']);
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contador_correctas']);
         
         $this->render->renderiza('resultado', [
             'pantalla_resultado' => true,
