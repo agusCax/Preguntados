@@ -399,6 +399,42 @@
                 animation: star-bounce 3s ease-in-out infinite;
             }
         }
+
+        /* Cartel animado de puntos (+1, bono) */
+        .efecto {
+            position: fixed;
+            top: 35%;
+            left: 50%;
+            z-index: 10;
+            pointer-events: none;
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            animation: subir 1.4s ease-out forwards;
+        }
+
+        .efecto--correcta {
+            color: #16a34a;
+        }
+
+        .efecto--bono {
+            color: #f59e0b;
+        }
+
+        @keyframes subir {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 20px) scale(0.6);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -80px) scale(1);
+            }
+        }
     </style>
 </head>
 <body style="--cat: {{categoria_color}};">
@@ -482,5 +518,8 @@
 {{#sonido}}
 <audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
 {{/sonido}}
+{{#efecto}}
+<div class="efecto efecto--{{clase}}">{{texto}}</div>
+{{/efecto}}
 </body>
 </html>
