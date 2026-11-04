@@ -185,6 +185,7 @@ class PreguntaController
 
         if ($esCorrecta) {
             $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
+            $_SESSION['sonido'] = 'correcta';
             $_SESSION['contadorCorrectas'] = ($_SESSION['contadorCorrectas'] ?? 0) + 1; //CONTADOR
 
             //BONO
@@ -226,8 +227,12 @@ class PreguntaController
         if (isset($_SESSION['partida_activa'])) {
             $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
         }
-        
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje'],$_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contador_correctas']);
+
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'], $_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contadorCorrectas'], $_SESSION['sonido']);
+
+        $sonido = ($tipoResultado === 'ganada') ? 'correcta' : 'incorrecta';
+
+
         
         $this->render->renderiza('resultado', [
             'sonido' => $sonido,
