@@ -41,8 +41,8 @@ class RankingController
 
         foreach ($jugadores as $i => $jugador) {
             $posicion = $i + 1;
-            $puntaje = (int) $jugador['puntaje_total'];
-            $soyYo = (int) $jugador['id'] === (int) $usuarioId;
+            $puntaje = (int)$jugador['puntaje_maximo'];
+            $soyYo = (int)$jugador['id'] === (int)$usuarioId;
 
             if ($soyYo) {
                 $miPosicion = $posicion;
@@ -53,11 +53,11 @@ class RankingController
                 'posicion' => $posicion,
                 'id' => $jugador['id'],
                 'nombre' => $jugador['nombre_usuario'],
-                'cantidad_partidas' => (int) $jugador['cantidad_partidas'],
+                'cantidad_partidas' => (int)$jugador['cantidad_partidas'],
                 'puntaje' => $puntaje,
                 // Solo los 3 primeros con puntos llevan una medalla
                 'medalla' => ($puntaje > 0 && $posicion <= 3) ? $posicion : false,
-                'soyYo' => $soyYo
+                'esYo' => $soyYo
             ];
         }
 
@@ -69,7 +69,7 @@ class RankingController
         ];
     }
 
-    // Lista las partidas del usuario con su puntaje y calcula un pequeño resumen
+    // / Lista las partidas del usuario con su número, puntaje y un pequeño resumen.
     private function armarMisPartidas($partidas)
     {
         $misPartidas = [];
@@ -77,18 +77,25 @@ class RankingController
         $mejor = 0;
         $terminadas = 0;
 
-        foreach ($partidas as $i => $partida) {
+        foreach ($partidas as $partida) {
             $terminada = $partida['estado'] === 'terminada';
-            $puntaje = (int) $partida['puntaje'];
+            $puntaje = (int)$partida['puntaje'];
 
             if ($terminada) {
                 $terminadas++;
                 $mejor = max($mejor, $puntaje);
             }
 
+            // El número es cuántas partidas del usuario tienen un id menor o igual
+            $numero = 0;
+            foreach ($partidas as $otra) {
+                if ($otra['id'] <= $partida['id']) {
+                    $numero++;
+                }
+            }
+
             $misPartidas[] = [
-                // La más vieja es la partida 1 y la más nueva tiene el número más alto
-                'numero' => $total - $i,
+                'numero' => $numero,
                 'fecha' => date('d/m/Y H:i', strtotime($partida['fecha_inicio'])),
                 'puntaje' => $puntaje,
                 'terminada' => $terminada
