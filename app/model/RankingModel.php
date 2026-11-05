@@ -11,28 +11,30 @@ class RankingModel
         $this->database = $database;
     }
 
-    // Todos los jugadores con la suma de los puntos de sus partidas terminadas (de mayor a menor), tambien metodo reutilizado (podriamos unificar los metodos posteriormente)
     public function getRanking()
     {
-        $sql = "SELECT u.id, u.nombre_usuario,
-                       COUNT(p.id) AS cantidad_partidas,
-                       COALESCE(SUM(p.puntaje), 0) AS puntaje_total
-                FROM usuarios u
-                LEFT JOIN partidas p ON p.usuario_id = u.id AND p.estado = 'terminada'
-                WHERE u.estado = 1
-                GROUP BY u.id, u.nombre_usuario
-                ORDER BY puntaje_total DESC, u.nombre_usuario ASC";
+        $sql = "SELECT u.id,
+                   u.nombre_usuario,
+                   COUNT(p.id) AS cantidad_partidas,
+                   COALESCE(MAX(p.puntaje), 0) AS puntaje_maximo
+            FROM usuarios u
+            LEFT JOIN partidas p
+                   ON p.usuario_id = u.id
+                  AND p.estado = 'terminada'
+            WHERE u.estado = 1
+            GROUP BY u.id, u.nombre_usuario
+            ORDER BY puntaje_maximo DESC, u.id ASC";
 
         return $this->database->queryAll($sql);
     }
 
-    // Todas las partidas de un jugador, de la más nueva a la más vieja, metodo casi reutilizado de lo que veniamos trabajando
+    // Modifique el orden, ahora muestra las partidas del usuario por mayor puntaje, y sino por id de partida
     public function getPartidasDeUsuario($usuarioId)
     {
         $sql = "SELECT id, puntaje, estado, fecha_inicio
                 FROM partidas
                 WHERE usuario_id = :usuario_id
-                ORDER BY fecha_inicio DESC, id DESC";
+                ORDER BY puntaje DESC, id ASC";
 
         return $this->database->queryAll($sql, [':usuario_id' => $usuarioId]);
     }
