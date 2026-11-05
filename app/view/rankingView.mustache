@@ -140,7 +140,7 @@
     }
 
     .rk__num {
-        text-align: right !important;
+        text-align: center !important;
         white-space: nowrap;
         font-variant-numeric: tabular-nums;
     }
@@ -270,25 +270,25 @@
 
     <header class="rk__head">
         <h1 class="rk__title">Ranking</h1>
-        <p class="rk__lead">Puntos acumulados de todas las partidas terminadas.</p>
+        <p class="rk__lead">¡Animate y topeá con una buena partida!</p>
     </header>
 
     <div class="rk__grid">
 
         <!-- Ranking general: todos los jugadores -->
         <section aria-labelledby="rk-general">
-            <h2 class="rk__h2" id="rk-general">Ranking general</h2>
+            <h2 class="rk__h2" id="rk-general">Ranking general ¡Buscate y mirá dónde estás!</h2>
 
             {{#hayRanking}}
                 <div class="rk__scroll" tabindex="0" role="region" aria-labelledby="rk-general">
                     <table class="rk__table">
-                        <caption class="sr-only">Jugadores ordenados por puntaje total</caption>
+                        <caption class="sr-only">Jugadores ordenados por su mejor puntaje en una partida</caption>
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Jugador</th>
-                            <th scope="col" class="rk__num">Partidas</th>
-                            <th scope="col" class="rk__num">Puntaje</th>
+                            <th scope="col" >Jugador</th>
+                            <th scope="col" class="rk__num">Partidas jugadas</th>
+                            <th scope="col" class="rk__num">Mejor partida</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -314,7 +314,7 @@
 
         <!-- Mis partidas: puntaje de cada una -->
         <section aria-labelledby="rk-mias">
-            <h2 class="rk__h2" id="rk-mias">Mis partidas</h2>
+            <h2 class="rk__h2" id="rk-mias">Mis partidas, de mayor a menor puntaje</h2>
 
             <div class="rk__chips">
                 {{#miPosicion}}
@@ -322,13 +322,12 @@
                 {{/miPosicion}}
                 <span class="rk__chip">Terminadas <strong>{{misPartidasTerminadas}}</strong></span>
                 <span class="rk__chip">Mejor <strong>⭐ {{miMejorPartida}}</strong></span>
-                <span class="rk__chip">Total <strong>⭐ {{miTotal}}</strong></span>
             </div>
 
             {{#hayMisPartidas}}
                 <div class="rk__scroll" tabindex="0" role="region" aria-labelledby="rk-mias">
                     <table class="rk__table">
-                        <caption class="sr-only">Partidas jugadas, de la más nueva a la más vieja</caption>
+                        <caption class="sr-only">Partidas jugadas, ordenadas de mayor a menor puntaje</caption>
                         <thead>
                         <tr>
                             <th scope="col">Partida</th>
