@@ -20,8 +20,17 @@ CREATE TABLE usuarios (
     token_validacion VARCHAR(254),
     foto_perfil VARCHAR(255) NULL,
     bio VARCHAR(80) NULL,
-    CONSTRAINT uq_usuarios_email UNIQUE (email)
+    rol_id INT NOT NULL DEFAULT 1,
+    CONSTRAINT uq_usuarios_email UNIQUE (email), 
+    CONSTRAINT fk_usuarios_roles FOREIGN KEY (rol_id) REFERENCES roles(id);
 );
+
+CREATE TABLE IF NOT EXISTS roles (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    UNIQUE KEY uq_roles_nombre (nombre)
+);
+
 
 CREATE TABLE IF NOT EXISTS categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,6 +82,32 @@ CREATE TABLE IF NOT EXISTS partida_preguntas (
     UNIQUE KEY uq_partida_pregunta (partida_id, pregunta_id)
 ) DEFAULT CHARSET = utf8mb4;
 
+CREATE TABLE IF NOT EXISTS reportes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pregunta_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    editor_id INT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    descripcion TEXT NULL,
+    estado ENUM('pendiente', 'aceptado', 'rechazado')
+        NOT NULL DEFAULT 'pendiente',
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_resolucion DATETIME NULL,
+
+    CONSTRAINT fk_reportes_pregunta
+        FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+
+    CONSTRAINT fk_reportes_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+
+    CONSTRAINT fk_reportes_editor
+        FOREIGN KEY (editor_id) REFERENCES usuarios(id)
+) DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO roles (id, nombre) VALUES
+    (1, 'jugador'),
+    (2, 'editor'),
+    (3, 'administrador');
 
 INSERT INTO categorias (id, nombre, color, icono) VALUES
     (1, 'Ciencia', '#10b981', '🔬'),
