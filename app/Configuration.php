@@ -2,9 +2,13 @@
 
 namespace app;
 
+use app\controller\AdministradorController;
+use app\controller\EditorController;
 use app\controller\InicioController;
 use app\controller\LoginController;
 use app\controller\RegistroController;
+use app\model\AdministradorModel;
+use app\model\EditorModel;
 use app\model\InicioModel;
 use app\controller\PreguntaController;
 use app\model\PreguntaModel;
@@ -16,7 +20,6 @@ use app\controller\RankingController;
 use app\model\RankingModel;
 use MustacheRender;
 use MyDatabase;
-use phpmailer\src\PHPMailer;
 use Router;
 use Mailer;
 
@@ -70,7 +73,8 @@ class Configuration
         );
     }
 
-    public function getMailer(){
+    public function getMailer()
+    {
         $config = parse_ini_file(__DIR__ . "/../config/config.ini", true);
 
         return new Mailer($config["mailer"]);
@@ -99,11 +103,44 @@ class Configuration
         );
     }
 
+    //Editor
+    public function getEditorController()
+    {
+        return new EditorController(
+            $this->getEditorModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getEditorModel()
+    {
+        return new EditorModel(
+            $this->getDatabase()
+        );
+    }
+
+    //Administrador
+    public function getAdministradorController()
+    {
+        return new AdministradorController(
+            $this->getAdministradorModel(),
+            $this->getRender()
+        );
+    }
+
+    private function getAdministradorModel()
+    {
+        return new AdministradorModel(
+            $this->getDatabase()
+        );
+    }
+
     private function getDatabase()
     {
         $config = parse_ini_file(__DIR__ . "/../config/config.ini");
 
-        return new MyDatabase($config["db_host"],
+        return new MyDatabase(
+            $config["db_host"],
             $config["db_user"],
             $config["db_pass"],
             $config["db_name"]
@@ -120,7 +157,8 @@ class Configuration
         return new Router($this, "inicio", "show");
     }
 
-    public function getPerfilController() {
+    public function getPerfilController()
+    {
         return new PerfilController(
             $this->getRender(),
             new PerfilModel($this->getDatabase())
