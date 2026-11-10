@@ -1,0 +1,127 @@
+<style>
+    .editor-resultado {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+        box-sizing: border-box;
+    }
+
+    .mensaje-exito,
+    .mensaje-error {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+    }
+
+    .mensaje-exito {
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        color: #166534;
+    }
+
+    .mensaje-error {
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+        color: #991b1b;
+    }
+
+    .mensaje-exito-icono,
+    .mensaje-error-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-weight: 800;
+    }
+
+    .mensaje-exito-icono {
+        background: #bbf7d0;
+    }
+
+    .mensaje-error-icono {
+        background: #fecaca;
+    }
+
+    .mensaje-exito p,
+    .mensaje-error p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .editor-resultado__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .editor-resultado__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+    }
+
+    .editor-resultado__button--primary {
+        color: #ffffff;
+        background: #0284c7;
+        box-shadow: 0 4px 0 #0369a1;
+    }
+
+    .editor-resultado__button--primary:hover {
+        background: #0369a1;
+    }
+
+    .editor-resultado__button--secondary {
+        color: #334155;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 0 #cbd5e1;
+    }
+
+    .editor-resultado__button--secondary:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .editor-resultado__button:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 transparent;
+    }
+</style>
+
+<main class="editor-resultado">
+    {{#confirmacion}}
+        <div class="mensaje-exito">
+            <span class="mensaje-exito-icono">✓</span>
+            <p>{{mensaje}}</p>
+        </div>
+    {{/confirmacion}}
+
+    {{^confirmacion}}
+        <div class="mensaje-error">
+            <span class="mensaje-error-icono">!</span>
+            <p>{{mensaje}}</p>
+        </div>
+    {{/confirmacion}}
+
+    <nav class="editor-resultado__actions" aria-label="Volver al panel">
+        <a class="editor-resultado__button editor-resultado__button--primary" href="{{volverUrl}}">Volver al listado</a>
+        <a class="editor-resultado__button editor-resultado__button--secondary" href="{{base_url}}/editor/show">Volver al inicio</a>
+    </nav>
+</main>
