@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use app\Enum\Rol;
 use Request;
 
 class InicioController
@@ -17,16 +18,31 @@ class InicioController
 
     public function show()
     {
-        if(isset($_SESSION['usuario'])){
-            $data['nombre_usuario'] = $_SESSION['usuario'];
-            $data['usuarios'] = $this->model->getInicio();
+        $usuario = $_SESSION['usuario'] ?? null;
+        $rol = $_SESSION['rol'] ?? null;
 
-            $top = $this->model->getTopUsuarios();
-            $data['hayPodio'] = !empty($top);
-            $data['podio'] = $this->armarPodio($top);
-            $this->render->renderiza("inicio", $data);
-        }else{
+        if(! isset($usuario)){
             $this->render->renderiza("bienvenida", [], false);
+        }
+
+        switch ($rol) {
+            case Rol::Jugador->name:
+                $data['nombre_usuario'] = $usuario;
+                $data['usuarios'] = $this->model->getInicio();
+    
+                $top = $this->model->getTopUsuarios();
+                $data['hayPodio'] = !empty($top);
+                $data['podio'] = $this->armarPodio($top);
+                $this->render->renderiza("inicio", $data);
+                break;
+    
+            case Rol::Editor->name:
+                header('Location: ' . BASE_URL . '/editor/show');
+                break;
+    
+            case Rol::Administrador->name:
+                header('Location: ' . BASE_URL . '/administrador/show');
+                break;
         }
     }
 
