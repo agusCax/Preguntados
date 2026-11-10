@@ -1,0 +1,459 @@
+<style>
+    /* =========================================
+    CONTENEDOR GENERAL
+    ========================================= */
+
+    .moderacion-container {
+        width: 100%;
+        max-width: 1100px;
+        margin-inline: auto;
+        padding: 24px 16px;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 499px) {
+        .moderacion-container {
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    .moderacion-header {
+        width: 100%;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .moderacion-header h1 {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.65rem;
+        line-height: 1.2;
+        margin: 0 0 8px;
+        color: #0f172a;
+    }
+
+    .moderacion-header p {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* =========================================
+    LISTADO MOBILE
+    ========================================= */
+
+    .tabla-container {
+        width: 100%;
+    }
+
+    .tabla-moderacion {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .tabla-moderacion thead {
+        display: none;
+    }
+
+    .tabla-moderacion tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-moderacion tr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 14px;
+        padding: 20px 16px;
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+
+        cursor: pointer;
+        text-align: center;
+
+        transition: background 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .tabla-moderacion td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+        border: none;
+        box-sizing: border-box;
+    }
+
+    /* =========================================
+    CATEGORÍA
+    ========================================= */
+
+    .categoria-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        max-width: 100%;
+        padding: 7px 12px;
+
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================================
+    PREGUNTA Y MOTIVO
+    ========================================= */
+
+    .pregunta-texto {
+        width: 100%;
+        color: #334155;
+        font-size: 0.95rem;
+        line-height: 1.5;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: center;
+    }
+
+    .motivo-texto {
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.4;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: center;
+    }
+
+    .motivo-texto::before {
+        content: "Motivo: ";
+        font-weight: 700;
+        color: #475569;
+    }
+
+    /* =========================================
+    BOTÓN VER
+    ========================================= */
+
+    .btn-ver {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 100px;
+        min-height: 42px;
+        padding: 9px 20px;
+
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+
+        transition: transform 0.2s ease,
+                    filter 0.2s ease;
+    }
+
+    .btn-sugerencia {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .btn-reporte {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .btn-ver:active {
+        transform: scale(0.97);
+    }
+
+    /* =========================================
+    ESTADO VACÍO
+    ========================================= */
+
+    .sin-resultados {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        min-height: 180px;
+        box-sizing: border-box;
+        padding: 30px 18px;
+
+        text-align: center;
+        color: #64748b;
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+    }
+
+    .sin-resultados span {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .sin-resultados p {
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* =========================================
+    VOLVER
+    ========================================= */
+
+    .volver-link {
+        display: inline-block;
+        margin-top: 22px;
+        padding: 8px 0;
+
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .volver-link:hover {
+        color: #0f172a;
+    }
+
+    /* =========================================
+    TABLET: 768px EN ADELANTE
+    ========================================= */
+
+    @media (min-width: 768px) {
+
+        .moderacion-container {
+            padding: 30px 24px;
+        }
+
+        .moderacion-header {
+            text-align: left;
+        }
+
+        .moderacion-header h1 {
+            font-size: 2rem;
+        }
+
+        .tabla-container {
+            overflow-x: auto;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .tabla-moderacion {
+            display: table;
+            max-width: none;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .tabla-moderacion thead {
+            display: table-header-group;
+        }
+
+        .tabla-moderacion tbody {
+            display: table-row-group;
+        }
+
+        .tabla-moderacion tr {
+            display: table-row;
+            max-width: none;
+            margin-bottom: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            text-align: left;
+        }
+
+        .tabla-moderacion td {
+            display: table-cell;
+            width: auto;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .tabla-moderacion th {
+            padding: 16px 20px;
+            text-align: left;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-moderacion tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pregunta-texto,
+        .motivo-texto {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+
+        .pregunta-texto {
+            max-width: 450px;
+        }
+
+        .motivo-texto {
+            max-width: 220px;
+        }
+
+        .motivo-texto::before {
+            content: none;
+        }
+
+        .btn-ver:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.97);
+        }
+
+        .sin-resultados {
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+    }
+
+    /* =========================================
+    ESCRITORIO: 1024px EN ADELANTE
+    ========================================= */
+
+    @media (min-width: 1024px) {
+
+        .moderacion-container {
+            padding: 36px 28px;
+        }
+
+        .tabla-moderacion th,
+        .tabla-moderacion td {
+            padding: 18px 22px;
+        }
+    }
+</style>
+
+<main class="moderacion-container">
+
+    <header class="moderacion-header">
+        {{#esReporte}}
+            <h1>Reportes de preguntas</h1>
+            <p>Revisá los reportes enviados por los jugadores.</p>
+        {{/esReporte}}
+
+        {{^esReporte}}
+            <h1>Sugerencias de preguntas</h1>
+            <p>Revisá las nuevas preguntas propuestas por los jugadores.</p>
+        {{/esReporte}}
+    </header>
+
+    {{#hayModeraciones}}
+
+        <div class="tabla-container">
+            <table class="tabla-moderacion">
+
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Pregunta</th>
+
+                        {{#esReporte}}
+                            <th>Motivo</th>
+                        {{/esReporte}}
+
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#moderaciones}}
+                        <tr
+                            class="fila-moderacion"
+                            onclick="window.location.href='{{urlDetalle}}'"
+                        >
+                            <td>
+                                <span
+                                    class="categoria-badge"
+                                    style="background-color: {{pregunta.color}}30; color: {{pregunta.color}};"
+                                >
+                                    <span>{{pregunta.icono}}</span>
+                                    {{pregunta.categoria}}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="pregunta-texto" title="{{pregunta.texto}}">
+                                    {{pregunta.texto}}
+                                </div>
+                            </td>
+
+                            {{#esReporte}}
+                                <td>
+                                    <div class="motivo-texto" title="{{reporte.motivo}}">
+                                        {{reporte.motivo}}
+                                    </div>
+                                </td>
+                            {{/esReporte}}
+
+                            <td>
+                                <a
+                                    href="{{urlDetalle}}"
+                                    class="btn-ver {{#esReporte}}btn-reporte{{/esReporte}}{{^esReporte}}btn-sugerencia{{/esReporte}}"
+                                    onclick="event.stopPropagation();"
+                                >
+                                    Ver
+                                </a>
+                            </td>
+                        </tr>
+                    {{/moderaciones}}
+                </tbody>
+
+            </table>
+        </div>
+
+    {{/hayModeraciones}}
+
+    {{^hayModeraciones}}
+        <div class="sin-resultados">
+            <span>📭</span>
+            {{#esReporte}}
+                <p>No hay reportes pendientes para revisar.</p>
+            {{/esReporte}}
+
+            {{^esReporte}}
+                <p>No hay sugerencias pendientes para revisar.</p>
+            {{/esReporte}}
+        </div>
+    {{/hayModeraciones}}
+
+    <a href="{{urlVolver}}" class="volver-link">
+        ← Volver al panel de editor
+    </a>
+
+</main>
