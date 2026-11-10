@@ -1,0 +1,485 @@
+<style>
+    /* =========================================
+       CONTENEDOR GENERAL
+    ========================================= */
+
+    .resolucion-container {
+        width: 100%;
+        max-width: 950px;
+        margin-inline: auto;
+        padding: 24px 16px;
+        box-sizing: border-box;
+    }
+
+    .resolucion-header {
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .resolucion-header h1 {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.7rem;
+        color: #0f172a;
+        margin: 0 0 8px;
+    }
+
+    .resolucion-header p {
+        color: #64748b;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* =========================================
+       TARJETA DE INFORMACIÓN DEL REPORTE
+    ========================================= */
+
+    .reporte-resumen {
+        padding: 20px;
+        margin-bottom: 25px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 16px;
+    }
+
+    .reporte-resumen h2 {
+        font-size: 1.1rem;
+        color: #9a3412;
+        margin: 0 0 14px;
+    }
+
+    .reporte-resumen p {
+        color: #7c2d12;
+        line-height: 1.5;
+        margin: 8px 0;
+    }
+
+    .reporte-resumen strong {
+        color: #9a3412;
+    }
+
+    /* =========================================
+       SECCIONES DE RESOLUCIÓN
+    ========================================= */
+
+    .resolucion-section {
+        padding: 22px 18px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .resolucion-section h2 {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.3rem;
+        color: #0f172a;
+        margin: 0 0 8px;
+    }
+
+    .resolucion-section > p {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin: 0 0 20px;
+    }
+
+    /* =========================================
+       INACTIVAR PREGUNTA
+    ========================================= */
+
+    .inactivar-section {
+        background: #fffafa;
+        border-color: #fecaca;
+    }
+
+    .btn-inactivar {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 18px;
+        box-sizing: border-box;
+
+        background: #fee2e2;
+        color: #b91c1c;
+        border: none;
+        border-radius: 10px;
+
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-inactivar:hover {
+        background: #fecaca;
+    }
+
+    /* =========================================
+       FORMULARIO DE EDICIÓN
+    ========================================= */
+
+    .form-grupo {
+        margin-bottom: 20px;
+    }
+
+    .form-grupo label,
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        min-height: 44px;
+        padding: 11px 12px;
+        box-sizing: border-box;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        color: #0f172a;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.18);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* =========================================
+       RESPUESTAS
+    ========================================= */
+
+    .respuestas-titulo {
+        margin: 25px 0 8px;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.2rem;
+        color: #0f172a;
+    }
+
+    .respuestas-ayuda {
+        margin: 0 0 16px;
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .respuesta-item {
+        padding: 15px;
+        margin-bottom: 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    .respuesta-cabecera {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .respuesta-letra {
+        font-weight: 800;
+        color: #6d28d9;
+    }
+
+    .respuesta-correcta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        color: #166534;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .respuesta-correcta input {
+        width: 17px;
+        height: 17px;
+        accent-color: #16a34a;
+    }
+
+    /* =========================================
+       CATEGORÍA
+    ========================================= */
+
+    .categoria-select {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .categoria-icono {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    /* =========================================
+       BOTONES Y AVISOS
+    ========================================= */
+
+    .aviso-edicion {
+        padding: 13px 15px;
+        margin: 22px 0;
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        border-radius: 10px;
+        color: #5b21b6;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .btn-guardar {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 46px;
+        padding: 11px 18px;
+
+        background: #ede9fe;
+        color: #6d28d9;
+        border: none;
+        border-radius: 10px;
+
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-guardar:hover {
+        background: #ddd6fe;
+    }
+
+    .volver-link {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 10px 0;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .volver-link:hover {
+        color: #0f172a;
+    }
+
+    /* =========================================
+       TABLET Y ESCRITORIO
+    ========================================= */
+
+    @media (min-width: 768px) {
+        .resolucion-container {
+            padding: 35px 24px;
+        }
+
+        .resolucion-header {
+            text-align: left;
+        }
+
+        .resolucion-header h1 {
+            font-size: 2rem;
+        }
+
+        .resolucion-section {
+            padding: 26px;
+        }
+
+        .btn-inactivar,
+        .btn-guardar {
+            width: auto;
+            min-width: 190px;
+        }
+    }
+</style>
+
+<main class="resolucion-container">
+
+    <header class="resolucion-header">
+        <h1>Resolución del reporte</h1>
+        <p>Revisá la pregunta y elegí cómo resolver el inconveniente informado.</p>
+    </header>
+
+    <!-- INFORMACIÓN DEL REPORTE -->
+
+    <section class="reporte-resumen">
+        <h2>Información del reporte</h2>
+
+        <p>
+            <strong>Motivo:</strong>
+            {{reporte.motivo}}
+        </p>
+
+        {{#reporte.descripcion}}
+            <p>
+                <strong>Descripción:</strong>
+                {{reporte.descripcion}}
+            </p>
+        {{/reporte.descripcion}}
+
+        <p>
+            <strong>Pregunta reportada:</strong>
+            {{pregunta.texto}}
+        </p>
+    </section>
+
+    <!-- OPCIÓN 1: INACTIVAR -->
+
+    <section class="resolucion-section inactivar-section">
+        <h2>Inactivar pregunta</h2>
+
+        <p>
+            Si considerás que la pregunta no debería seguir formando
+            parte del juego, podés inactivarla.
+        </p>
+
+        <form
+            action="{{urlInactivar}}"
+            method="POST"
+            onsubmit="return confirm('¿Estás seguro de que querés inactivar esta pregunta y aceptar el reporte?');"
+        >
+            <input type="hidden" name="reporte_id" value="{{reporte.reporte_id}}">
+            <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+
+            <button type="submit" class="btn-inactivar">
+                Aceptar reporte e inactivar pregunta
+            </button>
+        </form>
+    </section>
+
+    <!-- OPCIÓN 2: EDITAR -->
+
+    <section class="resolucion-section">
+        <h2>Editar pregunta</h2>
+
+        <p>
+            Si el problema puede corregirse, modificá el contenido
+            de la pregunta antes de volver a habilitarla.
+        </p>
+
+        <form
+            action="{{urlGuardarEdicion}}"
+            method="POST"
+            onsubmit="return confirm('¿Confirmás los cambios y la resolución del reporte?');"
+        >
+            <input type="hidden" name="reporte_id" value="{{reporte.reporte_id}}">
+            <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+
+            <!-- ENUNCIADO -->
+
+            <div class="form-grupo">
+                <label for="pregunta_texto">Pregunta</label>
+
+                <textarea
+                    class="form-control"
+                    id="pregunta_texto"
+                    name="pregunta_texto"
+                    required
+                >{{pregunta.texto}}</textarea>
+            </div>
+
+            <!-- RESPUESTAS -->
+
+            <h3 class="respuestas-titulo">Opciones de respuesta</h3>
+
+            <p class="respuestas-ayuda">
+                Modificá la o las opciones que correspondan, y confirmá cuál es la correcta.
+            </p>
+
+            {{#respuestas}}
+                <div class="respuesta-item">
+
+                    <div class="respuesta-cabecera">
+                        <span class="respuesta-letra">
+                            Opción {{letra}}
+                        </span>
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="respuestas[{{indice}}][id]"
+                        value="{{id}}"
+                    >
+
+                    <label for="respuesta-{{indice}}">
+                        Texto de la respuesta
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="respuesta-{{indice}}"
+                        name="respuestas[{{indice}}][texto]"
+                        value="{{texto}}"
+                        required
+                    >
+
+                    <label class="respuesta-correcta">
+                        <input
+                            type="radio"
+                            name="respuesta_correcta_id"
+                            value="{{id}}"
+                            {{#esCorrecta}}checked{{/esCorrecta}}
+                            required
+                        >
+                        Es la respuesta correcta
+                    </label>
+
+                </div>
+            {{/respuestas}}
+
+            <!-- CATEGORÍA -->
+
+            <div class="form-grupo">
+                <label for="categoria_id">Categoría</label>
+
+                <select
+                    class="form-control"
+                    id="categoria_id"
+                    name="categoria_id"
+                    required
+                >
+                    {{#categorias}}
+                        <option
+                            value="{{id}}"
+                            {{#seleccionada}}selected{{/seleccionada}}
+                        >
+                            {{icono}} {{nombre}}
+                        </option>
+                    {{/categorias}}
+                </select>
+            </div>
+
+            <div class="aviso-edicion">
+                Al guardar los cambios, el reporte quedará resuelto
+                y la pregunta volverá a estar activa en el juego.
+            </div>
+
+            <button type="submit" class="btn-guardar">
+                Guardar cambios y resolver reporte
+            </button>
+
+        </form>
+    </section>
+
+    <a href="{{urlListado}}" class="volver-link">
+        ← Volver al listado de reportes
+    </a>
+
+</main>
