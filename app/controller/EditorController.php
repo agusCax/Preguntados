@@ -2,7 +2,7 @@
 
 namespace app\controller;
 
-use app\Enum\Rol;
+use app\enum\Rol;
 use Request;
 
 class EditorController

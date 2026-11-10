@@ -2,8 +2,8 @@
 
 namespace app\model;
 
-use app\Enum\EstadoPregunta;
-use app\Enum\EstadoReporte;
+use app\enum\EstadoPregunta;
+use app\enum\EstadoReporte;
 
 class EditorModel
 {

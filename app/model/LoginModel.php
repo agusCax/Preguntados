@@ -2,7 +2,7 @@
 
 namespace app\model;
 
-use app\Enum\Rol;
+use app\enum\Rol;
 
 class LoginModel
 {
