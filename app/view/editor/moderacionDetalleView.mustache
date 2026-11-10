@@ -1,0 +1,439 @@
+<style>
+    body {
+        background-color: var(--color-canvas, #f8fafc);
+    }
+
+    .mod-detalle,
+    .mod-detalle *,
+    .mod-detalle *::before,
+    .mod-detalle *::after {
+        box-sizing: border-box;
+    }
+
+    .mod-detalle {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 2rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--color-ink, #0f172a);
+    }
+
+    .mensaje-exito {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 18px;
+    margin-bottom: 20px;
+
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 12px;
+
+    color: #166534;
+    }
+
+    .mensaje-exito-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+
+        background: #bbf7d0;
+        border-radius: 50%;
+
+        font-weight: 800;
+    }
+
+    .mensaje-exito p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    /* ---------- Encabezado ---------- */
+
+    .mod-detalle__hero {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: linear-gradient(
+            135deg,
+            #e0f2fe 0%,
+            #ede9fe 55%,
+            #fff4dc 100%
+        );
+        border-radius: 1.75rem;
+    }
+
+    .mod-detalle__title {
+        margin: 0;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--color-primary-dark, #0369a1);
+    }
+
+    .mod-detalle__subtitle {
+        margin: 0.4rem 0 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-ink-soft, #334155);
+    }
+
+    /* ---------- Tarjeta de pregunta ---------- */
+
+    .mod-detalle__question {
+        padding: 1.4rem;
+        background-color: #ffffff;
+        border: 2px solid #c4b5fd;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 0 rgba(15, 23, 42, 0.04);
+    }
+
+    .mod-detalle__category {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        font-weight: 800;
+        background-color: #ede9fe;
+        border-radius: 9999px;
+    }
+
+    .mod-detalle__question-title {
+        margin: 1rem 0 1.25rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.35rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .mod-detalle__section-title {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    /* ---------- Opciones ---------- */
+
+    .mod-detalle__options {
+        display: grid;
+        gap: 0.65rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: opcion-item;
+    }
+
+    .mod-detalle__option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 48px;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        background-color: #f8fafc;
+        border: 1px solid var(--color-border, #e2e8f0);
+        border-radius: 1rem;
+        overflow-wrap: anywhere;
+        counter-increment: opcion-item;
+    }
+
+    .mod-detalle__option-icon {
+        display: grid;
+        flex-shrink: 0;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        font-weight: 800;
+        background-color: #e0f2fe;
+        border-radius: 50%;
+    }
+
+    .mod-detalle__option-icon::before {
+        content: counter(opcion-item);
+    }
+
+    /* ---------- Reporte ---------- */
+
+    .mod-detalle__report {
+        margin-top: 1.25rem;
+        padding: 1.25rem;
+        background-color: #fff7ed;
+        border: 2px solid #fdba74;
+        border-radius: 1.5rem;
+    }
+
+    .mod-detalle__report-title {
+        margin: 0 0 1rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #9a3412;
+    }
+
+    .mod-detalle__report-label {
+        margin: 0 0 0.25rem;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #7c2d12;
+    }
+
+    .mod-detalle__report-value {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-ink-soft, #334155);
+        overflow-wrap: anywhere;
+    }
+
+    /* ---------- Acciones ---------- */
+
+    .mod-detalle__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .mod-detalle__button {
+        display: inline-flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 1.25rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1rem;
+        font-weight: 800;
+        border: 0;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .mod-detalle__button--accept {
+        color: #14532d;
+        background-color: #bbf7d0;
+        box-shadow: 0 4px 0 #86efac;
+    }
+
+    .mod-detalle__button--reject {
+        color: #7f1d1d;
+        background-color: #fecaca;
+        box-shadow: 0 4px 0 #fca5a5;
+    }
+
+    .mod-detalle__button:hover {
+        filter: brightness(1.03);
+    }
+
+    .mod-detalle__button:active {
+        transform: translateY(4px);
+        box-shadow: none;
+    }
+
+    .mod-detalle__button:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    /* ---------- Volver ---------- */
+
+    .mod-detalle__back {
+        display: inline-flex;
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--color-primary-dark, #0369a1);
+        text-decoration: none;
+    }
+
+    .mod-detalle__back:hover {
+        text-decoration: underline;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .mod-detalle__button {
+            transition: none;
+        }
+    }
+
+    /* ---------- Tablet ---------- */
+
+    @media (min-width: 768px) {
+        .mod-detalle {
+            padding: 2rem 1.5rem;
+        }
+
+        .mod-detalle__hero {
+            padding: 2rem 2.5rem;
+        }
+
+        .mod-detalle__title {
+            font-size: 2.4rem;
+        }
+
+        .mod-detalle__question {
+            padding: 1.75rem;
+        }
+
+        .mod-detalle__question-title {
+            font-size: 1.6rem;
+        }
+
+        .mod-detalle__report {
+            padding: 1.5rem;
+        }
+
+        .mod-detalle__actions {
+            justify-content: flex-end;
+        }
+
+        .mod-detalle__button {
+            flex: initial;
+            min-width: 170px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .mod-detalle {
+            padding-top: 2.5rem;
+        }
+    }
+</style>
+
+<section class="mod-detalle">
+
+    <header class="mod-detalle__hero">
+
+        {{#esReporte}}
+            <h1 class="mod-detalle__title">
+                Revisar reporte
+            </h1>
+
+            <p class="mod-detalle__subtitle">
+                Analizá el problema informado por el jugador.
+            </p>
+        {{/esReporte}}
+
+        {{^esReporte}}
+            <h1 class="mod-detalle__title">
+                Revisar sugerencia
+            </h1>
+
+            <p class="mod-detalle__subtitle">
+                Evaluá la nueva pregunta propuesta.
+            </p>
+        {{/esReporte}}
+
+    </header>
+
+
+    <article class="mod-detalle__question">
+
+        <span class="mod-detalle__category">
+            {{pregunta.icono}}
+            {{pregunta.categoria}}
+        </span>
+
+        <h2 class="mod-detalle__question-title">
+            {{pregunta.texto}}
+        </h2>
+
+        <h3 class="mod-detalle__section-title">
+            Opciones de respuesta
+        </h3>
+
+        <ol class="mod-detalle__options">
+
+            {{#opciones}}
+                <li class="mod-detalle__option">
+                    <span class="mod-detalle__option-icon" aria-hidden="true"></span>
+                    <span>{{texto}}</span>
+                </li>
+            {{/opciones}}
+
+        </ol>
+
+    </article>
+
+    {{#esReporte}}
+        <article class="mod-detalle__report">
+
+            <h2 class="mod-detalle__report-title">
+                🚩 Información del reporte
+            </h2>
+
+            <p class="mod-detalle__report-label">
+                Motivo
+            </p>
+
+            <p class="mod-detalle__report-value">
+                {{reporte.motivo}}
+            </p>
+
+            {{#reporte.descripcion}}
+                <p class="mod-detalle__report-label">
+                    Descripción adicional
+                </p>
+
+                <p class="mod-detalle__report-value">
+                    {{reporte.descripcion}}
+                </p>
+            {{/reporte.descripcion}}
+
+            <p class="mod-detalle__report-label">
+                Fecha del reporte
+            </p>
+
+            <p class="mod-detalle__report-value">
+                {{reporte.fecha}}
+            </p>
+
+        </article>
+    {{/esReporte}}
+
+    <form action="{{urlProcesar}}" method="POST">
+
+        <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+        <input type="hidden" name="reporte_id" value="{{reporte.reporte_id}}">
+
+        <div class="mod-detalle__actions">
+
+            <button
+                class="mod-detalle__button mod-detalle__button--accept"
+                type="submit"
+                name="accion"
+                value="aceptar"
+            >
+                ✓ Aceptar
+            </button>
+
+            <button
+                class="mod-detalle__button mod-detalle__button--reject"
+                type="submit"
+                name="accion"
+                value="rechazar"
+            >
+                ✕ Rechazar
+            </button>
+
+        </div>
+
+    </form>
+
+    <a class="mod-detalle__back" href="{{urlListado}}">
+        ← Volver al listado
+    </a>
+
+</section>
