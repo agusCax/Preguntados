@@ -38,8 +38,7 @@ class LoginController
     {
         $usuario = $this->model->autenticar(Request::post('usuario'), Request::post('password'));
 
-
-        if ($usuario === null) {
+        if ($usuario === null || $usuario === 'no autorizado') {
             Redirect::to(BASE_URL . '/login/show?login_error=1');
         }
 
@@ -49,6 +48,7 @@ class LoginController
 
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario'] = $usuario['nombre_usuario'];
+        $_SESSION['rol'] = $usuario['rol'];
         Redirect::toIndex();
     }
 
