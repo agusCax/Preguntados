@@ -240,4 +240,47 @@ class PreguntaModel
 
         return $candidatas[0]['id']; // si no hay de ese nivel, cualquiera
     }
+
+    public function registrarReporte($idPregunta, $idUsuario, $motivo, $descripcion=null){
+        $preguntasModificadas = $this->database->execute(
+            "UPDATE preguntas p
+            SET p.estado = :estadoNuevo
+            WHERE p.id = :id AND p.estado = :estadoActual",
+            [':estadoNuevo' => EstadoPregunta::Reportada->value,
+            ':estadoActual' => EstadoPregunta::Activa->value,
+            ':id' => $idPregunta]
+        );
+
+        // si la pregunta no estaba activa es 0
+        if ($preguntasModificadas !== 1) {
+            return false;
+        }
+
+        $reporteInsertado = false;
+
+        try {
+            $reporteInsertado = $this->database->execute(
+                "INSERT INTO reportes (pregunta_id, usuario_id, motivo, descripcion) VALUES (:idPregunta, :idUsuario, :motivo, :descripcion)",
+                [':idPregunta'  => $idPregunta,
+                    ':idUsuario'   => $idUsuario,
+                    ':motivo'      => $motivo,
+                    ':descripcion' => $descripcion]
+            );
+        } catch (\PDOException $e) {
+            $reporteInsertado = false;
+        }
+
+        // si el insert falló (excepción o 0 filas), se revierte el estado de la pregunta
+        if ($reporteInsertado !== 1) {
+            $this->database->execute(
+                "UPDATE preguntas p
+        SET p.estado = :estadoNuevo
+        WHERE p.id = :id",
+                [':estadoNuevo' => EstadoPregunta::Activa->value,
+                    ':id'          => $idPregunta]
+            );
+            return false;
+        }
+        return true;
+    }
 }
