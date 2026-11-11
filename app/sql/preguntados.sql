@@ -21,6 +21,7 @@ CREATE TABLE usuarios (
     foto_perfil VARCHAR(255) NULL,
     bio VARCHAR(80) NULL,
     rol_id INT NOT NULL DEFAULT 1,
+    fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uq_usuarios_email UNIQUE (email), 
     CONSTRAINT fk_usuarios_roles FOREIGN KEY (rol_id) REFERENCES roles(id);
 );
@@ -46,6 +47,7 @@ CREATE TABLE IF NOT EXISTS preguntas (
     -- activa: se puede jugar | pendiente: sugerida por un usuario, falta aprobar
     -- reportada: un usuario la marcó como inválida | inactiva: dada de baja
     estado ENUM('activa', 'pendiente', 'reportada', 'inactiva') NOT NULL DEFAULT 'activa',
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_preguntas_categoria FOREIGN KEY (categoria_id) REFERENCES categorias (id)
 ) DEFAULT CHARSET = utf8mb4;
 
