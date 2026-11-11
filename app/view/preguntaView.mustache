@@ -640,6 +640,33 @@
 
 </main>
 
+<!-- Modal de reporte: se envía por fetch a /pregunta/reportar (no recarga la página ni frena el reloj) -->
+<div class="rep-modal" id="rep-modal" hidden>
+    <div class="rep-modal__card" role="dialog" aria-modal="true" aria-labelledby="rep-titulo">
+        <h2 class="rep-modal__title" id="rep-titulo">Reportar pregunta</h2>
+
+        <form id="form-reporte" method="post" action="{{base_url}}/pregunta/reportar">
+            <label class="rep-modal__label" for="rep-motivo">Motivo</label>
+            <select class="rep-modal__field" id="rep-motivo" name="motivo" required>
+                <option value="" disabled selected>Elegí un motivo</option>
+                {{#motivos_reporte}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/motivos_reporte}}
+            </select>
+
+            <label class="rep-modal__label" for="rep-descripcion">Descripción (opcional)</label>
+            <textarea class="rep-modal__field" id="rep-descripcion" name="descripcion" maxlength="500"></textarea>
+
+            <p class="rep-modal__msg" id="rep-mensaje" role="status"></p>
+
+            <div class="rep-modal__actions">
+                <button type="button" class="rep-modal__btn rep-modal__btn--secondary" id="rep-cancelar">Cancelar</button>
+                <button type="submit" class="rep-modal__btn rep-modal__btn--primary" id="rep-enviar">Enviar reporte</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     (function () {
         const timer = document.getElementById('timer');
