@@ -703,6 +703,73 @@
         }, 1000);
     })();
 </script>
+<script>
+    // Reportar pregunta con fetch: la validación real está en PreguntaController::reportar()
+    (function () {
+        const modal = document.getElementById('rep-modal');
+        const btnAbrir = document.getElementById('btn-reportar');
+        const textoBtnAbrir = document.getElementById('btn-reportar-texto');
+        const form = document.getElementById('form-reporte');
+        const btnEnviar = document.getElementById('rep-enviar');
+        const btnCancelar = document.getElementById('rep-cancelar');
+        const mensaje = document.getElementById('rep-mensaje');
+
+        function mostrarMensaje(texto, ok) {
+            mensaje.textContent = texto;   // textContent: nunca interpreta HTML
+            mensaje.className = 'rep-modal__msg ' + (ok ? 'is-ok' : 'is-error');
+        }
+
+        function abrir() {
+            mostrarMensaje('', true);
+            modal.hidden = false;
+            form.elements.motivo.focus();
+        }
+
+        function cerrar() {
+            modal.hidden = true;
+        }
+
+        btnAbrir.addEventListener('click', abrir);
+        btnCancelar.addEventListener('click', cerrar);
+
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) cerrar();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !modal.hidden) cerrar();
+        });
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            btnEnviar.disabled = true;   // evita doble envío
+            mostrarMensaje('Enviando...', true);
+
+            try {
+                const respuesta = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                const datos = await respuesta.json();
+
+                // fetch NO falla con 400/401/409: hay que mirar respuesta.ok
+                if (respuesta.ok && datos.exito) {
+                    mostrarMensaje(datos.mensaje, true);
+                    btnAbrir.disabled = true;
+                    textoBtnAbrir.textContent = 'Pregunta reportada';
+                    setTimeout(cerrar, 1200);
+                } else {
+                    mostrarMensaje(datos.mensaje || 'No se pudo enviar el reporte.', false);
+                    btnEnviar.disabled = false;
+                }
+            } catch (error) {
+                // sin conexión, o el servidor devolvió algo que no es JSON
+                mostrarMensaje('No se pudo enviar el reporte. Intentá de nuevo.', false);
+                btnEnviar.disabled = false;
+            }
+        });
+    })();
+</script>
 {{#sonido}}
 <audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
 {{/sonido}}
