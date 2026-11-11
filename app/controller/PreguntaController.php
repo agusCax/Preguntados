@@ -115,6 +115,7 @@ class PreguntaController
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas,
+            'motivos_reporte'    => array_map(fn($motivo) => $motivo->value, MotivoReporte::cases()),
             'sonido'             => $sonido,
             'efecto'             => $efecto,
             'racha'              => $racha,
