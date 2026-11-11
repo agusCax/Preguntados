@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\enum\Rol;
+use CpChartLib;
 
 class AdministradorController
 {
@@ -50,6 +51,25 @@ class AdministradorController
             'edad'     => $this->model->usuariosPorGrupoEdad($desde),
             'aciertos' => $this->model->porcentajeAciertosPorUsuario($desde),
         ]);
+        exit();
+    }
+
+    // Devuelve el gráfico de usuarios por país como imagen PNG (dibujada con CpChart)
+    public function graficoPais()
+    {
+        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
+            http_response_code(403);
+            exit();
+        }
+
+        $desde = $this->calcularDesde($_GET['periodo'] ?? 'mes');
+        $filas = $this->model->usuariosPorPais($desde);
+
+        CpChartLib::graficoBarras(
+            'Usuarios por país',
+            array_column($filas, 'etiqueta'),
+            array_map('intval', array_column($filas, 'valor'))
+        );
         exit();
     }
 
