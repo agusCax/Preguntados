@@ -8,24 +8,25 @@ on:
 jobs:
   deploy_to_infinityfree:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Obtener el código
         uses: actions/checkout@v4
 
-      - name: Instalar dependencias
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y lftp
+      - name: Aviso de inicio
+        run: echo "Iniciando deploy a InfinityFree..."
 
       - name: Sincronizar archivos por FTP
-        env:
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASS: ${{ secrets.FTP_PASS }}
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-        run: |
-          echo "Iniciando deploy a InfinityFree..."
-          lftp -e "
-          set ftp:ssl-allow no;
-          open -u $FTP_USER,$FTP_PASS $FTP_HOST;
-          mirror -R ./ /htdocs/proyectoWeb/ --exclude .git/ --exclude .github/ --exclude config/config.ini;
-          bye"
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          local-dir: ./
+          server-dir: /htdocs/proyectoWeb/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            config/config.ini
