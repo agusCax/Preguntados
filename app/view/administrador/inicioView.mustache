@@ -129,6 +129,7 @@
     }
 
     .adm__reporte {
+        min-width: 0;
         padding: 1.25rem;
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -180,7 +181,7 @@
 
     @media (min-width: 900px) {
         .adm__grid {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
