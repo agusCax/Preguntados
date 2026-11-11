@@ -275,4 +275,60 @@ class PreguntaController
 
         exit();
     }
+
+ public function reportar(){
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+         $this->responderJson(405, false, 'Método no permitido.');
+        } elseif(!isset($_SESSION['usuario_id'])){
+            $this->responderJson(401, false, 'Tu sesión expiró. Inicie sesión nuevamente.');
+        } elseif(($_SESSION['rol'] ?? null) !== Rol::Jugador->name){
+            $this->responderJson(403, false, 'Solo los jugadores pueden reportar preguntas.');
+        }
+
+    if(!isset($_SESSION['pregunta_actual'])){
+        $this->responderJson(409, false, 'No hay pregunta en curso.');
+    }
+
+    $idPreguntaActual= $_SESSION['pregunta_actual'];
+
+    $motivo = $_POST['motivo'] ?? null;
+    $descripcion = $_POST['descripcion'] ?? '';
+
+    if(!is_string($motivo) || !is_string($descripcion)){
+        $this->responderJson(400, false, 'Datos invalidos.');
+    }
+
+    $motivo = trim($motivo);
+    $descripcion = trim($descripcion);
+
+    $motivoReporte = MotivoReporte::tryFrom($motivo);
+
+    if($motivoReporte === null){
+        $this->responderJson(400, false, 'Elegí un motivo valido.');
+    }
+
+     if (mb_strlen($descripcion, 'UTF-8') > self::MAX_DESCRIPCION_REPORTE) {
+         $this->responderJson(400, false, 'La descripción no puede superar los ' . self::MAX_DESCRIPCION_REPORTE . ' caracteres.');
+     }
+
+     if ($descripcion === '') {
+         $descripcion = null;
+     }
+
+     $reportado= $this->preguntaModel->registrarReporte($idPreguntaActual,$_SESSION['usuario_id'], $motivoReporte->value, $descripcion);
+
+     if(!$reportado){
+         $this->responderJson(409, false, 'Esta pregunta ya fue reportada.');
+     }
+
+     $this->responderJson(200, true, 'El reporte fue enviado.');
+ }
+
+private function responderJson($codigo, $exito, $mensaje){
+        http_response_code($codigo);
+        header('Content-Type: application/json');
+        echo json_encode(['exito' => $exito, 'mensaje' => $mensaje]);
+        exit();
+}
 }
