@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\enum\Rol;
+use Redirect;
 use CpChartLib;
 
 class AdministradorController
@@ -84,5 +85,59 @@ class AdministradorController
         };
 
         return date('Y-m-d H:i:s', strtotime($intervalo));
+    }
+
+    // Pantalla con la lista de usuarios y su rol
+    public function usuarios()
+    {
+        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
+            header('Location: ' . BASE_URL);
+            exit();
+        }
+
+        $usuarios = $this->model->obtenerUsuarios();
+
+        // Se arma cada fila con las opciones de rol, marcando la que tiene hoy
+        foreach ($usuarios as &$usuario) {
+            $usuario['roles'] = [];
+            foreach (Rol::cases() as $rol) {
+                $usuario['roles'][] = [
+                    'valor'        => $rol->value,
+                    'nombre'       => $rol->name,
+                    'seleccionado' => $rol->value == $usuario['rol_id'],
+                ];
+            }
+            $usuario['es_usuario_actual'] = $usuario['id'] == $_SESSION['usuario_id'];
+        }
+
+        $this->render->renderiza('administrador/usuarios', [
+            'usuarios' => $usuarios,
+            'mensaje'  => $_GET['mensaje'] ?? '',
+        ]);
+    }
+
+    // Recibe el formulario y guarda el nuevo rol
+    public function cambiarRol()
+    {
+        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
+            http_response_code(403);
+            exit();
+        }
+
+        $idUsuario = (int) ($_POST['usuario_id'] ?? 0);
+        $rolId     = (int) ($_POST['rol_id'] ?? 0);
+
+        // Solo se aceptan roles que existan en el enum
+        if (Rol::tryFrom($rolId) === null) {
+            Redirect::to(BASE_URL . '/administrador/usuarios?mensaje=Rol no válido');
+        }
+
+        // El administrador no puede cambiarse el rol a sí mismo (se quedaría sin acceso)
+        if ($idUsuario === (int) $_SESSION['usuario_id']) {
+            Redirect::to(BASE_URL . '/administrador/usuarios?mensaje=No podés cambiar tu propio rol');
+        }
+
+        $this->model->cambiarRol($idUsuario, $rolId);
+        Redirect::to(BASE_URL . '/administrador/usuarios?mensaje=Rol actualizado');
     }
 }

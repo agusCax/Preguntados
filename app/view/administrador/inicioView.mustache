@@ -14,6 +14,12 @@
         box-sizing: border-box;
     }
 
+    .adm__boton{
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
     /* Encabezado con los filtros */
     .adm__top {
         display: flex;
@@ -232,6 +238,7 @@
                 </select>
             </label>
             <button type="button" class="adm__boton" id="imprimir">Imprimir</button>
+            <a class="adm__boton" href="{{base_url}}/administrador/usuarios">Gestionar usuarios</a>
         </div>
     </section>
 

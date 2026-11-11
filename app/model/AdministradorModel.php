@@ -99,4 +99,22 @@ class AdministradorModel
              LIMIT 10",
             [':desde' => $desde]);
     }
+
+    // ----- Gestión de usuarios -----
+
+    public function obtenerUsuarios()
+    {
+        return $this->database->queryAll(
+            "SELECT id, nombre_usuario, email, rol_id
+             FROM usuarios
+             WHERE estado = 1
+             ORDER BY nombre_usuario");
+    }
+
+    public function cambiarRol($idUsuario, $rolId)
+    {
+        return $this->database->execute(
+            "UPDATE usuarios SET rol_id = :rol WHERE id = :id",
+            [':rol' => $rolId, ':id' => $idUsuario]);
+    }
 }
