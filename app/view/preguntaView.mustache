@@ -332,6 +332,125 @@
             border-color: var(--color-wrong);
         }
 
+        /* ---------- Modal de reporte ---------- */
+        .q__report-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+            color: var(--color-ink-soft);
+            border-color: var(--color-ink-soft);
+        }
+
+        .rep-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: rgba(15, 23, 42, 0.55);
+        }
+
+        .rep-modal[hidden] {
+            display: none;
+        }
+
+        .rep-modal__card {
+            width: 100%;
+            max-width: 420px;
+            padding: 1.25rem;
+            background-color: var(--color-white);
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3);
+            animation: pop-in 0.25s ease both;
+        }
+
+        .rep-modal__title {
+            margin: 0 0 0.5rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--color-ink);
+        }
+
+        .rep-modal__label {
+            display: block;
+            margin: 0.75rem 0 0.3rem;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-ink-soft);
+        }
+
+        .rep-modal__field {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.6rem 0.75rem;
+            font-family: var(--font-text);
+            font-size: 1rem;
+            color: var(--color-ink);
+            background-color: var(--color-white);
+            border: 2px solid var(--color-border);
+            border-radius: 0.75rem;
+        }
+
+        .rep-modal__field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        textarea.rep-modal__field {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .rep-modal__msg {
+            min-height: 1.4rem;
+            margin: 0.75rem 0 0;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .rep-modal__msg.is-ok { color: var(--color-correct); }
+        .rep-modal__msg.is-error { color: var(--color-wrong); }
+
+        .rep-modal__actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .rep-modal__btn {
+            min-height: 42px;
+            padding: 0 1.1rem;
+            font-family: var(--font-text);
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            border: 2px solid var(--color-primary);
+            cursor: pointer;
+        }
+
+        .rep-modal__btn--primary {
+            color: var(--color-white);
+            background-color: var(--color-primary);
+        }
+
+        .rep-modal__btn--primary:hover:not(:disabled) {
+            background-color: var(--color-primary-dark);
+        }
+
+        .rep-modal__btn--secondary {
+            color: var(--color-primary);
+            background-color: var(--color-white);
+        }
+
+        .rep-modal__btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
         @keyframes pop-in {
             from { opacity: 0; transform: scale(0.8) translateY(14px); }
             to   { opacity: 1; transform: none; }
