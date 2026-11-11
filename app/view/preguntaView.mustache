@@ -623,16 +623,15 @@
             </div>
         </div>
 
-        <form class="q__report" method="post" action="{{base_url}}/reportar/show">
-            <input type="hidden" name="pregunta_id" value="{{pregunta_id}}" />
-            <button type="submit" class="q__report-btn">
+        <div class="q__report">
+            <button type="button" id="btn-reportar" class="q__report-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
                     <line x1="4" y1="22" x2="4" y2="15" />
                 </svg>
-                Reportar pregunta
+                <span id="btn-reportar-texto">Reportar pregunta</span>
             </button>
-        </form>
+        </div>
 
     </section>
 
@@ -771,10 +770,10 @@
     })();
 </script>
 {{#sonido}}
-<audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
+    <audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
 {{/sonido}}
 {{#efecto}}
-<div class="efecto efecto--{{clase}}">{{texto}}</div>
+    <div class="efecto efecto--{{clase}}">{{texto}}</div>
 {{/efecto}}
 </body>
 </html>
