@@ -1,0 +1,436 @@
+<style>
+    .adm {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 2.5rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--color-ink, #0f172a);
+        box-sizing: border-box;
+    }
+
+    .adm *,
+    .adm *::before,
+    .adm *::after {
+        box-sizing: border-box;
+    }
+
+    /* Encabezado con los filtros */
+    .adm__top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #e0f2fe 0%, #e0f2fe 50%, #fff4dc 100%);
+        border-radius: 1.75rem;
+    }
+
+    .adm__title {
+        margin: 0;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        font-weight: 700;
+    }
+
+    .adm__subtitle {
+        margin: 0.25rem 0 0;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .adm__filtros {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 0.75rem;
+    }
+
+    .adm__campo {
+        display: grid;
+        gap: 0.25rem;
+        font-weight: 800;
+        font-size: 0.85rem;
+    }
+
+    .adm__select {
+        min-height: 44px;
+        padding: 0 0.9rem;
+        font: inherit;
+        font-weight: 700;
+        color: var(--color-ink, #0f172a);
+        background: #ffffff;
+        border: 2px solid #cbd5e1;
+        border-radius: 0.9rem;
+    }
+
+    .adm__boton {
+        min-height: 44px;
+        padding: 0 1.25rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 800;
+        color: #ffffff;
+        background: #0284c7;
+        border: 0;
+        border-radius: 9999px;
+        box-shadow: 0 4px 0 #0369a1;
+        cursor: pointer;
+    }
+
+    .adm__boton:active {
+        transform: translateY(3px);
+        box-shadow: none;
+    }
+
+    .adm__aviso {
+        min-height: 1.4rem;
+        margin: 0 0 1rem;
+        font-weight: 700;
+        color: #b91c1c;
+    }
+
+    /* Tarjetas con los números */
+    .adm__kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .adm__kpi {
+        padding: 1rem;
+        text-align: center;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.25rem;
+        box-shadow: 0 6px 18px rgb(15 23 42 / 8%);
+    }
+
+    .adm__kpi-numero {
+        margin: 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0369a1;
+    }
+
+    .adm__kpi-texto {
+        margin: 0.15rem 0 0;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    /* Un bloque por reporte: gráfico + tabla */
+    .adm__grid {
+        display: grid;
+        gap: 1.25rem;
+    }
+
+    .adm__reporte {
+        padding: 1.25rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.5rem;
+        box-shadow: 0 6px 18px rgb(15 23 42 / 8%);
+    }
+
+    .adm__reporte-titulo {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .adm__grafico {
+        position: relative;
+        height: 260px;
+        margin-bottom: 1rem;
+    }
+
+    .adm__tabla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    .adm__tabla th,
+    .adm__tabla td {
+        padding: 0.5rem 0.6rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .adm__tabla th:last-child,
+    .adm__tabla td:last-child {
+        text-align: right;
+    }
+
+    .adm__tabla thead th {
+        font-weight: 800;
+        color: #475569;
+        background: #f1f5f9;
+    }
+
+    .adm__vacio {
+        color: #64748b;
+        font-style: italic;
+    }
+
+    @media (min-width: 900px) {
+        .adm__grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    /* Al imprimir se muestran solo las tablas de datos */
+    @media print {
+        header,
+        footer,
+        .adm__filtros,
+        .adm__grafico,
+        .adm__aviso {
+            display: none !important;
+        }
+
+        .adm__top,
+        .adm__kpi,
+        .adm__reporte {
+            background: none;
+            border: 1px solid #cbd5e1;
+            box-shadow: none;
+        }
+
+        .adm__grid {
+            grid-template-columns: 1fr;
+        }
+
+        .adm__reporte {
+            break-inside: avoid;
+        }
+    }
+</style>
+
+<main class="adm">
+
+    <section class="adm__top">
+        <div>
+            <h1 class="adm__title">Panel del administrador</h1>
+            <p class="adm__subtitle">Estadísticas de Cerebrito</p>
+        </div>
+
+        <div class="adm__filtros">
+            <label class="adm__campo" for="periodo">
+                Período
+                <select class="adm__select" id="periodo">
+                    <option value="dia">Último día</option>
+                    <option value="semana">Última semana</option>
+                    <option value="mes" selected>Último mes</option>
+                    <option value="anio">Último año</option>
+                </select>
+            </label>
+            <button type="button" class="adm__boton" id="imprimir">Imprimir</button>
+        </div>
+    </section>
+
+    <p class="adm__aviso" id="aviso" role="status" aria-live="polite"></p>
+
+    <!-- Números sueltos -->
+    <section class="adm__kpis" aria-label="Resumen">
+        <div class="adm__kpi">
+            <p class="adm__kpi-numero" id="kpi-jugadores">–</p>
+            <p class="adm__kpi-texto">Jugadores</p>
+        </div>
+        <div class="adm__kpi">
+            <p class="adm__kpi-numero" id="kpi-partidas">–</p>
+            <p class="adm__kpi-texto">Partidas jugadas</p>
+        </div>
+        <div class="adm__kpi">
+            <p class="adm__kpi-numero" id="kpi-preguntas-activas">–</p>
+            <p class="adm__kpi-texto">Preguntas en el juego</p>
+        </div>
+        <div class="adm__kpi">
+            <p class="adm__kpi-numero" id="kpi-preguntas-creadas">–</p>
+            <p class="adm__kpi-texto">Preguntas creadas</p>
+        </div>
+        <div class="adm__kpi">
+            <p class="adm__kpi-numero" id="kpi-usuarios-nuevos">–</p>
+            <p class="adm__kpi-texto">Usuarios nuevos</p>
+        </div>
+    </section>
+
+    <!-- Reportes: cada uno tiene su gráfico y su tabla -->
+    <div class="adm__grid">
+
+        <section class="adm__reporte">
+            <h2 class="adm__reporte-titulo">Usuarios por país</h2>
+            <div class="adm__grafico">
+                <canvas id="grafico-pais" role="img" aria-label="Gráfico de usuarios por país"></canvas>
+            </div>
+            <table class="adm__tabla" id="tabla-pais">
+                <thead><tr><th>País</th><th>Usuarios</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="adm__reporte">
+            <h2 class="adm__reporte-titulo">Usuarios por sexo</h2>
+            <div class="adm__grafico">
+                <canvas id="grafico-sexo" role="img" aria-label="Gráfico de usuarios por sexo"></canvas>
+            </div>
+            <table class="adm__tabla" id="tabla-sexo">
+                <thead><tr><th>Sexo</th><th>Usuarios</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="adm__reporte">
+            <h2 class="adm__reporte-titulo">Usuarios por grupo de edad</h2>
+            <div class="adm__grafico">
+                <canvas id="grafico-edad" role="img" aria-label="Gráfico de usuarios por grupo de edad"></canvas>
+            </div>
+            <table class="adm__tabla" id="tabla-edad">
+                <thead><tr><th>Grupo</th><th>Usuarios</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="adm__reporte">
+            <h2 class="adm__reporte-titulo">Respuestas correctas por usuario</h2>
+            <div class="adm__grafico">
+                <canvas id="grafico-aciertos" role="img" aria-label="Gráfico del porcentaje de respuestas correctas por usuario"></canvas>
+            </div>
+            <table class="adm__tabla" id="tabla-aciertos">
+                <thead><tr><th>Usuario</th><th>% correctas</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    (function () {
+        // Ruta que devuelve todos los datos en JSON (la arma el AdministradorController)
+        const URL_DATOS = '{{base_url}}/administrador/datos';
+
+        const colores = ['#0284c7', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6', '#ef4444'];
+        const nombresSexo = {
+            masculino: 'Masculino',
+            femenino: 'Femenino',
+            no_informa: 'Prefiere no cargarlo'
+        };
+
+        const selectorPeriodo = document.getElementById('periodo');
+        const aviso = document.getElementById('aviso');
+        const graficos = {};
+
+        // Completa una tabla con las filas { etiqueta, valor }
+        function llenarTabla(idTabla, filas, sufijo) {
+            const cuerpo = document.querySelector('#' + idTabla + ' tbody');
+            cuerpo.innerHTML = '';
+
+            if (filas.length === 0) {
+                const fila = cuerpo.insertRow();
+                const celda = fila.insertCell();
+                celda.colSpan = 2;
+                celda.className = 'adm__vacio';
+                celda.textContent = 'Sin datos para este período.';
+                return;
+            }
+
+            filas.forEach(function (dato) {
+                const fila = cuerpo.insertRow();
+                // textContent (y no innerHTML) para que un nombre raro no se interprete como HTML
+                fila.insertCell().textContent = dato.etiqueta;
+                fila.insertCell().textContent = Number(dato.valor).toLocaleString('es-AR') + sufijo;
+            });
+        }
+
+        // Dibuja un gráfico. Si ya existía uno, lo borra y lo vuelve a crear con los datos nuevos
+        function dibujar(idCanvas, tipo, filas, nombreDato, horizontal, maximo) {
+            if (graficos[idCanvas]) {
+                graficos[idCanvas].destroy();
+            }
+
+            const esTorta = tipo === 'doughnut';
+
+            graficos[idCanvas] = new Chart(document.getElementById(idCanvas), {
+                type: tipo,
+                data: {
+                    labels: filas.map(function (dato) { return dato.etiqueta; }),
+                    datasets: [{
+                        label: nombreDato,
+                        data: filas.map(function (dato) { return Number(dato.valor); }),
+                        backgroundColor: esTorta ? colores : colores[0]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: horizontal ? 'y' : 'x',
+                    plugins: {
+                        legend: { display: esTorta }
+                    },
+                    scales: esTorta ? {} : {
+                        [horizontal ? 'x' : 'y']: {
+                            beginAtZero: true,
+                            max: maximo,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Recibe el JSON del servidor y actualiza toda la pantalla
+        function pintar(datos) {
+            document.getElementById('kpi-jugadores').textContent = datos.totales.jugadores;
+            document.getElementById('kpi-partidas').textContent = datos.totales.partidas;
+            document.getElementById('kpi-preguntas-activas').textContent = datos.totales.preguntas_activas;
+            document.getElementById('kpi-preguntas-creadas').textContent = datos.totales.preguntas_creadas;
+            document.getElementById('kpi-usuarios-nuevos').textContent = datos.totales.usuarios_nuevos;
+
+            dibujar('grafico-pais', 'bar', datos.pais, 'Usuarios', false);
+            llenarTabla('tabla-pais', datos.pais, '');
+
+            const sexo = datos.sexo.map(function (dato) {
+                return { etiqueta: nombresSexo[dato.etiqueta] || dato.etiqueta, valor: dato.valor };
+            });
+            dibujar('grafico-sexo', 'doughnut', sexo, 'Usuarios', false);
+            llenarTabla('tabla-sexo', sexo, '');
+
+            dibujar('grafico-edad', 'bar', datos.edad, 'Usuarios', false);
+            llenarTabla('tabla-edad', datos.edad, '');
+
+            dibujar('grafico-aciertos', 'bar', datos.aciertos, '% correctas', true, 100);
+            llenarTabla('tabla-aciertos', datos.aciertos, '%');
+        }
+
+        // Le pide los datos al servidor según el período elegido
+        function cargar() {
+            aviso.textContent = '';
+
+            fetch(URL_DATOS + '?periodo=' + encodeURIComponent(selectorPeriodo.value))
+                .then(function (respuesta) {
+                    if (!respuesta.ok) {
+                        throw new Error('Respuesta inválida');
+                    }
+                    return respuesta.json();
+                })
+                .then(pintar)
+                .catch(function () {
+                    aviso.textContent = 'No se pudieron cargar los datos. Probá de nuevo.';
+                });
+        }
+
+        selectorPeriodo.addEventListener('change', cargar);
+        document.getElementById('imprimir').addEventListener('click', function () {
+            window.print();
+        });
+
+        cargar();
+    })();
+</script>
