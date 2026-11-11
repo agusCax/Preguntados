@@ -17,6 +17,8 @@ class PreguntaController
     // Cuántas respuestas correctas hacen falta para ganar el bono
     private const CORRECTAS_PARA_BONO = 5;
 
+    private const MAX_DESCRIPCION_REPORTE = 500;
+
     public function __construct($preguntaModel, $render)
     {
         $this->preguntaModel = $preguntaModel;
