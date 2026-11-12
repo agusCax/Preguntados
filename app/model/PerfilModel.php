@@ -72,6 +72,12 @@ class PerfilModel {
         );
     }
 
+    // La categoría donde más acierta (null si todavía no respondió nada)
+    public function obtenerEspecialidad($userId) {
+        $categorias = $this->obtenerAciertosPorCategoria($userId);
+        return $categorias[0] ?? null;
+    }
+
 
     public function actualizarPerfil($userId, $datos) {
 
