@@ -28,7 +28,6 @@ class InicioController
         switch ($rol) {
             case Rol::Jugador->name:
                 $data['nombre_usuario'] = $usuario;
-                $data['usuarios'] = $this->model->getInicio();
     
                 $top = $this->model->getTopUsuarios();
                 $data['hayPodio'] = !empty($top);
