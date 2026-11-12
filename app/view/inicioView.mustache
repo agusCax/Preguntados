@@ -155,26 +155,6 @@
         color: #64748b;
     }
 
-    .ini__users {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .ini__user {
-        display: inline-flex;
-        align-items: center;
-        min-height: 40px;
-        padding: 0 1rem;
-        font-weight: 700;
-        color: var(--color-ink, #0f172a);
-        background-color: #ffffff;
-        border: 1px solid var(--color-border, #e2e8f0);
-        border-radius: 9999px;
-    }
 
     @media (prefers-reduced-motion: reduce) {
         .ini__play {
@@ -500,17 +480,6 @@
             <li class="ini__cat" style="--tint:#fce7f3"><span class="ini__cat-icon" aria-hidden="true">🎨</span>Arte</li>
             <li class="ini__cat" style="--tint:#fee2e2"><span class="ini__cat-icon" aria-hidden="true">⚽</span>Deportes</li>
             <li class="ini__cat" style="--tint:#ede9fe"><span class="ini__cat-icon" aria-hidden="true">🎬</span>Cine</li>
-        </ul>
-    </section>
-
-
-    <section class="ini__section" aria-labelledby="ini-usuarios">
-        <h2 class="ini__section-title" id="ini-usuarios">Jugadores registrados</h2>
-        <p class="ini__section-text">Usuarios recuperados de la base de datos.</p>
-        <ul class="ini__users">
-            {{#usuarios}}
-                <li class="ini__user">{{nombre_usuario}}</li>
-            {{/usuarios}}
         </ul>
     </section>
 
