@@ -1,7 +1,7 @@
 <?php
 
 namespace app\model;
-use app\Enum\EstadoPregunta;
+use app\enum\EstadoPregunta;
 
 class PreguntaModel
 {

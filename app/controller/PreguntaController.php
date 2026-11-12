@@ -3,8 +3,8 @@
 namespace app\controller;
 
 use Redirect;
-use app\Enum\Rol;
-use app\Enum\MotivoReporte;
+use app\enum\Rol;
+use app\enum\MotivoReporte;
 
 class PreguntaController
 {
