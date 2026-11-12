@@ -33,6 +33,9 @@ class PerfilModel {
         $longitud = $usuario['longitud'] ?? null;
         $fotoPerfil = $usuario['foto_perfil'] ?? '';
 
+        $especialidad = $this->obtenerEspecialidad($userId);
+        $desafiante = $this->obtenerDesafiante($userId);
+
         return [
             'nombre' => $nombre,
             'usuario' => $nombreUsuario,
@@ -47,6 +50,12 @@ class PerfilModel {
             'bio' => $bioUsuario,
             'nivel' => 17,
             'preguntasCorrectas' => 174,
+            'especialidad' => $especialidad['nombre'] ?? 'Sin datos',
+            'especialidadAciertos' => (int) ($especialidad['aciertos'] ?? 0),
+            'especialidadIcono' => $especialidad['icono'] ?? '❓',
+            'desafiante' => $desafiante['nombre'] ?? 'Sin datos',
+            'desafianteAciertos' => (int) ($desafiante['aciertos'] ?? 0),
+            'desafianteIcono' => $desafiante['icono'] ?? '❓',
             'partidasGanadas' => 3,
             'partidasPerdidas' => 9,
             'partidasRendidas' => 0,
