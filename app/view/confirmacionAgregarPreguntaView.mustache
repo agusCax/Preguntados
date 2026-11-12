@@ -1,0 +1,112 @@
+<style>
+    .confirmation__content,
+    .confirmation__content *,
+    .confirmation__content *::before,
+    .confirmation__content *::after {
+        box-sizing: border-box;
+    }
+
+    .confirmation__content {
+        width: min(100% - 2rem, 680px);
+        margin: 2rem auto;
+        padding: clamp(1.5rem, 5vw, 2.5rem);
+        color: var(--color-ink, #0f172a);
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        text-align: center;
+        background: var(--color-white, #ffffff);
+        border: 1px solid var(--color-border, #e2e8f0);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+    }
+
+    .confirmation__title {
+        margin: 0;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        line-height: 1.2;
+    }
+
+    .confirmation__message {
+        max-width: 48ch;
+        margin: 0.8rem auto 0;
+        color: #64748b;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .confirmation__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.75rem;
+    }
+
+    .confirmation__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0.65rem 1.2rem;
+        font: inherit;
+        font-weight: 800;
+        border: 0;
+        border-radius: 9999px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .confirmation__button:hover {
+        transform: translateY(-1px);
+    }
+
+    .confirmation__button--play {
+        color: #ffffff;
+        background: var(--color-primary, #0284c7);
+        box-shadow: 0 3px 0 var(--color-primary-dark, #0369a1);
+    }
+
+    .confirmation__button--play:hover {
+        background: var(--color-primary-dark, #0369a1);
+    }
+
+    .confirmation__button--home {
+        color: var(--color-ink, #0f172a);
+        background: #f1f5f9;
+    }
+
+    .confirmation__button--home:hover {
+        background: #e2e8f0;
+    }
+
+    .confirmation__button:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 480px) {
+        .confirmation__actions {
+            flex-direction: column;
+        }
+
+        .confirmation__button {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .confirmation__button {
+            transition: none;
+        }
+    }
+</style>
+
+<main class="confirmation__content">
+    <h1 class="confirmation__title">{{confirmacion_titulo}} </h1>
+    <p class="confirmation__message">{{confirmacion_mensaje}}</p>
+    <nav class="confirmation__actions" aria-label="Opciones de propuesta">
+        <a class="confirmation__button confirmation__button--home" href={{url_boton_secundario}}>{{confirmacion_boton_secundario}}</a>
+        <a class="confirmation__button confirmation__button--play" href={{url_boton_principal}}>{{confirmacion_boton_principal}}</a>
+    </nav>
+</main>

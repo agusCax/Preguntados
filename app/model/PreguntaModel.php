@@ -283,4 +283,34 @@ class PreguntaModel
         }
         return true;
     }
+
+    public function registrarPropuesta($idUsuario, $categoria, $pregunta, $respuestas, $respuestaCorrecta)
+    {
+        $categoria = $this->database->queryOne("SELECT id FROM categorias WHERE nombre = :nombre", [':nombre' => $categoria]);
+
+        $this->database->execute( 
+            "INSERT INTO preguntas 
+            (categoria_id, texto, estado) 
+            VALUES (:categoria_id, :texto, :estado)", 
+            [':categoria_id' => (int) $categoria['id'],
+            ':texto' => $pregunta,
+            ':estado' => EstadoPregunta::Pendiente->value]
+        );
+
+        $idPregunta = (int)$this->database->lastInsertId();
+
+        foreach (array_values($respuestas) as $indice => $respuesta) {
+            $this->database->execute(
+                "INSERT INTO 
+                respuestas 
+                (pregunta_id, texto, es_correcta) 
+                VALUES (:pregunta_id, :texto, :es_correcta)",
+                [':pregunta_id' => $idPregunta,
+                ':texto' => $respuesta,
+                ':es_correcta' => $indice + 1 === (int) $respuestaCorrecta ? 1 : 0]
+            );
+        }
+
+        return $idPregunta;
+    }
 }
