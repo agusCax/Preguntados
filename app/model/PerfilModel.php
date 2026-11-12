@@ -76,6 +76,7 @@ class PerfilModel {
              JOIN categorias c ON c.id = q.categoria_id
              WHERE pa.usuario_id = :id AND pp.respondida_en IS NOT NULL
              GROUP BY c.id, c.nombre, c.icono
+             HAVING COUNT(*) >= 3
              ORDER BY aciertos DESC, respondidas DESC, c.nombre ASC",
             [':id' => $userId]
         );
