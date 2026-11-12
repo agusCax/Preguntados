@@ -78,6 +78,17 @@ class PerfilModel {
         return $categorias[0] ?? null;
     }
 
+    // La categoría donde menos acierta (null si jugó menos de 2 categorías)
+    public function obtenerDesafiante($userId) {
+        $categorias = $this->obtenerAciertosPorCategoria($userId);
+
+        if (count($categorias) < 2) {
+            return null;
+        }
+
+        return $categorias[count($categorias) - 1];
+    }
+
 
     public function actualizarPerfil($userId, $datos) {
 
