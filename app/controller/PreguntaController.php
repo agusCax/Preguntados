@@ -116,51 +116,6 @@ class PreguntaController
 
         $this->render->renderiza("pregunta", $datos, false);
     }
-/*
-    public function responder()
-    {
-        if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['partida_activa'])) {
-            Redirect::to(BASE_URL . '/login/show');
-            exit();
-        }
-
-        $idPartida = $_SESSION['partida_activa'];
-        $idPregunta = $_POST['pregunta_id'] ?? null;
-        $idRespuesta = $_POST['respuesta_id'] ?? null;
-        $tiempoAgotado = ($_POST['tiempo_agotado'] ?? '0') === '1';
-        $segundosUsados = time() - ($_SESSION['inicio_pregunta'] ?? time());
-        $tiempoAgotado = $tiempoAgotado || $segundosUsados > self::SEGUNDOS_POR_PREGUNTA;
-
-        if (!$idPregunta) {
-            Redirect::to(BASE_URL . '/pregunta/show');
-            exit();
-        }
-
-        if ($tiempoAgotado || !$idRespuesta) {
-            $this->preguntaModel->registrarTiempoAgotado($idPartida, $idPregunta);
-            $this->terminarPartida(
-                'Se acabó el tiempo',
-                'La partida terminó porque se agotó el tiempo.',
-                'tiempo'
-            );
-        }
-
-        $esCorrecta = $this->preguntaModel->registrarRespuesta($idPartida, $idPregunta, $idRespuesta);
-
-        if ($esCorrecta) {
-            $_SESSION['puntaje'] = ($_SESSION['puntaje'] ?? 0) + 1;
-            $_SESSION['sonido'] = 'correcta'; // suena al cargar la siguiente pregunta
-            Redirect::to(BASE_URL . '/pregunta/show');
-        } else {
-            $this->terminarPartida(
-                'Respuesta incorrecta',
-                'La partida terminó porque la respuesta no era correcta.',
-                'perdida'
-            );
-        }
-        exit();
-    }
-    */
 
     public function responder()
     {
