@@ -22,7 +22,7 @@ class LoginModel
 
         $userData = $this->database->queryOne($sql);
 
-        if((int)$userData['estado'] === 0) {
+        if($userData['estado'] === 0) {
             return 'inactivo';
         }
 
