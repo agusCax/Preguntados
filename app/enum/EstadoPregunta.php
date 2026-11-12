@@ -1,6 +1,6 @@
 <?php 
 
-namespace app\Enum;
+namespace app\enum;
 
 enum EstadoPregunta: string
 {
