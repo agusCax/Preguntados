@@ -3,3 +3,4 @@ log/
 config/
 .idea/
 public/uploads/
+public/qr/
