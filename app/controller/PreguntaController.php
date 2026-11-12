@@ -52,15 +52,6 @@ class PreguntaController
         $idPartida = $_SESSION['partida_activa'];
         $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
 
-        /*
-        if (count($preguntasRespondidas) >= self::MAX_PREGUNTAS_POR_PARTIDA) {
-            $this->terminarPartida(
-                'Partida terminada',
-                'Completaste todas las preguntas de esta partida.',
-                'ganada'
-            );
-        }*/
-
         $pregunta = $this->preguntaModel->obtenerPreguntaParaPartida($idPartida);
 
         if (!$pregunta) {
