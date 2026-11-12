@@ -55,6 +55,24 @@ class PerfilModel {
         ];
     }
 
+    // Aciertos del jugador por categoría, de mayor a menor % de aciertos
+    private function obtenerAciertosPorCategoria($userId) {
+        return $this->db->queryAll(
+            "SELECT c.nombre, c.icono,
+                    COUNT(*) AS respondidas,
+                    ROUND(SUM(pp.fue_correcta) * 100 / COUNT(*)) AS aciertos
+             FROM partida_preguntas pp
+             JOIN partidas pa ON pa.id = pp.partida_id
+             JOIN preguntas q ON q.id = pp.pregunta_id
+             JOIN categorias c ON c.id = q.categoria_id
+             WHERE pa.usuario_id = :id AND pp.respondida_en IS NOT NULL
+             GROUP BY c.id, c.nombre, c.icono
+             ORDER BY aciertos DESC, respondidas DESC, c.nombre ASC",
+            [':id' => $userId]
+        );
+    }
+
+
     public function actualizarPerfil($userId, $datos) {
 
         $this->db->execute(
