@@ -101,39 +101,62 @@
         color: var(--color-ink, #0f172a);
     }
 
-    /* ---------- Categorías ---------- */
+    /* ---------- Categorías (una al lado de la otra) ---------- */
     .ini__cats {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.9rem;
+        margin: 1.25rem 0 0;
         padding: 0;
         list-style: none;
     }
 
     .ini__cat {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        min-height: 56px;
-        padding: 0.65rem 0.85rem;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--color-ink, #0f172a);
-        background-color: var(--tint);
-        border-radius: 1.1rem;
+        width: 56px;
+        height: 56px;
     }
 
     .ini__cat-icon {
         display: grid;
         place-items: center;
-        flex-shrink: 0;
-        width: 36px;
-        height: 36px;
-        font-size: 1.15rem;
+        width: 100%;
+        height: 100%;
+        font-size: 1.6rem;
         line-height: 1;
-        background-color: #ffffff;
+        background-color: var(--tint);
+        border: 3px solid #ffffff;
         border-radius: 50%;
+        box-shadow: 0 4px 0 var(--borde);
+    }
+
+    /* ---------- Invitación a proponer preguntas ---------- */
+    .ini__invita {
+        max-width: 520px;
+        margin: 1.5rem auto 0;
+        text-align: center;
+    }
+
+    .ini__invita-titulo {
+        margin: 0 0 0.35rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #5b21b6;
+    }
+
+    .ini__invita-texto {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-ink-soft, #334155);
+    }
+
+    /* Mismo botón que "Jugar", pero violeta para distinguirlo */
+    .ini__proponer {
+        color: #ffffff;
+        background-color: #7c3aed;
+        box-shadow: 0 4px 0 #5b21b6;
     }
 
     /* ---------- Usuarios (sección de prueba, viene de la base) ---------- */
@@ -198,20 +221,24 @@
         }
 
         .ini__cats {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .ini__cat {
-            min-height: 72px;
-            padding: 0.85rem 1.1rem;
-            font-size: 1.1rem;
+            width: 72px;
+            height: 72px;
         }
 
         .ini__cat-icon {
-            width: 44px;
-            height: 44px;
-            font-size: 1.4rem;
+            font-size: 2rem;
+        }
+
+        .ini__invita-titulo {
+            font-size: 1.6rem;
+        }
+
+        .ini__invita-texto {
+            font-size: 1.05rem;
         }
     }
 
@@ -438,7 +465,6 @@
             <h1 class="ini__hero-title" id="ini-partida">Crear partida</h1>
             <p class="ini__hero-text">Respondé y sumá puntos</p>
             <a href="{{base_url}}/pregunta/show" class="ini__play">Jugar</a>
-            <a href="{{base_url}}/pregunta/agregar" class="ini__play">Proponer pregunta</a>
         </div>
         <img class="ini__hero-img" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
     </section>
@@ -474,13 +500,19 @@
     <section class="ini__section" aria-labelledby="ini-categorias">
         <h2 class="ini__section-title" id="ini-categorias">Categorías</h2>
         <ul class="ini__cats">
-            <li class="ini__cat" style="--tint:#d1fae5"><span class="ini__cat-icon" aria-hidden="true">🔬</span>Ciencia</li>
-            <li class="ini__cat" style="--tint:#fef3c7"><span class="ini__cat-icon" aria-hidden="true">🏛️</span>Historia</li>
-            <li class="ini__cat" style="--tint:#e0f2fe"><span class="ini__cat-icon" aria-hidden="true">🌎</span>Geografía</li>
-            <li class="ini__cat" style="--tint:#fce7f3"><span class="ini__cat-icon" aria-hidden="true">🎨</span>Arte</li>
-            <li class="ini__cat" style="--tint:#fee2e2"><span class="ini__cat-icon" aria-hidden="true">⚽</span>Deportes</li>
-            <li class="ini__cat" style="--tint:#ede9fe"><span class="ini__cat-icon" aria-hidden="true">🎬</span>Cine</li>
+            <li class="ini__cat" style="--tint:#d1fae5; --borde:#6ee7b7"><span class="ini__cat-icon" role="img" aria-label="Ciencia">🔬</span></li>
+            <li class="ini__cat" style="--tint:#fef3c7; --borde:#fcd34d"><span class="ini__cat-icon" role="img" aria-label="Historia">🏛️</span></li>
+            <li class="ini__cat" style="--tint:#e0f2fe; --borde:#7dd3fc"><span class="ini__cat-icon" role="img" aria-label="Geografía">🌎</span></li>
+            <li class="ini__cat" style="--tint:#fce7f3; --borde:#f9a8d4"><span class="ini__cat-icon" role="img" aria-label="Arte">🎨</span></li>
+            <li class="ini__cat" style="--tint:#fee2e2; --borde:#fca5a5"><span class="ini__cat-icon" role="img" aria-label="Deportes">⚽</span></li>
+            <li class="ini__cat" style="--tint:#ede9fe; --borde:#c4b5fd"><span class="ini__cat-icon" role="img" aria-label="Cine">🎬</span></li>
         </ul>
+
+        <div class="ini__invita">
+            <h3 class="ini__invita-titulo">¡Queremos escucharte!</h3>
+            <p class="ini__invita-texto">Proponé una pregunta: la vamos a evaluar y, si corresponde, la daremos de alta para que todos puedan jugarla.</p>
+            <a href="{{base_url}}/pregunta/agregar" class="ini__play ini__proponer">Proponer pregunta</a>
+        </div>
     </section>
 
 </div>
