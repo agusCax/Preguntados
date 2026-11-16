@@ -69,7 +69,7 @@ class EditorController
 
     public function procesarSugerencia()
     {
-        $id = Request::post('id');          
+        $id = Request::post('pregunta_id');
         $accion = Request::post('accion'); 
 
         $modificada = $this->model->procesarSugerencia($id, $accion);
