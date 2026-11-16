@@ -15,6 +15,14 @@ class PreguntaModel
 
     public function crearPartida($idUsuario)
     {
+        // Si quedó una partida abandonada, se cierra como rendida con 0 puntos
+        $this->database->execute(
+            "UPDATE partidas
+            SET estado = 'terminada', resultado = 'rendida', puntaje = 0, fecha_fin = NOW()
+            WHERE usuario_id = :usuario_id AND estado = 'en_curso'",
+            [':usuario_id' => $idUsuario]
+        );
+
         $this->database->execute(
             "INSERT INTO partidas (usuario_id) VALUES (:usuario_id)",
             [':usuario_id' => $idUsuario]

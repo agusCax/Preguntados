@@ -34,6 +34,7 @@ class RankingModel
         $sql = "SELECT id, puntaje, estado, fecha_inicio
                 FROM partidas
                 WHERE usuario_id = :usuario_id
+                  AND estado = 'terminada'
                 ORDER BY puntaje DESC, id ASC";
 
         return $this->database->queryAll($sql, [':usuario_id' => $usuarioId]);
