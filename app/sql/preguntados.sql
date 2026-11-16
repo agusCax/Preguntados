@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS partidas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     estado ENUM('en_curso', 'terminada') NOT NULL DEFAULT 'en_curso',
+    resultado ENUM('ganada', 'perdida', 'rendida') NULL,
     puntaje INT NOT NULL DEFAULT 0,
     fecha_inicio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_fin DATETIME NULL,
