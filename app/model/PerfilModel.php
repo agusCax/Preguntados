@@ -7,6 +7,8 @@ use QrLib;
 
 class PerfilModel {
     private $db;
+    // Cada cuántas respuestas correctas el jugador sube de nivel
+    private const PREGUNTAS_POR_NIVEL = 10;
 
     public function __construct($database) {
         $this->db = $database;
@@ -35,6 +37,8 @@ class PerfilModel {
 
         $especialidad = $this->obtenerEspecialidad($userId);
         $desafiante = $this->obtenerDesafiante($userId);
+        $partidas = $this->obtenerResumenPartidas($userId);
+        $correctas = $this->contarRespuestasCorrectas($userId);
 
         return [
             'nombre' => $nombre,
@@ -48,17 +52,17 @@ class PerfilModel {
             'latitud' => $latitud,
             'longitud' => $longitud,
             'bio' => $bioUsuario,
-            'nivel' => 17,
-            'preguntasCorrectas' => 174,
+            'nivel' => $this->calcularNivel($correctas),
+            'preguntasCorrectas' => $correctas,
             'especialidad' => $especialidad['nombre'] ?? 'Sin datos',
             'especialidadAciertos' => (int) ($especialidad['aciertos'] ?? 0),
             'especialidadIcono' => $especialidad['icono'] ?? '❓',
             'desafiante' => $desafiante['nombre'] ?? 'Sin datos',
             'desafianteAciertos' => (int) ($desafiante['aciertos'] ?? 0),
             'desafianteIcono' => $desafiante['icono'] ?? '❓',
-            'partidasGanadas' => 3,
-            'partidasPerdidas' => 9,
-            'partidasRendidas' => 0,
+            'partidasGanadas' => (int) ($partidas['ganadas'] ?? 0),
+            'partidasPerdidas' => (int) ($partidas['perdidas'] ?? 0),
+            'partidasRendidas' => (int) ($partidas['rendidas'] ?? 0),
             'logrosObtenidos' => 0,
             'totalLogros' => 47
         ];
@@ -97,6 +101,36 @@ class PerfilModel {
         }
 
         return $categorias[count($categorias) - 1];
+    }
+
+    // Cantidad de partidas ganadas, perdidas y rendidas del jugador
+    public function obtenerResumenPartidas($userId) {
+        return $this->db->queryOne(
+            "SELECT SUM(resultado = 'ganada') AS ganadas,
+                SUM(resultado = 'perdida') AS perdidas,
+                SUM(resultado = 'rendida') AS rendidas
+         FROM partidas
+         WHERE usuario_id = :id",
+            [':id' => $userId]
+        );
+    }
+
+    // Total de respuestas correctas del jugador en todas sus partidas
+    private function contarRespuestasCorrectas($userId) {
+        $fila = $this->db->queryOne(
+            "SELECT COALESCE(SUM(pp.fue_correcta), 0) AS correctas
+             FROM partida_preguntas pp
+             JOIN partidas pa ON pa.id = pp.partida_id
+             WHERE pa.usuario_id = :id AND pp.respondida_en IS NOT NULL",
+            [':id' => $userId]
+        );
+
+        return (int) $fila['correctas'];
+    }
+
+    // Nivel 1 al empezar, y uno más cada PREGUNTAS_POR_NIVEL correctas
+    private function calcularNivel($correctas) {
+        return intdiv($correctas, self::PREGUNTAS_POR_NIVEL) + 1;
     }
 
 
