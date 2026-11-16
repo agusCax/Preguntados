@@ -5,12 +5,14 @@ namespace app\controller;
 use Redirect;
 use app\enum\Rol;
 use app\enum\MotivoReporte;
+use app\enum\ResultadoPartida;
 
 class PreguntaController
 {
     private $render;
     private $preguntaModel;
-    private const MAX_PREGUNTAS_POR_PARTIDA = 10;
+    private const MAX_PREGUNTAS_POR_PARTIDA = 50;
+    private const PREGUNTAS_POR_ETAPA = 10;
 
     private const SEGUNDOS_POR_PREGUNTA = 30;
 
@@ -37,6 +39,7 @@ class PreguntaController
             $_SESSION['partida_activa'] = $this->preguntaModel->crearPartida($_SESSION['usuario_id']);
             $_SESSION['puntaje'] = 0;
             $_SESSION['contadorCorrectas'] = 0;
+            $_SESSION['correctasPartida'] = 0;
         }
 
         // Sonido pendiente de la respuesta anterior (se usa una sola vez, así F5 no lo repite)
@@ -48,17 +51,23 @@ class PreguntaController
         unset($_SESSION['efecto']);
 
         $idPartida = $_SESSION['partida_activa'];
+        // Al completar cada etapa se ofrece retirarse o seguir (antes de entregar otra pregunta)
+        if (!empty($_SESSION['checkpoint'])) {
+            $this->mostrarEtapa();
+        }
         $preguntasRespondidas = $this->preguntaModel->obtenerPreguntasRespondidas($idPartida);
 
         $pregunta = $this->preguntaModel->obtenerPreguntaParaPartida($idPartida);
 
         if (!$pregunta) {
-            // No quedan preguntas: se cierra la partida con el puntaje actual
-            $this->terminarPartida(
-                'Partida terminada',
-                'No quedan más preguntas disponibles.',
-                'ganada'
-            );
+            if (!$pregunta) {
+                // No quedan preguntas: se cierra la partida con el puntaje actual
+                $this->terminarPartida(
+                    '¡Ganaste la partida!',
+                    'Respondiste todas las preguntas disponibles.',
+                    'ganada'
+                );
+            }
         }
 
         // Se guarda el inicio solo si la pregunta es nueva, para que recargar (F5) no reinicie el tiempo
@@ -158,6 +167,19 @@ class PreguntaController
                 $_SESSION['contadorCorrectas'] = 0; //REINICIA
                 $_SESSION['efecto'] = ['clase' => 'bono', 'texto' => '+6 ¡Bono!'];
             }
+            $_SESSION['correctasPartida'] = ($_SESSION['correctasPartida'] ?? 0) + 1;
+
+            if ($_SESSION['correctasPartida'] >= self::MAX_PREGUNTAS_POR_PARTIDA) {
+                $this->terminarPartida(
+                    '¡Ganaste la partida!',
+                    'Respondiste ' . self::MAX_PREGUNTAS_POR_PARTIDA . ' preguntas correctamente.',
+                    'ganada'
+                );
+            }
+
+            if ($_SESSION['correctasPartida'] % self::PREGUNTAS_POR_ETAPA === 0) {
+                $_SESSION['checkpoint'] = true;
+            }
             Redirect::to(BASE_URL . '/pregunta/show');
         } else {
             $penalizacion = $this->penalizacionIncorrectas($idPregunta);
@@ -196,12 +218,19 @@ class PreguntaController
     private function terminarPartida($titulo, $mensaje, $tipoResultado, $mensajePenalizacion = '')
     {
         $puntaje = $_SESSION['puntaje'] ?? 0;
+        $correctas = $_SESSION['correctasPartida'] ?? 0;
 
         if (isset($_SESSION['partida_activa'])) {
-            $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $_SESSION['puntaje'] ?? 0);
+            $resultado = match ($tipoResultado) {
+                'ganada' => ResultadoPartida::Ganada,
+                'rendida' => ResultadoPartida::Rendida,
+                default => ResultadoPartida::Perdida,   // respuesta incorrecta o tiempo agotado
+            };
+
+            $this->preguntaModel->terminarPartida($_SESSION['partida_activa'], $puntaje, $resultado->value);
         }
 
-        unset($_SESSION['partida_activa'], $_SESSION['puntaje'], $_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contadorCorrectas'], $_SESSION['sonido'], $_SESSION['efecto']);
+        unset($_SESSION['partida_activa'], $_SESSION['puntaje'], $_SESSION['pregunta_actual'], $_SESSION['inicio_pregunta'], $_SESSION['contadorCorrectas'], $_SESSION['correctasPartida'], $_SESSION['checkpoint'], $_SESSION['sonido'], $_SESSION['efecto']);
 
         $sonido = ($tipoResultado === 'ganada') ? 'correcta' : 'incorrecta';
 
@@ -212,14 +241,65 @@ class PreguntaController
             'pantalla_resultado' => true,
             'resultado_titulo' => $titulo,
             'resultado_mensaje' => $mensaje,
-            'resultado_tipo' => $tipoResultado,
+            'resultado_tipo' => ($tipoResultado === 'rendida') ? 'perdida' : $tipoResultado,
             'puntaje' => $puntaje,
-            'penalizacion_mensaje' => $mensajePenalizacion
+            'penalizacion_mensaje' => $mensajePenalizacion,
+        'gano' => $tipoResultado === 'ganada',
+            'correctas' => $correctas,
+        ], false);
+
+        exit();
+    }
+// Pantalla de etapa completada: retirarse (ganar) o seguir jugando
+    private function mostrarEtapa()
+    {
+        $this->render->renderiza('resultado', [
+            'pantalla_resultado' => true,
+            'resultado_tipo' => 'ganada',
+            'etapa' => true,
+            'resultado_titulo' => '¡Completaste ' . $_SESSION['correctasPartida'] . ' preguntas!',
+            'resultado_mensaje' => 'Podés retirarte ahora y ganar la partida, o seguir por más puntos. Si respondés mal, perdés.',
+            'puntaje' => $_SESSION['puntaje'] ?? 0
         ], false);
 
         exit();
     }
 
+// Solo se puede retirar quien está en una etapa completada
+    public function retirarse()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['partida_activa']) || empty($_SESSION['checkpoint'])) {
+            Redirect::to(BASE_URL . '/pregunta/show');
+        }
+
+        $this->terminarPartida(
+            '¡Ganaste la partida!',
+            'Te retiraste con ' . $_SESSION['correctasPartida'] . ' preguntas correctas.',
+            'ganada'
+        );
+    }
+
+    public function seguir()
+    {
+        unset($_SESSION['checkpoint']);
+        Redirect::to(BASE_URL . '/pregunta/show');
+    }
+
+    // Rendirse deja la partida en 0 puntos, sin importar cuántos tenía
+    public function rendirse()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['partida_activa'])) {
+            Redirect::to(BASE_URL . '/inicio/show');
+        }
+
+        $_SESSION['puntaje'] = 0;
+
+        $this->terminarPartida(
+            'Te rendiste',
+            'La partida terminó con 0 puntos.',
+            'rendida'
+        );
+    }
     public function reportar()
     {
 

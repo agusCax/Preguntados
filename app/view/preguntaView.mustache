@@ -103,6 +103,8 @@
             text-decoration: none;
             font-size: 0.95rem;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
+             border: 0;
+             cursor: pointer;
         }
 
         .q__exit:hover {
@@ -372,6 +374,12 @@
             color: var(--color-ink);
         }
 
+        .rep-modal__text {
+            margin: 0 0 1rem;
+            font-weight: 600;
+            color: var(--color-ink-soft);
+        }
+
         .rep-modal__label {
             display: block;
             margin: 0.75rem 0 0.3rem;
@@ -450,6 +458,56 @@
             opacity: 0.6;
             cursor: default;
         }
+
+                /* Modal de rendición: mismo estilo que la pantalla de resultado */
+                #rendirse-modal .rep-modal__card {
+                    padding: 2rem 1.5rem;
+                    text-align: center;
+                    border: 1px solid var(--color-border);
+                    border-radius: 1.5rem;
+                    box-shadow: 0 12px 32px rgb(15 23 42 / 10%);
+                }
+
+                #rendirse-modal .rep-modal__title {
+                    margin: 0 0 1rem;
+                    font-family: var(--font-family);
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                }
+
+                #rendirse-modal .rep-modal__text {
+                    font-weight: 800;
+                    color: #b91c1c;
+                }
+
+                #rendirse-modal .rep-modal__actions {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                #rendirse-modal .rep-modal__btn {
+                    width: min(100%, 18rem);
+                    min-height: 48px;
+                    padding: 0.65rem 1.25rem;
+                    border: 0;
+                    font-family: var(--font-family);
+                    font-size: 1rem;
+                    font-weight: 800;
+                    color: #0c4a6e;
+                    box-shadow: 0 4px 0 #0284c7;
+                    transition: transform 0.1s ease, box-shadow 0.1s ease;
+                }
+
+                #rendirse-modal .rep-modal__btn--secondary { background-color: #7dd3fc; } /* Seguir jugando */
+                #rendirse-modal .rep-modal__btn--primary   { background-color: #bfe2f1; } /* Sí, rendirme */
+
+                #rendirse-modal .rep-modal__btn:hover { transform: translateY(-2px); }
+
+                #rendirse-modal .rep-modal__btn:active {
+                    transform: translateY(3px);
+                    box-shadow: 0 0 0 transparent;
+                }
 
         @keyframes pop-in {
             from { opacity: 0; transform: scale(0.8) translateY(14px); }
@@ -666,6 +724,21 @@
     </div>
 </div>
 
+<!-- Modal de rendición -->
+<div class="rep-modal" id="rendirse-modal" hidden>
+    <div class="rep-modal__card" role="dialog" aria-modal="true" aria-labelledby="rendirse-titulo">
+        <h2 class="rep-modal__title" id="rendirse-titulo">¿Estás seguro de que querés rendirte?</h2>
+        <p class="rep-modal__text">Si te rendís, la partida termina con <strong>0 puntos</strong>, sin importar cuántos hayas sumado.</p>
+
+        <form method="post" action="{{base_url}}/pregunta/rendirse">
+            <div class="rep-modal__actions">
+                <button type="button" class="rep-modal__btn rep-modal__btn--secondary" id="rendirse-cancelar">Seguir jugando</button>
+                <button type="submit" class="rep-modal__btn rep-modal__btn--primary">Sí, rendirme</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     (function () {
         const timer = document.getElementById('timer');
@@ -766,6 +839,34 @@
                 mostrarMensaje('No se pudo enviar el reporte. Intentá de nuevo.', false);
                 btnEnviar.disabled = false;
             }
+        });
+    })();
+</script>
+
+<script>
+    // Modal de rendición: el botón "Rendirse" del encabezado lo abre
+    (function () {
+        const modal = document.getElementById('rendirse-modal');
+        const btnAbrir = document.getElementById('btn-rendirse');
+        const btnCancelar = document.getElementById('rendirse-cancelar');
+
+        function cerrar() {
+            modal.hidden = true;
+        }
+
+        btnAbrir.addEventListener('click', function () {
+            modal.hidden = false;
+            btnCancelar.focus();   // el foco empieza en la opción segura
+        });
+
+        btnCancelar.addEventListener('click', cerrar);
+
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) cerrar();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !modal.hidden) cerrar();
         });
     })();
 </script>

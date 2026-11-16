@@ -23,13 +23,13 @@ class PreguntaModel
         return (int)$this->database->lastInsertId();
     }
 
-    public function terminarPartida($idPartida, $puntaje)
+    public function terminarPartida($idPartida, $puntaje, $resultado)
     {
         $this->database->execute(
             "UPDATE partidas
-            SET estado = 'terminada', puntaje = :puntaje, fecha_fin = NOW()
-            WHERE id = :id",
-            [':puntaje' => $puntaje, ':id' => $idPartida]
+        SET estado = 'terminada', puntaje = :puntaje, resultado = :resultado, fecha_fin = NOW()
+        WHERE id = :id",
+            [':puntaje' => $puntaje, ':resultado' => $resultado, ':id' => $idPartida]
         );
     }
 
