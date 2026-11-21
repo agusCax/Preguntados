@@ -16,6 +16,7 @@ class EditorController
         $this->render = $render;
     }
 
+    //MODERACION
     public function show()
     {
         if ($_SESSION['rol'] !== Rol::Editor->name) {
@@ -29,7 +30,42 @@ class EditorController
             'totalReportes' => $this->model->contarPendientes('reportada')
         ];
 
-        $this->render->renderiza('editor/inicio', $data);
+        $this->render->renderiza('editor/moderacion', $data);
+    }
+
+    //BANCO DE PREGUNTAS
+    public function listarBanco()
+    {
+        $preguntas = $this->model->listarBanco();
+        $data = [
+            'hayPreguntas' => !empty($preguntas),
+            'preguntas' => $preguntas,
+            'urlAlta' => BASE_URL . '/editor/altaPregunta',
+        ];
+
+        $this->render->renderiza('editor/bancoListado', $data);
+    }
+
+    public function detallePregunta()
+    {
+        $preguntaId = $_GET['id'] ?? null;
+
+        if(! $preguntaId){
+            $this->redirigir('Banco');
+        }
+
+        $data = $this->model->obtenerPregunta($preguntaId);
+
+        if(! $data){
+            $this->redirigir('Banco');
+        }
+
+        //$data['esReporte'] = false;
+        $data['idPregunta'] = $preguntaId;
+        $data['urlListado'] = BASE_URL . '/editor/listarBanco';
+        //$data['urlProcesar'] = BASE_URL . '/editor/procesarSugerencia';
+
+        $this->render->renderiza('editor/moderacionDetalle', $data);
     }
 
     //SUGERENCIAS
@@ -241,8 +277,8 @@ class EditorController
     }
 
     //HELPERS
-    private function redirigir($tipoModeracion){
-        header('Location: ' . BASE_URL . '/editor/listar'. $tipoModeracion);
+    private function redirigir($destino){
+        header('Location: ' . BASE_URL . '/editor/listar'. $destino);
         exit();
     }
 }

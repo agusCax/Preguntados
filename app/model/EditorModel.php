@@ -14,6 +14,37 @@ class EditorModel
         $this->database = $database;
     }
 
+    //BANCO DE PREGUNTAS - TOTAL
+    public function listarBanco()
+    {
+        $resultado = $this->database->queryAll("SELECT * FROM preguntas p");
+
+        $listado = [];
+
+        foreach ($resultado as $fila) {
+            $idPregunta = $fila['id'];
+            $estadoPregunta = $fila['estado'];
+            $preguntaConOpciones = $this->obtenerPreguntaConOpciones($idPregunta, $estadoPregunta);
+
+            if ($estadoPregunta === EstadoPregunta::Reportada->value) {
+                $preguntaConOpciones['reporte'] = $this->obtenerReportePendiente($idPregunta);
+                $preguntaConOpciones['urlDetalle'] = BASE_URL . '/editor/detallePregunta?id=' . $idPregunta;
+            } else {
+                $preguntaConOpciones['urlDetalle'] = BASE_URL . '/editor/detallePregunta?id=' . $idPregunta;
+            }
+
+            $listado[] = $preguntaConOpciones;
+        }
+
+        return $listado;
+    }
+
+    public function obtenerPregunta($idPregunta)
+    {
+        $preguntaConOpciones = $this->obtenerPreguntaConOpciones($idPregunta);
+        return $preguntaConOpciones;
+    }
+
     //SUGERENCIAS + REPORTES
     public function contarPendientes($estado)
     {
@@ -62,14 +93,14 @@ class EditorModel
         $preguntaConOpciones['reporte'] = $this->obtenerReportePendiente($idPregunta);
 
         $preguntaConOpciones = $preguntaConOpciones !== null ? $preguntaConOpciones :  null;
-        
+
         return $preguntaConOpciones;
     }
 
     public function obtenerResolucionReporte($idPregunta)
     {
         $preguntaReportada = $this->obtenerReporte($idPregunta);
-        $preguntaReportada['categorias'] = 
+        $preguntaReportada['categorias'] =
             $this->database->queryAll(
                 "SELECT id, nombre, icono
                  FROM categorias
@@ -83,14 +114,15 @@ class EditorModel
     {
         $preguntaReactivada = $this->actualizarEstadoPregunta($idPregunta, EstadoPregunta::Activa->value);
         $reporteRechazado = $this->actualizarEstadoReporte($idReporte, EstadoReporte::Rechazado->value, true);
-        
+
         return $preguntaReactivada && $reporteRechazado;
     }
 
-    public function inactivarPregunta($idPregunta, $idReporte){
+    public function inactivarPregunta($idPregunta, $idReporte)
+    {
         $preguntaInactivada = $this->actualizarEstadoPregunta($idPregunta, EstadoPregunta::Inactiva->value);
         $reporteAceptado = $this->actualizarEstadoReporte($idReporte, EstadoReporte::Aceptado->value, true);
-        
+
         return $preguntaInactivada && $reporteAceptado;
     }
 
@@ -102,23 +134,27 @@ class EditorModel
             p.texto = :texto, 
             p.categoria_id = :idCategoria
             WHERE p.id = :idPregunta",
-            [ ':texto' => $preguntaTexto,
-            ':idCategoria' => $categoriaId,
-            ':idPregunta' => $idPregunta]
+            [
+                ':texto' => $preguntaTexto,
+                ':idCategoria' => $categoriaId,
+                ':idPregunta' => $idPregunta
+            ]
         );
 
         $respuestasModificadas = true;
 
-        foreach($respuestas as $respuesta){
+        foreach ($respuestas as $respuesta) {
             $modificada = $this->database->execute(
                 "UPDATE respuestas r
                 SET 
                 r.texto = :texto, 
                 r.es_correcta = :esCorrecta
                 WHERE r.id = :idRespuesta",
-                [ ':texto' => $respuesta['texto'],
-                ':esCorrecta' => $respuestaCorrectaId === $respuesta['id'] ? 1 : 0,
-                ':idRespuesta' => $respuesta['id']]
+                [
+                    ':texto' => $respuesta['texto'],
+                    ':esCorrecta' => $respuestaCorrectaId === $respuesta['id'] ? 1 : 0,
+                    ':idRespuesta' => $respuesta['id']
+                ]
             );
 
             if ($modificada === false) {
@@ -128,9 +164,9 @@ class EditorModel
 
         $preguntaReactivada = $this->actualizarEstadoPregunta($idPregunta, EstadoPregunta::Activa->value);
         $reporteAceptado = $this->actualizarEstadoReporte($idReporte, EstadoReporte::Aceptado->value, true);
-        
+
         return $preguntaModificada !== false
-            && $respuestasModificadas 
+            && $respuestasModificadas
             && $preguntaReactivada !== false
             && $reporteAceptado !== false;
     }
@@ -159,20 +195,22 @@ class EditorModel
     }
 
     //HELPERS
-    private function obtenerPreguntaConOpciones($idPregunta, $estadoPregunta)
+    private function obtenerPreguntaConOpciones($idPregunta, $estadoPregunta = null)
     {
-        $pregunta = $this->database->queryOne(
-            "SELECT p.id, p.texto,
-                    c.nombre AS categoria, c.color, c.icono, c.id AS categoria_id
+        $sql = "SELECT p.id, p.texto,
+            c.nombre AS categoria, c.color, c.icono, c.id AS categoria_id
             FROM preguntas p
             JOIN categorias c ON c.id = p.categoria_id
-            WHERE p.id = :id
-            AND p.estado = :estado",
-            [
-                ':id' => $idPregunta,
-                ':estado' => $estadoPregunta
-            ]
-        );
+            WHERE p.id = :id";
+
+        $parametros = [':id' => $idPregunta];
+
+        if ($estadoPregunta !== null) {
+            $sql .= " AND p.estado = :estado";
+            $parametros[':estado'] = $estadoPregunta;
+        }
+
+        $pregunta = $this->database->queryOne($sql, $parametros);
 
         $opciones = $this->database->queryAll(
             "SELECT id, texto, es_correcta
@@ -205,27 +243,33 @@ class EditorModel
         );
     }
 
-    private function actualizarEstadoReporte($idReporte, $nuevoEstadoReporte, $resuelto){
+    private function actualizarEstadoReporte($idReporte, $nuevoEstadoReporte, $resuelto)
+    {
         $actualizado = $this->database->execute(
             "UPDATE reportes r
             SET r.estado = :estado,
             r.fecha_resolucion = :resuelto
             WHERE r.id = :idReporte",
-            [':estado' => $nuevoEstadoReporte, 
-            ':resuelto' => $resuelto ? date('Y-m-d H:i:s') : null,
-            ':idReporte' => $idReporte]
+            [
+                ':estado' => $nuevoEstadoReporte,
+                ':resuelto' => $resuelto ? date('Y-m-d H:i:s') : null,
+                ':idReporte' => $idReporte
+            ]
         );
 
         return $actualizado !== false;
     }
 
-    private function actualizarEstadoPregunta($idPregunta, $nuevoEstadoPregunta){
+    private function actualizarEstadoPregunta($idPregunta, $nuevoEstadoPregunta)
+    {
         $actualizado = $this->database->execute(
-                "UPDATE preguntas p
+            "UPDATE preguntas p
                 SET p.estado = :estado
                 WHERE p.id = :idPregunta",
-                [':estado' => $nuevoEstadoPregunta, 
-                ':idPregunta' => $idPregunta]
+            [
+                ':estado' => $nuevoEstadoPregunta,
+                ':idPregunta' => $idPregunta
+            ]
         );
 
         return $actualizado !== false;

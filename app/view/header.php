@@ -1,13 +1,19 @@
 <?php
 // Se usan nombres con prefijo "hd" para no pisar variables de MustacheRender::renderiza().
 //De momento nuestro header tendra unicamente esto para esta entrega
+
+use app\enum\Rol;
+
 $hdSeccion = $_GET['controller'] ?? 'inicio';
-if ($hdSeccion !== 'ranking') {
-    $hdSeccion = 'inicio';
-}
+// if ($hdSeccion !== 'ranking') {
+//     $hdSeccion = 'inicio';
+// }
 $hdUsuario = isset($_SESSION['usuario'])
-        ? htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8')
-        : null;
+    ? htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8')
+    : null;
+$hdRol = isset($_SESSION['rol'])
+    ? htmlspecialchars($_SESSION['rol'], ENT_QUOTES, 'UTF-8')
+    : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -90,8 +96,8 @@ $hdUsuario = isset($_SESSION['usuario'])
             display: grid;
             grid-template-columns: 1fr auto;
             grid-template-areas:
-            "brand user"
-            "nav   nav";
+                "brand user"
+                "nav   nav";
             align-items: center;
             gap: 0.75rem 1rem;
             max-width: 1200px;
@@ -261,39 +267,49 @@ $hdUsuario = isset($_SESSION['usuario'])
 </head>
 <body>
 
-<header class="hd">
-    <div class="hd__bar">
+    <header class="hd">
+        <div class="hd__bar">
 
-        <a href="<?= BASE_URL ?>/inicio/show" class="hd__brand">Cerebrito</a>
+            <a href="<?= BASE_URL ?>/inicio/show" class="hd__brand">Cerebrito</a>
 
-        <nav class="hd__nav" aria-label="Navegación principal">
-            <a href="<?= BASE_URL ?>/inicio/show"
-               class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>"<?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
-            <a href="<?= BASE_URL ?>/ranking/show"
-               class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>"<?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
-        </nav>
+            <nav class="hd__nav" aria-label="Navegación principal">
 
-        <?php if ($hdUsuario !== null): ?>
-            <div class="hd__user">
-                <!-- Avatar hacia el perfil -->
-                <a href="<?= BASE_URL ?>/perfil/show" class="hd__avatar" title="Perfil de @<?= $hdUsuario ?>">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    <span class="sr-only">Perfil de @<?= $hdUsuario ?></span>
-                </a>
+                <?php if ($hdRol === Rol::Jugador->name): ?>
+                    <a href="<?= BASE_URL ?>/inicio/show"
+                        class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>" <?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
+                    <a href="<?= BASE_URL ?>/ranking/show"
+                        class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>" <?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
+                <?php elseif ($hdRol === Rol::Editor->name): ?>
+                    <a href="<?= BASE_URL ?>/editor/show"
+                        class="hd__link<?= $hdSeccion === 'editor' ? ' is-active' : '' ?>" <?= $hdSeccion === 'editor' ? ' aria-current="page"' : '' ?>>Moderacion</a>
+                    <a href="<?= BASE_URL ?>/editor/listarBanco"
+                        class="hd__link<?= $hdSeccion === 'preguntas' ? ' is-active' : '' ?>" <?= $hdSeccion === 'preguntas' ? ' aria-current="page"' : '' ?>>Banco de preguntas</a>
+                <?php elseif ($hdRol === Rol::Administrador->name): ?>
+                    //Completar 
+                <?php endif; ?>
+            </nav>
 
-                <a href="<?= BASE_URL ?>/login/logout" class="hd__logout" aria-label="Salir">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    <span class="hd__logout-text" aria-hidden="true">Salir</span>
-                </a>
-            </div>
-        <?php endif; ?>
+            <?php if ($hdUsuario !== null): ?>
+                <div class="hd__user">
+                    <!-- Avatar hacia el perfil -->
+                    <a href="<?= BASE_URL ?>/perfil/show" class="hd__avatar" title="Perfil de @<?= $hdUsuario ?>">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        <span class="sr-only">Perfil de @<?= $hdUsuario ?></span>
+                    </a>
 
-    </div>
-</header>
+                    <a href="<?= BASE_URL ?>/login/logout" class="hd__logout" aria-label="Salir">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        <span class="hd__logout-text" aria-hidden="true">Salir</span>
+                    </a>
+                </div>
+            <?php endif; ?>
+
+        </div>
+    </header>
