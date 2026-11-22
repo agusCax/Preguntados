@@ -8,8 +8,11 @@ require_once __DIR__ . "/app/Configuration.php";
 
 $configuration = new Configuration();
 $router = $configuration->getRouter();
+$accessControl = $configuration->getAccessControl();
 
-$router->dispatch(
-    Request::get("controller", "inicio"),
-    Request::get("method", "show")
-);
+$controlador = Request::get("controller", "inicio");
+$metodo = Request::get("method", "show");
+
+$accessControl->verificar($controlador, $metodo);
+
+$router->dispatch($controlador, $metodo);

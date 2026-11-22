@@ -22,6 +22,7 @@ use MustacheRender;
 use MyDatabase;
 use Router;
 use Mailer;
+use AccessControl;
 
 require_once __DIR__ . "/../helper/Autoloader.php";
 
@@ -178,6 +179,13 @@ class Configuration
     {
         return new RankingModel(
             $this->getDatabase()
+        );
+    }
+
+    public function getAccessControl()
+    {
+        return new AccessControl(
+            $this->getRender()
         );
     }
 }
