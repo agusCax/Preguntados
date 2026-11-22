@@ -13,4 +13,6 @@ $accessControl = $configuration->getAccessControl();
 $controlador = Request::get("controller", "inicio");
 $metodo = Request::get("method", "show");
 
+$accessControl->verificar($controlador, $metodo);
+
 $router->dispatch($controlador, $metodo);
