@@ -10,7 +10,7 @@ $configuration = new Configuration();
 $router = $configuration->getRouter();
 $accessControl = $configuration->getAccessControl();
 
-$router->dispatch(
-    Request::get("controller", "inicio"),
-    Request::get("method", "show")
-);
+$controlador = Request::get("controller", "inicio");
+$metodo = Request::get("method", "show");
+
+$router->dispatch($controlador, $metodo);
