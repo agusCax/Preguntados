@@ -3,7 +3,6 @@
 namespace app\controller;
 
 use app\enum\EstadoPregunta;
-use app\enum\Rol;
 use Request;
 
 class EditorController
