@@ -29,11 +29,6 @@ class PreguntaController
 
     public function show()
     {
-        if (!isset($_SESSION['usuario_id'])) {
-            Redirect::to(BASE_URL . '/login/show');
-            exit();
-        }
-
         // Si no hay partida en curso, se crea una en la base y se guarda su id (INT)
         if (!isset($_SESSION['partida_activa'])) {
             $_SESSION['partida_activa'] = $this->preguntaModel->crearPartida($_SESSION['usuario_id']);
@@ -127,7 +122,7 @@ class PreguntaController
     public function responder()
     {
 
-        if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['partida_activa'])) {
+        if (!isset($_SESSION['partida_activa'])) {
             Redirect::to(BASE_URL . '/login/show');
             exit();
         }
@@ -305,10 +300,6 @@ class PreguntaController
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responderJson(405, false, 'Método no permitido.');
-        } elseif (!isset($_SESSION['usuario_id'])) {
-            $this->responderJson(401, false, 'Tu sesión expiró. Inicie sesión nuevamente.');
-        } elseif (($_SESSION['rol'] ?? null) !== Rol::Jugador->name) {
-            $this->responderJson(403, false, 'Solo los jugadores pueden reportar preguntas.');
         }
 
         if (!isset($_SESSION['pregunta_actual'])) {
@@ -360,10 +351,6 @@ class PreguntaController
     
     public function agregar()
     {
-        if (!isset($_SESSION['usuario_id'])) {
-            Redirect::to(BASE_URL . '/login/show');
-            exit();
-        }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->render->renderiza("agregarPregunta", [], true);
