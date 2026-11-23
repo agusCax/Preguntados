@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use app\enum\EstadoPregunta;
 use app\enum\Rol;
 use Request;
 
@@ -19,15 +20,10 @@ class EditorController
     //MODERACION
     public function show()
     {
-        if ($_SESSION['rol'] !== Rol::Editor->name) {
-            header('Location: ' . BASE_URL);
-            exit();
-        }
-
         $data = [
             'nombreUsuario' => $_SESSION['usuario'],
-            'totalSugerencias' => $this->model->contarPendientes('pendiente'),
-            'totalReportes' => $this->model->contarPendientes('reportada')
+            'totalSugerencias' => $this->model->contarPreguntasPorEstado('pendiente'),
+            'totalReportes' => $this->model->contarPreguntasPorEstado('reportada')
         ];
 
         $this->render->renderiza('editor/moderacion', $data);
@@ -40,37 +36,172 @@ class EditorController
         $data = [
             'hayPreguntas' => !empty($preguntas),
             'preguntas' => $preguntas,
-            'urlAlta' => BASE_URL . '/editor/altaPregunta',
+            'urlNueva' => BASE_URL . '/editor/nuevaPregunta',
         ];
 
         $this->render->renderiza('editor/bancoListado', $data);
+    }
+
+    public function nuevaPregunta()
+    {   
+        $respuestasVacias = array_fill(0, 4, ['id' => '', 'texto' => '', 'es_correcta' => 0]);
+
+        $data = [
+            'urlForm' => BASE_URL . '/editor/guardarNuevaPregunta',
+            'textoBtnForm' => 'Crear pregunta', 
+            'respuestas' => $this->armarRespuestas($respuestasVacias), 
+            'categorias' => $this->armarCategorias($this->model->listarCategorias(), null), 
+            'urlListado' => BASE_URL . '/editor/listarBanco'
+        ];
+
+        $this->render->renderiza('editor/nuevaPregunta', $data);
+    }
+
+    public function guardarNuevaPregunta()
+    {   
+        $urlVolver = BASE_URL . '/editor/listarBanco';
+        $dataValidada = $this->validarPregunta($urlVolver);
+        
+        $confirmacion = $this->model->guardarNuevaPregunta($dataValidada['preguntaTexto'], $dataValidada['categoriaId'], $dataValidada['respuestas'], $dataValidada['respuestaCorrecta']);
+
+        if (!$confirmacion) {
+            $mensaje = 'No se pudo agregar la pregunta.';
+        } else {
+            $mensaje = 'Se pudo agregar la pregunta exitosamente.';
+        }
+
+        $data = [
+            'confirmacion' => $confirmacion,
+            'mensaje' => $mensaje,
+            'volverUrl' => BASE_URL . '/editor/listarBanco'
+        ];
+
+        $this->render->renderiza('editor/resultado', $data);
     }
 
     public function detallePregunta()
     {
         $preguntaId = $_GET['id'] ?? null;
 
-        if(! $preguntaId){
+        if (!$preguntaId) {
             $this->redirigir('Banco');
         }
 
-        $data = $this->model->obtenerPregunta($preguntaId);
+        $data = $this->model->obtenerPreguntaConOpciones($preguntaId);
 
-        if(! $data){
+        if (!$data) {
             $this->redirigir('Banco');
         }
 
-        //$data['esReporte'] = false;
-        $data['idPregunta'] = $preguntaId;
+        switch($data['pregunta']['estado']){
+            case EstadoPregunta::Reportada->value: 
+                $this->detalleReporte();
+                break;
+            case EstadoPregunta::Pendiente->value:
+                $this->detalleSugerencia();
+                break;
+            case EstadoPregunta::Activa->value: 
+                $this->detalleActivaInactiva($preguntaId, $data);
+                break;
+            case EstadoPregunta::Inactiva->value:
+                $this->detalleActivaInactiva($preguntaId, $data);
+                break;
+        }
+    }
+
+    private function detalleActivaInactiva($preguntaId, $data)
+    {        
+        $estado = $data['pregunta']['estado'];
+
+        $data['estado'] = $estado;
+        $data['textoBtn'] = $estado === EstadoPregunta::Activa->value ? 'Inactivar' : 'Activar';        
+        $data['confirmacionEstado'] = '¿Está seguro de que desea modificar el estado?';
+        $data['nuevoEstado'] = $estado === EstadoPregunta::Activa->value ? EstadoPregunta::Inactiva->value : EstadoPregunta::Activa->value;
+        $data['urlCambiarEstado'] = BASE_URL . '/editor/cambiarEstado';
+        $data['urlEditar'] = BASE_URL . '/editor/obtenerPreguntaAModificar?id=' . $preguntaId;
         $data['urlListado'] = BASE_URL . '/editor/listarBanco';
-        //$data['urlProcesar'] = BASE_URL . '/editor/procesarSugerencia';
 
-        $this->render->renderiza('editor/moderacionDetalle', $data);
+        $this->render->renderiza('editor/bancoDetalle', $data);
+    }
+
+    public function cambiarEstado()
+    {
+        $preguntaId = Request::post('pregunta_id') ?? null;
+        $nuevoEstado = Request::post('nuevo_estado') ?? null;
+
+        if (!$preguntaId || 
+            $nuevoEstado !== EstadoPregunta::Activa->value && $nuevoEstado !== EstadoPregunta::Inactiva->value) {
+            $this->redirigir('Banco');
+        }
+        
+        $confirmacion = $nuevoEstado === EstadoPregunta::Activa->value ? $this->model->activarPregunta($preguntaId) : $this->model->inactivarPregunta($preguntaId);
+        
+        if (!$confirmacion) {
+            $mensaje = 'No se pudo modificar el estado de la pregunta.';
+        } else {
+            $mensaje = 'El estado de la pregunta fue modificado exitosamente.';
+        }
+
+        $data = [
+            'confirmacion' => $confirmacion,
+            'mensaje' => $mensaje,
+            'volverUrl' => BASE_URL . '/editor/listarBanco'
+        ];
+
+        $this->render->renderiza('editor/resultado', $data);
+    }
+
+    public function obtenerPreguntaAModificar()
+    {
+        $preguntaId = $_GET['id'] ?? null;
+
+        if (!$preguntaId) {
+            $this->redirigir('Banco');
+        }
+
+        $data = $this->model->obtenerPreguntaConOpciones($preguntaId);
+
+        if (!$data) {
+            $this->redirigir('Banco');
+        }
+
+        $this->render->renderiza('editor/bancoEditar', [
+            'pregunta' => [
+                'id' => $data['pregunta']['id'],
+                'texto' => $data['pregunta']['texto'],
+            ],
+            'respuestas' => $this->armarRespuestas($data['opciones']),
+            'categorias' => $this->armarCategorias($this->model->listarCategorias(), $data['pregunta']['categoria_id']),
+            'urlForm' => BASE_URL . '/editor/modificarPregunta',
+            'textoBtnForm' => 'Guardar cambios',
+            'confirmacionForm' => '¿Confirmás los cambios en la pregunta?',
+            'urlListado' => BASE_URL . '/editor/listarBanco',
+        ]);
+    }
+
+    public function modificarPregunta()
+    {
+        $urlVolver = BASE_URL . '/editor/listarBanco';
+
+        $dataValidada = $this->validarPreguntaAModificar($urlVolver);
+        
+        $confirmacion = $this->model->modificarPregunta($dataValidada['preguntaId'], $dataValidada['preguntaTexto'], $dataValidada['categoriaId'], $dataValidada['respuestas'], $dataValidada['respuestaCorrecta']);
+        
+        $mensaje = $confirmacion
+            ? 'La pregunta se modificó correctamente.'
+            : 'No se pudo modificar la pregunta.';
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje' => $mensaje,
+            'volverUrl' => $urlVolver,
+        ]);
     }
 
     //SUGERENCIAS
-    public function listarSugerencias(){
-        $moderaciones = $this->model->listar('pendiente');
+    public function listarSugerencias()
+    {
+        $moderaciones = $this->model->listarPreguntasPorEstado('pendiente');
         $data = [
             'esReporte' => false,
             'hayModeraciones' => !empty($moderaciones),
@@ -84,20 +215,21 @@ class EditorController
     public function detalleSugerencia()
     {
         $preguntaId = $_GET['id'] ?? null;
-        
-        if (! $preguntaId) {
+
+        if (!$preguntaId) {
             $this->redirigir('Sugerencias');
         }
 
         $data = $this->model->obtenerSugerencia($preguntaId);
 
-        if(! $data){
+        if (!$data) {
             $this->redirigir('Sugerencias');
         }
 
         $data['esReporte'] = false;
         $data['idPregunta'] = $preguntaId;
         $data['urlListado'] = BASE_URL . '/editor/listarSugerencias';
+        $data['urlBanco'] = BASE_URL . '/editor/listarBanco';
         $data['urlProcesar'] = BASE_URL . '/editor/procesarSugerencia';
 
         $this->render->renderiza('editor/moderacionDetalle', $data);
@@ -106,11 +238,11 @@ class EditorController
     public function procesarSugerencia()
     {
         $id = Request::post('pregunta_id');
-        $accion = Request::post('accion'); 
+        $accion = Request::post('accion');
 
-        $modificada = $this->model->procesarSugerencia($id, $accion);
+        $confirmacion = $this->model->procesarSugerencia($id, $accion);
 
-        if (!$modificada) {
+        if (!$confirmacion) {
             $mensaje = 'No se pudo actualizar la pregunta.';
         } elseif ($accion === 'aceptar') {
             $mensaje = 'La sugerencia fue aceptada.';
@@ -119,7 +251,7 @@ class EditorController
         }
 
         $data = [
-            'confirmacion' => $modificada,
+            'confirmacion' => $confirmacion,
             'mensaje' => $mensaje,
             'volverUrl' => BASE_URL . '/editor/listarSugerencias'
         ];
@@ -128,8 +260,9 @@ class EditorController
     }
 
     //REPORTES
-    public function listarReportes(){
-        $moderaciones =  $this->model->listar('reportada');
+    public function listarReportes()
+    {
+        $moderaciones = $this->model->listarPreguntasPorEstado('reportada');
         $data = [
             'esReporte' => true,
             'hayModeraciones' => !empty($moderaciones),
@@ -142,20 +275,21 @@ class EditorController
     public function detalleReporte()
     {
         $preguntaId = $_GET['id'] ?? null;
-        
-        if (! $preguntaId) {
+
+        if (!$preguntaId) {
             $this->redirigir('Reportes');
         }
 
         $data = $this->model->obtenerReporte($preguntaId);
 
-        if(! $data){
+        if (!$data) {
             $this->redirigir('Reportes');
         }
 
         $data['esReporte'] = true;
         $data['preguntaId'] = $preguntaId;
         $data['urlListado'] = BASE_URL . '/editor/listarReportes';
+        $data['urlBanco'] = BASE_URL . '/editor/listarBanco';
         $data['urlProcesar'] = BASE_URL . '/editor/procesarReporte';
 
         $this->render->renderiza('editor/moderacionDetalle', $data);
@@ -174,13 +308,13 @@ class EditorController
         }
 
         //Rechazar -> Reactivar pregunta
-        $rechazado = $this->model->rechazarReporte($preguntaId, $reporteId);
-        $mensaje = $rechazado
+        $confirmacion = $this->model->rechazarReporte($preguntaId, $reporteId);
+        $mensaje = $confirmacion
             ? 'El reporte se rechazó y la pregunta volvió a estar activa.'
             : 'No se pudo actualizar el estado del reporte.';
 
         $this->render->renderiza('editor/resultado', [
-            'confirmacion' => $rechazado,
+            'confirmacion' => $confirmacion,
             'mensaje' => $mensaje,
             'volverUrl' => BASE_URL . '/editor/listarReportes',
         ]);
@@ -194,11 +328,120 @@ class EditorController
             $this->redirigir('Reportes');
         }
 
-        $letras = ['A', 'B', 'C', 'D'];
-        $opciones = [];
+        $this->render->renderiza('editor/reporteAceptado', [
+            'reporte' => $resolucion['reporte'],
+            'pregunta' => [
+                'id' => $resolucion['pregunta']['id'],
+                'texto' => $resolucion['pregunta']['texto'],
+            ],
+            'respuestas' => $this->armarRespuestas($resolucion['opciones']),
+            'categorias' => $this->armarCategorias($resolucion['categorias'], $resolucion['pregunta']['categoria_id']),
 
-        foreach ($resolucion['opciones'] as $indice => $opcion) {
-            $opciones[] = [
+            //Inactivar
+            'urlInactivar' => BASE_URL . '/editor/inactivarPreguntaReportada',
+            //Voler
+            'urlListado' => BASE_URL . '/editor/listarReportes',
+            //Editar
+            'urlForm' => BASE_URL . '/editor/modificarPreguntaReportada',
+            'textoBtnForm' => 'Guardar cambios y resolver reporte',
+            'confirmacionForm' => '¿Confirmás los cambios y la resolución del reporte?',
+            'infoForm' => 'Al guardar los cambios, el reporte quedará resuelto y la pregunta volverá a estar activa en el juego.',
+        ]);
+    }
+
+    public function inactivarPreguntaReportada()
+    {
+        $reporteId = Request::post('reporte_id');
+        $preguntaId = Request::post('pregunta_id');
+
+        if ($reporteId === null || $preguntaId === null) {
+            $this->mostrarError(
+                'Faltan datos para inactivar la pregunta.',
+                BASE_URL . '/editor/listarReportes'
+            );
+        }
+
+        $confirmacion = $this->model->inactivarPreguntaReportada($preguntaId, $reporteId);
+        $mensaje = $confirmacion
+            ? 'La pregunta se inactivó correctamente.'
+            : 'No se pudo aceptar el reporte ni inactivar la pregunta.';
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje' => $mensaje,
+            'volverUrl' => BASE_URL . '/editor/listarReportes',
+        ]);
+    }
+
+    public function modificarPreguntaReportada()
+    {
+        $reporteId = Request::post('reporte_id') ?? null;
+        $urlVolver = BASE_URL . '/editor/listarReportes';
+
+        if ($reporteId === null) {
+            $this->mostrarError('Faltan datos para modificar la pregunta. Completá todos los campos e intentá de nuevo.', $urlVolver);
+        }
+        
+        $dataValidada = $this->validarPreguntaAModificar($urlVolver);
+
+        $confirmacion = $this->model->modificarPreguntaReportada($dataValidada['preguntaId'], $dataValidada['preguntaTexto'], $dataValidada['categoriaId'], $dataValidada['respuestas'], $dataValidada['respuestaCorrecta'], $reporteId);
+
+        $mensaje = $confirmacion
+            ? 'La pregunta se modificó correctamente.'
+            : 'No se pudo modificar la pregunta.';
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje' => $mensaje,
+            'volverUrl' => $urlVolver,
+        ]);
+    }
+
+    //HELPERS
+    private function validarPreguntaAModificar($urlVolver)
+    {
+        $preguntaId = Request::post('pregunta_id') ?? null;
+
+        if ($preguntaId === null) {
+            $this->mostrarError('Faltan datos para modificar la pregunta. Completá todos los campos e intentá de nuevo.', $urlVolver);
+        }
+        
+        $dataValidada = $this->validarPregunta($urlVolver);
+        
+        $dataValidada['preguntaId'] = $preguntaId;
+
+        return $dataValidada;
+    }
+    private function validarPregunta($urlVolver)
+    {
+        $preguntaTexto = Request::post('pregunta_texto') ?? null;
+        $categoriaId = Request::post('categoria_id') ?? null;
+        $respuestas = Request::post('respuestas');
+        $respuestaCorrecta = Request::post('respuesta_correcta') ?? null;
+
+        if ($preguntaTexto === null || $categoriaId === null || !is_array($respuestas) || $respuestaCorrecta === null) {
+            $this->mostrarError('Faltan datos para modificar la pregunta. Completá todos los campos e intentá de nuevo.', $urlVolver);
+        }
+
+        if (!isset($respuestas[$respuestaCorrecta])) {
+            $this->mostrarError('La respuesta correcta seleccionada no es válida.', $urlVolver);
+        }
+
+        return [
+            'preguntaTexto' => $preguntaTexto, 
+            'categoriaId' => $categoriaId, 
+            'respuestas' => $respuestas, 
+            'respuestaCorrecta' => $respuestaCorrecta];
+    }
+
+    //Convierte las opciones de la base en el formato que espera formPreguntaView
+    private function armarRespuestas($opciones)
+    {
+        $letras = ['A', 'B', 'C', 'D'];
+        $respuestas = [];
+
+        foreach ($opciones as $indice => $opcion) {
+            $respuestas[] = [
                 'indice' => $indice,
                 'letra' => $letras[$indice] ?? (string) ($indice + 1),
                 'id' => $opcion['id'],
@@ -207,78 +450,39 @@ class EditorController
             ];
         }
 
-        $categorias = [];
+        return $respuestas;
+    }
 
-        foreach ($resolucion['categorias'] as $categoria) {
-            $categorias[] = [
+    //Marca como seleccionada la categoria actual de la pregunta
+    private function armarCategorias($categorias, $categoriaActualId)
+    {
+        $listado = [];
+
+        foreach ($categorias as $categoria) {
+            $listado[] = [
                 'id' => $categoria['id'],
                 'nombre' => $categoria['nombre'],
                 'icono' => $categoria['icono'],
-                'seleccionada' => $categoria['id'] === $resolucion['pregunta']['categoria_id'],
+                'seleccionada' => $categoria['id'] === $categoriaActualId,
             ];
         }
 
-        $this->render->renderiza('editor/reporteAceptado', [
-            'reporte' => $resolucion['reporte'],
-            'pregunta' => [
-                'id' => $resolucion['pregunta']['id'],
-                'texto' => $resolucion['pregunta']['texto'],
-            ],
-            'respuestas' => $opciones,
-            'categorias' => $categorias,
-            'urlInactivar' => BASE_URL . '/editor/inactivarPregunta',
-            'urlGuardarEdicion' => BASE_URL . '/editor/modificarPregunta',
-            'urlListado' => BASE_URL . '/editor/listarReportes',
-        ]);
+        return $listado;
     }
 
-    public function inactivarPregunta(){
-        $reporteId = $_POST['reporte_id'];
-        $preguntaId = $_POST['pregunta_id'];
-
-        $inactiva = $this->model->inactivarPregunta($preguntaId, $reporteId);
-        $mensaje = $inactiva
-            ? 'La pregunta se inactivó correctamente.'
-            : 'No se pudo aceptar el reporte ni inactivar la pregunta.';
-
-        $this->render->renderiza('editor/resultado', [
-            'confirmacion' => $inactiva,
+    private function mostrarError($mensaje, $volverUrl, $titulo = 'No se pudo completar la acción')
+    {
+        $this->render->renderiza('editor/error', [
+            'titulo' => $titulo,
             'mensaje' => $mensaje,
-            'volverUrl' => BASE_URL . '/editor/listarReportes',
+            'volverUrl' => $volverUrl,
         ]);
+        exit();
     }
 
-    public function modificarPregunta(){
-        $reporteId = Request::post('reporte_id') ?? null;
-        $preguntaId = Request::post('pregunta_id') ?? null;
-        
-        $preguntaTexto = Request::post('pregunta_texto') ?? null;
-        $categoriaId =  Request::post('categoria_id') ?? null;
-        $respuestas = Request::post('respuestas') ?? null;
-        $respuestaCorrectaId = Request::post('respuesta_correcta_id') ?? null;
-
-        if(
-            $reporteId === null || $preguntaId === null || $preguntaTexto === null ||
-            $categoriaId === null || $respuestas === null || $respuestaCorrectaId === null)
-        {
-            return;
-        }
-
-        $modificada = $this->model->modificarPregunta($preguntaId, $preguntaTexto, $categoriaId, $respuestas, $respuestaCorrectaId, $reporteId);
-        $mensaje = $modificada
-            ? 'La pregunta se modificó correctamente.'
-            : 'No se pudo modificar la pregunta.';
-
-        $this->render->renderiza('editor/resultado', [
-            'confirmacion' => $modificada,
-            'mensaje' => $mensaje,
-            'volverUrl' => BASE_URL . '/editor/listarReportes',
-        ]);
-    }
-
-    //HELPERS
-    private function redirigir($destino){
-        header('Location: ' . BASE_URL . '/editor/listar'. $destino);
+    private function redirigir($destino)
+    {
+        header('Location: ' . BASE_URL . '/editor/listar' . $destino);
         exit();
     }
 }
