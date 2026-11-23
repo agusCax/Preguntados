@@ -1,0 +1,254 @@
+<style>
+    /* =========================================
+       FORMULARIO DE PREGUNTA (partial reutilizable)
+    ========================================= */
+
+    .form-grupo {
+        margin-bottom: 20px;
+    }
+
+    .form-grupo label,
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        min-height: 44px;
+        padding: 11px 12px;
+        box-sizing: border-box;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        color: #0f172a;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.18);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .respuestas-titulo {
+        margin: 25px 0 8px;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.2rem;
+        color: #0f172a;
+    }
+
+    .respuestas-ayuda {
+        margin: 0 0 16px;
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .respuesta-item {
+        padding: 15px;
+        margin-bottom: 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    .respuesta-cabecera {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .respuesta-letra {
+        font-weight: 800;
+        color: #6d28d9;
+    }
+
+    .respuesta-correcta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        color: #166534;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .respuesta-correcta input {
+        width: 17px;
+        height: 17px;
+        accent-color: #16a34a;
+    }
+
+    .info-edicion {
+        padding: 13px 15px;
+        margin: 22px 0;
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        border-radius: 10px;
+        color: #5b21b6;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .btn-guardar {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 46px;
+        padding: 11px 18px;
+
+        background: #ede9fe;
+        color: #6d28d9;
+        border: none;
+        border-radius: 10px;
+
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-guardar:hover {
+        background: #ddd6fe;
+    }
+
+    @media (min-width: 768px) {
+        .btn-guardar {
+            width: auto;
+            min-width: 190px;
+        }
+    }
+</style>
+
+{{!
+    PARTIAL: formulario de pregunta
+
+    Datos que espera del controlador:
+      - urlForm          (string)  a dónde se envía el form
+      - textoBtnForm         (string)  texto del botón de guardar
+      - confirmacionForm (string, opcional) mensaje de la ventana de confirmacion (requiere incluir editor/confirmarView en la pagina)
+      - infoForm              (string, opcional) cartel informativo antes del botón
+      - pregunta.id        (opcional: vacío en el alta)
+      - pregunta.texto     (vacío en el alta)
+      - reporte.reporte_id (opcional: solo al resolver un reporte)
+      - respuestas         (siempre 4 ítems: indice, letra, id, texto, esCorrecta)
+      - categorias         (id, nombre, icono, seleccionada)
+}}
+
+<form
+    action="{{urlForm}}"
+    method="POST"
+    {{#confirmacionForm}}data-confirmar="{{confirmacionForm}}"{{/confirmacionForm}}
+>
+    <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+
+    {{#reporte}}
+        <input type="hidden" name="reporte_id" value="{{reporte_id}}">
+    {{/reporte}}
+
+    <!-- ENUNCIADO -->
+
+    <div class="form-grupo">
+        <label for="pregunta_texto">Pregunta</label>
+
+        <textarea
+            class="form-control"
+            id="pregunta_texto"
+            name="pregunta_texto"
+            required
+        >{{pregunta.texto}}</textarea>
+    </div>
+
+    <!-- RESPUESTAS -->
+
+    <h3 class="respuestas-titulo">Opciones de respuesta</h3>
+
+    <p class="respuestas-ayuda">
+        Completá las cuatro opciones y marcá cuál es la correcta.
+    </p>
+
+    {{#respuestas}}
+        <div class="respuesta-item">
+
+            <div class="respuesta-cabecera">
+                <span class="respuesta-letra">Opción {{letra}}</span>
+            </div>
+
+            <input
+                type="hidden"
+                name="respuestas[{{indice}}][id]"
+                value="{{id}}"
+            >
+
+            <label for="respuesta-{{indice}}">Texto de la respuesta</label>
+
+            <input
+                type="text"
+                class="form-control"
+                id="respuesta-{{indice}}"
+                name="respuestas[{{indice}}][texto]"
+                value="{{texto}}"
+                required
+            >
+
+            <label class="respuesta-correcta">
+                <input
+                    type="radio"
+                    name="respuesta_correcta"
+                    value="{{indice}}"
+                    {{#esCorrecta}}checked{{/esCorrecta}}
+                    required
+                >
+                Es la respuesta correcta
+            </label>
+
+        </div>
+    {{/respuestas}}
+
+    <!-- CATEGORÍA -->
+
+    <div class="form-grupo">
+        <label for="categoria_id">Categoría</label>
+
+        <select
+            class="form-control"
+            id="categoria_id"
+            name="categoria_id"
+            required
+        >
+            {{#categorias}}
+                <option
+                    value="{{id}}"
+                    {{#seleccionada}}selected{{/seleccionada}}
+                >
+                    {{icono}} {{nombre}}
+                </option>
+            {{/categorias}}
+        </select>
+    </div>
+
+    {{#infoForm}}
+        <div class="info-edicion">{{infoForm}}</div>
+    {{/infoForm}}
+
+    <button type="submit" class="btn-guardar">
+        {{textoBtnForm}}
+    </button>
+
+</form>

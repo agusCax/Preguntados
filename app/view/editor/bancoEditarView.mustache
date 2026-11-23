@@ -1,0 +1,184 @@
+<style>
+    /* =========================================
+       CONTENEDOR GENERAL
+    ========================================= */
+
+    .resolucion-container {
+        width: 100%;
+        max-width: 950px;
+        margin-inline: auto;
+        padding: 24px 16px;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        box-sizing: border-box;
+    }
+
+    .resolucion-header {
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .resolucion-header h1 {
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.7rem;
+        color: #0f172a;
+        margin: 0 0 8px;
+    }
+
+    .resolucion-header p {
+        color: #64748b;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* =========================================
+       TARJETA DE INFORMACIÓN DEL REPORTE
+    ========================================= */
+
+    .reporte-resumen {
+        padding: 20px;
+        margin-bottom: 25px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 16px;
+    }
+
+    .reporte-resumen h2 {
+        font-size: 1.1rem;
+        color: #9a3412;
+        margin: 0 0 14px;
+    }
+
+    .reporte-resumen p {
+        color: #7c2d12;
+        line-height: 1.5;
+        margin: 8px 0;
+    }
+
+    .reporte-resumen strong {
+        color: #9a3412;
+    }
+
+    /* =========================================
+       SECCIONES DE RESOLUCIÓN
+    ========================================= */
+
+    .resolucion-section {
+        padding: 22px 18px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .resolucion-section h2 {
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.3rem;
+        color: #0f172a;
+        margin: 0 0 8px;
+    }
+
+    .resolucion-section > p {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin: 0 0 20px;
+    }
+
+    /* =========================================
+       INACTIVAR PREGUNTA
+    ========================================= */
+
+    .inactivar-section {
+        background: #fffafa;
+        border-color: #fecaca;
+    }
+
+    .btn-inactivar {
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 18px;
+        box-sizing: border-box;
+
+        background: #fee2e2;
+        color: #b91c1c;
+        border: none;
+        border-radius: 10px;
+
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-inactivar:hover {
+        background: #fecaca;
+    }
+
+    /* =========================================
+       BOTONES Y AVISOS
+    ========================================= */
+
+    .volver-link {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 10px 0;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .volver-link:hover {
+        color: #0f172a;
+    }
+
+    /* =========================================
+       TABLET Y ESCRITORIO
+    ========================================= */
+
+    @media (min-width: 768px) {
+        .resolucion-container {
+            padding: 35px 24px;
+        }
+
+        .resolucion-header {
+            text-align: left;
+        }
+
+        .resolucion-header h1 {
+            font-size: 2rem;
+        }
+
+        .resolucion-section {
+            padding: 26px;
+        }
+
+        .btn-inactivar {
+            width: auto;
+            min-width: 190px;
+        }
+    }
+</style>
+
+<main class="resolucion-container">
+
+    <header class="resolucion-header">
+        <h1>Editar pregunta</h1>
+    </header>
+
+    <section class="resolucion-section">
+        
+        {{> editor/formPreguntaView}}
+
+    </section>
+
+    <a href="{{urlListado}}" class="volver-link">
+        ← Volver al banco de preguntas
+    </a>
+
+</main>
+
+{{> editor/confirmarView}}

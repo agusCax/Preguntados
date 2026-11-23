@@ -1,0 +1,125 @@
+<style>
+    .editor-error {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        box-sizing: border-box;
+    }
+
+    .editor-error__mensaje {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+        border-radius: 12px;
+        color: #991b1b;
+    }
+
+    .editor-error__icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: #fecaca;
+        border-radius: 50%;
+        font-weight: 800;
+    }
+
+    .editor-error__titulo {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .editor-error__texto {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .editor-error__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .editor-error__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 9999px;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+    }
+
+    .editor-error__button--primary {
+        color: #ffffff;
+        background: #0284c7;
+        box-shadow: 0 4px 0 #0369a1;
+    }
+
+    .editor-error__button--primary:hover {
+        background: #0369a1;
+    }
+
+    .editor-error__button--secondary {
+        color: #334155;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 0 #cbd5e1;
+    }
+
+    .editor-error__button--secondary:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .editor-error__button:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 transparent;
+    }
+</style>
+
+{{!
+    Vista de error generica del editor.
+    Datos que espera del controlador:
+      - titulo     (string, opcional) encabezado del mensaje
+      - mensaje    (string) detalle del error
+      - volverUrl  (string) a donde vuelve el boton principal
+}}
+
+<main class="editor-error">
+
+    <div class="editor-error__mensaje" role="alert">
+        <span class="editor-error__icono" aria-hidden="true">!</span>
+
+        <div>
+            {{#titulo}}
+                <p class="editor-error__titulo">{{titulo}}</p>
+            {{/titulo}}
+
+            <p class="editor-error__texto">{{mensaje}}</p>
+        </div>
+    </div>
+
+    <nav class="editor-error__actions" aria-label="Salir del error">
+        <a class="editor-error__button editor-error__button--primary" href="{{volverUrl}}">Volver</a>
+        <a class="editor-error__button editor-error__button--secondary" href="{{base_url}}/editor/show">Ir al inicio</a>
+    </nav>
+
+</main>

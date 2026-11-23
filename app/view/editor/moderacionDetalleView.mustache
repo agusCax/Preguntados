@@ -249,9 +249,16 @@
 
     /* ---------- Volver ---------- */
 
+    .mod-detalle__links {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
     .mod-detalle__back {
         display: inline-flex;
-        margin-top: 1.5rem;
         font-size: 0.95rem;
         font-weight: 800;
         color: var(--color-primary-dark, #0369a1);
@@ -260,6 +267,11 @@
 
     .mod-detalle__back:hover {
         text-decoration: underline;
+    }
+
+    .mod-detalle__back:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -318,7 +330,7 @@
 
         {{#esReporte}}
             <h1 class="mod-detalle__title">
-                Revisar reporte
+                Pregunta reportada
             </h1>
 
             <p class="mod-detalle__subtitle">
@@ -328,7 +340,7 @@
 
         {{^esReporte}}
             <h1 class="mod-detalle__title">
-                Revisar sugerencia
+                Pregunta sugerida 
             </h1>
 
             <p class="mod-detalle__subtitle">
@@ -432,8 +444,18 @@
 
     </form>
 
-    <a class="mod-detalle__back" href="{{urlListado}}">
-        ← Volver al listado
-    </a>
+    {{#esReporte}}
+        <nav class="mod-detalle__links">
+            <a class="mod-detalle__back" href="{{urlListado}}"> ← Volver al listado de reportes </a>
+            <a class="mod-detalle__back" href="{{urlBanco}}"> ← Volver al banco de preguntas </a>
+        </nav>
+    {{/esReporte}}
+
+    {{^esReporte}}
+        <nav class="mod-detalle__links">
+            <a class="mod-detalle__back" href="{{urlListado}}"> ← Volver al listado de sugerencias </a> 
+            <a class="mod-detalle__back" href="{{urlBanco}}"> ← Volver al banco de preguntas </a>
+        </nav>
+    {{/esReporte}}
 
 </section>

@@ -1,0 +1,198 @@
+<style>
+    .confirmar {
+        width: 100%;
+        max-width: min(92vw, 420px);
+        padding: 0;
+        border: 0;
+        border-radius: 1.5rem;
+        background: #ffffff;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--color-ink, #0f172a);
+    }
+
+    .confirmar::backdrop {
+        background: rgba(15, 23, 42, 0.45);
+    }
+
+    .confirmar__contenido {
+        padding: 1.5rem;
+    }
+
+    .confirmar__titulo {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .confirmar__mensaje {
+        margin: 0 0 1.25rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--color-ink-soft, #334155);
+        overflow-wrap: anywhere;
+    }
+
+    .confirmar__acciones {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .confirmar__boton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .confirmar__boton--cancelar {
+        color: var(--color-ink-soft, #334155);
+        background: #ffffff;
+        border: 2px solid var(--color-border, #e2e8f0);
+        box-shadow: 0 4px 0 #cbd5e1;
+    }
+
+    .confirmar__boton--aceptar {
+        color: #ffffff;
+        background: var(--color-primary, #0284c7);
+        border: 0;
+        box-shadow: 0 4px 0 var(--color-primary-dark, #0369a1);
+    }
+
+    .confirmar__boton:hover {
+        filter: brightness(1.05);
+    }
+
+    .confirmar__boton:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 transparent;
+    }
+
+    .confirmar__boton:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    @media (min-width: 480px) {
+        .confirmar__acciones {
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+        .confirmar__boton {
+            width: auto;
+            min-width: 130px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .confirmar__boton {
+            transition: none;
+        }
+    }
+</style>
+
+{{!
+    Ventana de confirmacion reutilizable del editor.
+    Se incluye UNA vez por pagina, con el tag de partial.
+    
+    Para pedir confirmacion en un formulario, agregarle el atributo data-confirmar con el mensaje.
+    Opcional: data-confirmar-titulo cambia el titulo de la ventana.
+    No requiere datos del controlador.
+}}
+
+<dialog class="confirmar" id="confirmar-dialogo" aria-labelledby="confirmar-titulo" aria-describedby="confirmar-mensaje">
+    <div class="confirmar__contenido">
+        <h2 class="confirmar__titulo" id="confirmar-titulo">Confirmar acción</h2>
+        <p class="confirmar__mensaje" id="confirmar-mensaje"></p>
+
+        <div class="confirmar__acciones">
+            <button type="button" class="confirmar__boton confirmar__boton--cancelar" id="confirmar-cancelar">
+                Cancelar
+            </button>
+            <button type="button" class="confirmar__boton confirmar__boton--aceptar" id="confirmar-aceptar">
+                Confirmar
+            </button>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    (function () {
+        if (window.confirmarEditorListo) {
+            return;
+        }
+        window.confirmarEditorListo = true;
+
+        var dialogo = document.getElementById('confirmar-dialogo');
+        var titulo = document.getElementById('confirmar-titulo');
+        var mensaje = document.getElementById('confirmar-mensaje');
+        var botonAceptar = document.getElementById('confirmar-aceptar');
+        var botonCancelar = document.getElementById('confirmar-cancelar');
+        var tituloPorDefecto = titulo.textContent;
+
+        var formularioPendiente = null;
+        var botonEnviarPendiente = null;
+
+        // Intercepta el envio de cualquier formulario que tenga data-confirmar
+        document.addEventListener('submit', function (evento) {
+            var formulario = evento.target;
+            var texto = formulario.getAttribute('data-confirmar');
+
+            if (!texto) {
+                return;
+            }
+
+            evento.preventDefault();
+
+            formularioPendiente = formulario;
+            botonEnviarPendiente = evento.submitter || null;
+            titulo.textContent = formulario.getAttribute('data-confirmar-titulo') || tituloPorDefecto;
+            mensaje.textContent = texto;
+            dialogo.showModal();
+        });
+
+        botonAceptar.addEventListener('click', function () {
+            dialogo.close();
+
+            if (!formularioPendiente) {
+                return;
+            }
+
+            // submit() no conserva el boton presionado: si tenia name, se reenvia como campo oculto
+            if (botonEnviarPendiente && botonEnviarPendiente.name) {
+                var oculto = document.createElement('input');
+                oculto.type = 'hidden';
+                oculto.name = botonEnviarPendiente.name;
+                oculto.value = botonEnviarPendiente.value;
+                formularioPendiente.appendChild(oculto);
+            }
+
+            formularioPendiente.submit();
+        });
+
+        botonCancelar.addEventListener('click', function () {
+            formularioPendiente = null;
+            dialogo.close();
+        });
+
+        // Clic fuera de la ventana = cancelar
+        dialogo.addEventListener('click', function (evento) {
+            if (evento.target === dialogo) {
+                formularioPendiente = null;
+                dialogo.close();
+            }
+        });
+    })();
+</script>
