@@ -19,10 +19,6 @@ class RankingController
     {
         $usuarioId = $_SESSION['usuario_id'] ?? null;
 
-        if ($usuarioId === null) {
-            Redirect::to(BASE_URL . '/login/show');
-        }
-
         $jugadores = $this->model->getRanking();
         $partidas = $this->model->getPartidasDeUsuario($usuarioId);
 
