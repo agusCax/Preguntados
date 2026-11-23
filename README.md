@@ -25,22 +25,22 @@ Aplicación web de preguntas y respuestas estilo *Preguntados*, desarrollada en 
 
 Cada librería se usa a través de una clase de `helper/` que la envuelve, así el resto del código no depende de cómo funciona por dentro.
 
-| Librería | Para qué se usa | Dónde se usa |
-|---|---|---|
-| [**Mustache.php**](https://github.com/bobthecow/mustache.php) | Motor de plantillas para renderizar las vistas `.mustache` | `helper/MustacheRender.php` |
-| [**PHPMailer**](https://github.com/PHPMailer/PHPMailer) | Envío de mails por SMTP (mail de activación de cuenta) | `helper/Mailer.php` |
-| [**PHP QR Code**](http://phpqrcode.sourceforge.net/) | Generación de imágenes QR en formato PNG | `helper/QrLib.php` |
-| [**CpChart**](https://github.com/szymach/c-pchart) (3.x) | Dibujo de gráficos como imagen PNG desde el servidor (requiere la extensión GD de PHP) | `helper/CpChartLib.php` |
+| Librería                                                      | Para qué se usa                                                                        | Dónde se usa                |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------- |
+| **[Mustache.php](https://github.com/bobthecow/mustache.php)** | Motor de plantillas para renderizar las vistas `.mustache`                             | `helper/MustacheRender.php` |
+| **[PHPMailer](https://github.com/PHPMailer/PHPMailer)**       | Envío de mails por SMTP (mail de activación de cuenta)                                 | `helper/Mailer.php`         |
+| **[PHP QR Code](http://phpqrcode.sourceforge.net/)**          | Generación de imágenes QR en formato PNG                                               | `helper/QrLib.php`          |
+| **[CpChart](https://github.com/szymach/c-pchart)** (3.x)      | Dibujo de gráficos como imagen PNG desde el servidor (requiere la extensión GD de PHP) | `helper/CpChartLib.php`     |
 
 ### Librerías y servicios del lado del cliente (por CDN)
 
-| Recurso | Para qué se usa |
-|---|---|
-| [**Chart.js**](https://www.chartjs.org/) 4.4.1 | Gráficos interactivos del panel del administrador |
-| [**Leaflet**](https://leafletjs.com/) 1.9.4 | Mapa interactivo para elegir/mostrar la ubicación del usuario |
-| [**OpenStreetMap**](https://www.openstreetmap.org/) (tiles) | Capa de mapa base de Leaflet |
-| [**Nominatim**](https://nominatim.org/) (OSM) | Geocodificación inversa: obtener país y ciudad a partir de latitud/longitud |
-| [**Google Fonts**](https://fonts.google.com/) | Tipografías (Fredoka, Nunito, Outfit) |
+| Recurso                                                     | Para qué se usa                                                             |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **[Chart.js](https://www.chartjs.org/)** 4.4.1              | Gráficos interactivos del panel del administrador                           |
+| **[Leaflet](https://leafletjs.com/)** 1.9.4                 | Mapa interactivo para elegir/mostrar la ubicación del usuario               |
+| **[OpenStreetMap](https://www.openstreetmap.org/)** (tiles) | Capa de mapa base de Leaflet                                                |
+| **[Nominatim](https://nominatim.org/)** (OSM)               | Geocodificación inversa: obtener país y ciudad a partir de latitud/longitud |
+| **[Google Fonts](https://fonts.google.com/)**               | Tipografías (Fredoka, Nunito, Outfit)                                       |
 
 ### Servicios
 
@@ -140,7 +140,24 @@ Nombre de la base: `preguntados`. El script completo (estructura + datos de ejem
 
 ## 🔐 Roles y permisos
 
-El rol de cada usuario se guarda en `usuarios.rol_id` y se representa en el código con el enum `app\enum\Rol`. Al iniciar sesión se guarda en `$_SESSION['rol']`, y cada controlador protegido lo verifica **en el servidor**.
+El rol de cada usuario se guarda en `usuarios.rol_id` y se representa en el código con el enum `app\enum\Rol`. Al iniciar sesión se guarda en `$_SESSION['rol']`.
+
+El control de acceso lo hace la clase `helper/AccessControl.php`, **en el servidor**. `index.php` la ejecuta en cada petición, antes de que el `Router` llame al controlador. `AccessControl` tiene un mapa que indica, para cada controlador (o método), quién puede entrar:
+
+| Regla | Quién accede |
+|---|---|
+| `publico` | Cualquiera, con o sin sesión |
+| `no_logueado` | Solo quien no inició sesión (login y registro) |
+| `logueado` | Cualquier usuario con sesión |
+| Rol específico (`Jugador`, `Editor`, `Administrador`) | Solo usuarios con ese rol |
+
+Si el acceso no está permitido, el resultado depende del caso:
+
+- Sin sesión: redirige a `/login/show`.
+- Con sesión pero sin el rol necesario: responde 403 y muestra la pantalla de acceso denegado.
+- Ruta que no figura en el mapa: redirige a `/inicio/show`.
+
+Para dar acceso a un controlador nuevo hay que agregarlo al mapa `MAPA` de `AccessControl`. Si no se agrega, queda bloqueado.
 
 | Rol | Qué puede hacer |
 |---|---|
@@ -156,24 +173,29 @@ Desde `/inicio/show` cada usuario es dirigido a la pantalla que le corresponde s
 
 Las URLs siguen el formato `/{controller}/{method}` (Apache las reescribe a `index.php?controller=...&method=...`). Sin parámetros se carga `inicio/show`.
 
-| Ruta | Descripción |
-|---|---|
-| `/inicio/show` | Pantalla de inicio según el rol |
-| `/login/show` · `/login/login` · `/login/logout` | Formulario, autenticación y cierre de sesión |
-| `/registro/show` · `/registro/registrar` · `/registro/validarCuenta` | Formulario, alta de usuario y activación por token |
-| `/pregunta/show` · `/pregunta/responder` | Mostrar la pregunta de la partida y registrar la respuesta |
-| `/ranking/show` | Ranking de jugadores por puntaje máximo |
-| `/perfil/show` · `/perfil/editar` · `/perfil/actualizar` · `/perfil/subirFoto` | Ver, editar y guardar el perfil propio, y subir la foto |
-| `/perfil/compartir` | Muestra el código QR del perfil |
-| `/perfil/showUsuario?usuario_id=N` | Perfil público de un usuario |
-| `/editor/show` | Inicio del editor |
-| `/editor/listarSugerencias` · `/editor/detalleSugerencia` · `/editor/procesarSugerencia` | Moderación de preguntas sugeridas |
-| `/editor/listarReportes` · `/editor/detalleReporte` · `/editor/procesarReporte` | Moderación de reportes de preguntas |
-| `/editor/modificarPregunta` · `/editor/inactivarPregunta` | Edición e inactivación de preguntas |
-| `/administrador/show` | Panel de estadísticas (solo administrador) |
-| `/administrador/datos?periodo=mes` | Datos del panel en JSON (`dia`, `semana`, `mes`, `anio`) |
-| `/administrador/graficoPais?periodo=mes` | Gráfico de usuarios por país como imagen PNG (CpChart) |
-| `/administrador/usuarios` · `/administrador/cambiarRol` | Lista de usuarios y cambio de rol |
+| Ruta                                                                                          | Descripción                                                                                                         |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `/inicio/show`                                                                                | Pantalla de inicio según el rol                                                                                     |
+| `/login/show` · `/login/login` · `/login/logout`                                              | Formulario, autenticación y cierre de sesión                                                                        |
+| `/registro/show` · `/registro/registrar` · `/registro/validarCuenta`                          | Formulario, alta de usuario y activación por token                                                                  |
+| `/pregunta/show` · `/pregunta/responder`                                                      | Mostrar la pregunta de la partida y registrar la respuesta                                                          |
+| `/ranking/show`                                                                               | Ranking de jugadores por puntaje máximo                                                                             |
+| `/perfil/show` · `/perfil/editar` · `/perfil/actualizar` · `/perfil/subirFoto`                | Ver, editar y guardar el perfil propio, y subir la foto                                                             |
+| `/perfil/compartir`                                                                           | Muestra el código QR del perfil                                                                                     |
+| `/perfil/showUsuario?usuario_id=N`                                                            | Perfil público de un usuario                                                                                        |
+| `/editor/show`                                                                                | Inicio del editor con los totales de sugerencias y reportes pendientes                                              |
+| `/editor/listarBanco`                                                                         | Listado de la totalidad de las preguntas, con el detalle de su estado                                               |
+| `/editor/nuevaPregunta` · `/editor/guardarNuevaPregunta`                                      | Formulario y alta de una pregunta nueva                                                                             |
+| `/editor/detallePregunta?id=N`                                                                | Detalle de una pregunta; según su estado muestra el detalle de reporte, de sugerencia o del banco (activa/inactiva) |
+| `/editor/cambiarEstado`                                                                       | Activa o inactiva una pregunta del banco                                                                            |
+| `/editor/obtenerPreguntaAModificar?id=N` · `/editor/modificarPregunta`                        | Formulario de edición y guardado de cambios de una pregunta                                                         |
+| `/editor/listarSugerencias` · `/editor/detalleSugerencia?id=N` · `/editor/procesarSugerencia` | Moderación de preguntas sugeridas: listado, detalle y aceptar/rechazar                                              |
+| `/editor/listarReportes` · `/editor/detalleReporte?id=N` · `/editor/procesarReporte`          | Moderación de reportes: listado, detalle y aceptar/rechazar                                                         |
+| `/editor/inactivarPreguntaReportada` · `/editor/modificarPreguntaReportada`                   | Al aceptar un reporte: inactivar la pregunta o modificarla y resolver el reporte                                    |
+| `/administrador/show`                                                                         | Panel de estadísticas (solo administrador)                                                                          |
+| `/administrador/datos?periodo=mes`                                                            | Datos del panel en JSON (`dia`, `semana`, `mes`, `anio`)                                                            |
+| `/administrador/graficoPais?periodo=mes`                                                      | Gráfico de usuarios por país como imagen PNG (CpChart)                                                              |
+| `/administrador/usuarios` · `/administrador/cambiarRol`                                       | Lista de usuarios y cambio de rol                                                                                   |
 
 ---
 
