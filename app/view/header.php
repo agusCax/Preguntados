@@ -5,15 +5,26 @@
 use app\enum\Rol;
 
 $hdSeccion = $_GET['controller'] ?? 'inicio';
-// if ($hdSeccion !== 'ranking') {
-//     $hdSeccion = 'inicio';
-// }
+$hdMetodo = $_GET['method'] ?? 'show';
 $hdUsuario = isset($_SESSION['usuario'])
     ? htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8')
     : null;
 $hdRol = isset($_SESSION['rol'])
     ? htmlspecialchars($_SESSION['rol'], ENT_QUOTES, 'UTF-8')
     : null;
+
+//EDITOR
+$hdMetodosBanco = [
+    'listarBanco', 'nuevaPregunta', 'guardarNuevaPregunta', 'detallePregunta',
+    'cambiarEstado', 'obtenerPreguntaAModificar', 'modificarPregunta',
+];
+$hdEditorEnBanco = $hdSeccion === 'editor' && in_array($hdMetodo, $hdMetodosBanco, true);
+$hdEditorEnModeracion = $hdSeccion === 'editor' && !$hdEditorEnBanco;
+
+//ADMINISTRADOR
+$hdAdminEnUsuarios = $hdSeccion === 'administrador' && in_array($hdMetodo, ['usuarios', 'cambiarRol'], true);
+$hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -275,17 +286,16 @@ $hdRol = isset($_SESSION['rol'])
             <nav class="hd__nav" aria-label="Navegación principal">
 
                 <?php if ($hdRol === Rol::Jugador->name): ?>
-                    <a href="<?= BASE_URL ?>/inicio/show"
-                        class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>" <?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
-                    <a href="<?= BASE_URL ?>/ranking/show"
-                        class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>" <?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
+                    <a href="<?= BASE_URL ?>/inicio/show" class="hd__link<?= $hdSeccion === 'inicio' ? ' is-active' : '' ?>" <?= $hdSeccion === 'inicio' ? ' aria-current="page"' : '' ?>>Inicio</a>
+                    <a href="<?= BASE_URL ?>/ranking/show" class="hd__link<?= $hdSeccion === 'ranking' ? ' is-active' : '' ?>" <?= $hdSeccion === 'ranking' ? ' aria-current="page"' : '' ?>>Ranking</a>
+                
                 <?php elseif ($hdRol === Rol::Editor->name): ?>
-                    <a href="<?= BASE_URL ?>/editor/show"
-                        class="hd__link<?= $hdSeccion === 'editor' ? ' is-active' : '' ?>" <?= $hdSeccion === 'editor' ? ' aria-current="page"' : '' ?>>Moderacion</a>
-                    <a href="<?= BASE_URL ?>/editor/listarBanco"
-                        class="hd__link<?= $hdSeccion === 'preguntas' ? ' is-active' : '' ?>" <?= $hdSeccion === 'preguntas' ? ' aria-current="page"' : '' ?>>Banco de preguntas</a>
+                    <a href="<?= BASE_URL ?>/editor/show" class="hd__link<?= $hdEditorEnModeracion ? ' is-active' : '' ?>" <?= $hdEditorEnModeracion ? ' aria-current="page"' : '' ?>>Moderacion</a>
+                    <a href="<?= BASE_URL ?>/editor/listarBanco" class="hd__link<?= $hdEditorEnBanco ? ' is-active' : '' ?>" <?= $hdEditorEnBanco ? ' aria-current="page"' : '' ?>>Banco de preguntas</a>
+                
                 <?php elseif ($hdRol === Rol::Administrador->name): ?>
-                    //Completar 
+                    <a href="<?= BASE_URL ?>/administrador/show" class="hd__link<?= $hdAdminEnPanel ? ' is-active' : '' ?>" <?= $hdAdminEnPanel ? ' aria-current="page"' : '' ?>>Panel</a>
+                    <a href="<?= BASE_URL ?>/administrador/usuarios" class="hd__link<?= $hdAdminEnUsuarios ? ' is-active' : '' ?>" <?= $hdAdminEnUsuarios ? ' aria-current="page"' : '' ?>>Usuarios</a>
                 <?php endif; ?>
             </nav>
 
