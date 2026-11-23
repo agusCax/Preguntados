@@ -66,11 +66,6 @@ class PerfilController {
     public function showUsuario() {
         $usuarioLogueado = $_SESSION['usuario_id'] ?? null;
 
-        if ($usuarioLogueado === null) {
-            Redirect::to(BASE_URL . '/login/show');
-            exit();
-        }
-
         $usuarioAMostrar = Request::get('usuario_id');
 
         if($usuarioAMostrar === null){
