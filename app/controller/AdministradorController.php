@@ -20,10 +20,6 @@ class AdministradorController
     // Muestra la pantalla del panel
     public function show()
     {
-        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
-            header('Location: ' . BASE_URL);
-            exit();
-        }
 
         $this->render->renderiza('administrador/inicio');
     }
@@ -31,10 +27,6 @@ class AdministradorController
     // Devuelve todos los datos del panel en JSON (la vista los pide con fetch)
     public function datos()
     {
-        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
-            http_response_code(403);
-            exit();
-        }
 
         $desde = $this->calcularDesde($_GET['periodo'] ?? 'mes');
 
@@ -58,10 +50,6 @@ class AdministradorController
     // Devuelve el gráfico de usuarios por país como imagen PNG (dibujada con CpChart)
     public function graficoPais()
     {
-        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
-            http_response_code(403);
-            exit();
-        }
 
         $desde = $this->calcularDesde($_GET['periodo'] ?? 'mes');
         $filas = $this->model->usuariosPorPais($desde);
@@ -90,10 +78,6 @@ class AdministradorController
     // Pantalla con la lista de usuarios y su rol
     public function usuarios()
     {
-        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
-            header('Location: ' . BASE_URL);
-            exit();
-        }
 
         $usuarios = $this->model->obtenerUsuarios();
 
@@ -119,10 +103,6 @@ class AdministradorController
     // Recibe el formulario y guarda el nuevo rol
     public function cambiarRol()
     {
-        if (($_SESSION['rol'] ?? '') !== Rol::Administrador->name) {
-            http_response_code(403);
-            exit();
-        }
 
         $idUsuario = (int) ($_POST['usuario_id'] ?? 0);
         $rolId     = (int) ($_POST['rol_id'] ?? 0);
