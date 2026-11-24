@@ -54,6 +54,36 @@
         border-radius: 9999px;
     }
 
+  .boton_volver {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 40px;
+      padding: 0 0.8rem;
+      margin-bottom: 1em;
+
+      font: inherit;
+      font-weight: 800;
+      color: #ffffff;
+      text-decoration: none;
+
+      background: #0284c7;
+      border: 0;
+      border-radius: 9999px;
+
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .boton_volver:hover {
+      background: #0369a1;
+  }
+
+  .boton_volver:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.4);
+      outline-offset: 3px;
+  }
     .usr__select {
         border: 2px solid #cbd5e1;
         background: #ffffff;
@@ -75,7 +105,9 @@
 
 <main class="usr">
     <h1 class="usr__title">Gestión de usuarios</h1>
-    <p><a href="{{base_url}}/administrador/show">← Volver al panel</a></p>
+     <a class="boton_volver" href="{{base_url}}/administrador/show">
+         Volver al panel
+     </a>
 
     {{#mensaje}}
         <p class="usr__mensaje" role="status">{{mensaje}}</p>
