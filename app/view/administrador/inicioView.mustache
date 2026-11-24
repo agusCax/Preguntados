@@ -436,11 +436,9 @@
         }
 
         selectorPeriodo.addEventListener('change', cargar);
-        document.getElementById('imprimir').addEventListener('click', function () {
                     document.getElementById('imprimir').addEventListener('click', function () {
                         // Abre el PDF del período elegido en una pestaña nueva
                         window.open('{{base_url}}/administrador/panelPdf?periodo=' + encodeURIComponent(selectorPeriodo.value), '_blank');
-                    });
         });
 
         cargar();
