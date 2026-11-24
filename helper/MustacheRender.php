@@ -32,4 +32,12 @@ class MustacheRender
             require_once($this->viewPath . "/footer.php");
         }
     }
+
+    // Devuelve el HTML armado como texto, sin imprimirlo (lo usa el PDF)
+    public function render($view, $data = [])
+    {
+        $data['base_url'] = BASE_URL;
+
+        return $this->mustache->render($view . "View", $data);
+    }
 }
