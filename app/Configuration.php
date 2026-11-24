@@ -23,6 +23,8 @@ use MyDatabase;
 use Router;
 use Mailer;
 use AccessControl;
+use app\controller\ReporteController;
+use PdfReportGenerator;
 
 require_once __DIR__ . "/../helper/Autoloader.php";
 
@@ -125,7 +127,8 @@ class Configuration
     {
         return new AdministradorController(
             $this->getAdministradorModel(),
-            $this->getRender()
+            $this->getRender(),
+            new PdfReportGenerator()
         );
     }
 
@@ -179,6 +182,15 @@ class Configuration
     {
         return new RankingModel(
             $this->getDatabase()
+        );
+    }
+
+    public function getReporteController()
+    {
+        return new ReporteController(
+            $this->getRankingModel(),
+            $this->getRender(),
+            new PdfReportGenerator()
         );
     }
 

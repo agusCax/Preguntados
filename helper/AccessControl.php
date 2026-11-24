@@ -20,6 +20,7 @@ class AccessControl
         'pregunta' => ['todo' => ['Jugador'], 'rutas_json' => ['reportar']],
         'editor' => ['todo' => ['Editor']],
         'administrador' => ['todo' => ['Administrador']],
+        'reporte' => ['todo' => ['Administrador']],
     ];
 
     public function __construct($render)

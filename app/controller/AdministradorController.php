@@ -10,11 +10,13 @@ class AdministradorController
 {
     private $model;
     private $render;
+    private $pdfReportGenerator;
 
-    public function __construct($model, $render)
+    public function __construct($model, $render, $pdfReportGenerator)
     {
         $this->model = $model;
         $this->render = $render;
+        $this->pdfReportGenerator = $pdfReportGenerator;
     }
 
     // Muestra la pantalla del panel
@@ -25,13 +27,47 @@ class AdministradorController
     }
 
     // Devuelve todos los datos del panel en JSON (la vista los pide con fetch)
+    // Devuelve todos los datos del panel en JSON (la vista los pide con fetch)
     public function datos()
     {
-
         $desde = $this->calcularDesde($_GET['periodo'] ?? 'mes');
 
         header('Content-Type: application/json');
-        echo json_encode([
+        echo json_encode($this->armarDatos($desde));
+        exit();
+    }
+
+    // Reporte del panel en PDF: las mismas tablas, para el período elegido
+    public function panelPdf()
+    {
+        $periodo = $_GET['periodo'] ?? 'mes';
+        $datos = $this->armarDatos($this->calcularDesde($periodo));
+
+        // Las etiquetas del sexo se traducen igual que en la pantalla
+        $nombresSexo = [
+            'masculino'  => 'Masculino',
+            'femenino'   => 'Femenino',
+            'no_informa' => 'Prefiere no cargarlo',
+        ];
+        foreach ($datos['sexo'] as &$fila) {
+            $fila['etiqueta'] = $nombresSexo[$fila['etiqueta']] ?? $fila['etiqueta'];
+        }
+        unset($fila);
+
+        $datos['titulo']  = 'Reporte del panel';
+        $datos['periodo'] = $this->nombrePeriodo($periodo);
+        $datos['fecha']   = date('d/m/Y H:i');
+
+        $html = $this->render->render('administrador/reportePanel', $datos);
+
+        $this->pdfReportGenerator->renderPdf($html, 'reporte-panel.pdf');
+        exit();
+    }
+
+    // Los datos del panel: los usan la pantalla (JSON) y el PDF
+    private function armarDatos($desde)
+    {
+        return [
             'totales' => [
                 'jugadores'         => $this->model->contarJugadores(),
                 'partidas'          => $this->model->contarPartidas($desde),
@@ -43,8 +79,18 @@ class AdministradorController
             'sexo'     => $this->model->usuariosPorSexo($desde),
             'edad'     => $this->model->usuariosPorGrupoEdad($desde),
             'aciertos' => $this->model->porcentajeAciertosPorUsuario($desde),
-        ]);
-        exit();
+        ];
+    }
+
+    // Nombre del período para mostrarlo en el PDF
+    private function nombrePeriodo($periodo)
+    {
+        return match ($periodo) {
+            'dia'    => 'Último día',
+            'semana' => 'Última semana',
+            'anio'   => 'Último año',
+            default  => 'Último mes',
+        };
     }
 
     // Devuelve el gráfico de usuarios por país como imagen PNG (dibujada con CpChart)

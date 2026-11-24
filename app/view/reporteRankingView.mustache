@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{titulo}}</title>
+        {{^esPdf}}
+            <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        {{/esPdf}}
+    <style>
+        body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 12px; color: #1f2937; margin: 24px; }
+        h1 { font-size: 22px; margin: 0 0 4px 0; color: #0369a1; }
+        .fecha { margin: 0 0 18px 0; color: #6b7280; }
+                .acciones { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 20px 0; }
+                .adm__boton {
+                    display: inline-flex;
+                    align-items: center;
+                    min-height: 44px;
+                    padding: 0 1.25rem;
+                    font-family: "Outfit", system-ui, sans-serif;
+                    font-weight: 800;
+                    color: #ffffff;
+                    background: #0284c7;
+                    border-radius: 9999px;
+                    box-shadow: 0 4px 0 #0369a1;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .adm__boton:active { transform: translateY(3px); box-shadow: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; background-color: #e0f2fe; padding: 8px; border: 1px solid #bae6fd; }
+        td { padding: 8px; border: 1px solid #e5e7eb; }
+        .pos { width: 12%; text-align: center; }
+        .puntaje { width: 20%; text-align: right; }
+        @media print { .acciones { display: none; } }
+    </style>
+</head>
+<body>
+     {{^esPdf}}
+         <div class="acciones">
+             <a class="adm__boton" href="{{base_url}}/administrador/show">Volver al panel</a>
+             <a class="adm__boton" href="{{base_url}}/reporte/rankingPdf" target="_blank">Descargar PDF</a>
+         </div>
+     {{/esPdf}}
+
+    <h1>{{titulo}}</h1>
+    <p class="fecha">Generado el {{fecha}}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="pos">Posición</th>
+                <th>Jugador</th>
+                <th class="puntaje">Puntaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#filas}}
+                <tr>
+                    <td class="pos">{{posicion}}</td>
+                    <td>{{nombre}}</td>
+                    <td class="puntaje">{{puntaje}}</td>
+                </tr>
+            {{/filas}}
+            {{^filas}}
+                <tr><td colspan="3">Todavía no hay jugadores para mostrar.</td></tr>
+            {{/filas}}
+        </tbody>
+    </table>
+</body>
+</html>
