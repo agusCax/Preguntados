@@ -19,7 +19,12 @@ $hdMetodosBanco = [
     'cambiarEstado', 'obtenerPreguntaAModificar', 'modificarPregunta',
 ];
 $hdEditorEnBanco = $hdSeccion === 'editor' && in_array($hdMetodo, $hdMetodosBanco, true);
-$hdEditorEnModeracion = $hdSeccion === 'editor' && !$hdEditorEnBanco;
+$hdMetodosCategorias = [
+    'listarCategorias', 'nuevaCategoria', 'guardarNuevaCategoria',
+    'editarCategoria', 'guardarCategoria', 'cambiarEstadoCategoria',
+];
+$hdEditorEnCategorias = $hdSeccion === 'editor' && in_array($hdMetodo, $hdMetodosCategorias, true);
+$hdEditorEnModeracion = $hdSeccion === 'editor' && !$hdEditorEnBanco && !$hdEditorEnCategorias;
 
 //ADMINISTRADOR
 $hdAdminEnUsuarios = $hdSeccion === 'administrador' && in_array($hdMetodo, ['usuarios', 'cambiarRol'], true);
@@ -295,6 +300,7 @@ $hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
                 <?php elseif ($hdRol === Rol::Editor->name): ?>
                     <a href="<?= BASE_URL ?>/editor/show" class="hd__link<?= $hdEditorEnModeracion ? ' is-active' : '' ?>" <?= $hdEditorEnModeracion ? ' aria-current="page"' : '' ?>>Moderacion</a>
                     <a href="<?= BASE_URL ?>/editor/listarBanco" class="hd__link<?= $hdEditorEnBanco ? ' is-active' : '' ?>" <?= $hdEditorEnBanco ? ' aria-current="page"' : '' ?>>Banco de preguntas</a>
+                    <a href="<?= BASE_URL ?>/editor/listarCategorias" class="hd__link<?= $hdEditorEnCategorias ? ' is-active' : '' ?>" <?= $hdEditorEnCategorias ? ' aria-current="page"' : '' ?>>Categorías</a>
                 
                 <?php elseif ($hdRol === Rol::Administrador->name): ?>
                     <a href="<?= BASE_URL ?>/administrador/show" class="hd__link<?= $hdAdminEnPanel ? ' is-active' : '' ?>" <?= $hdAdminEnPanel ? ' aria-current="page"' : '' ?>>Panel</a>

@@ -63,7 +63,9 @@ class PreguntaModel
             $candidatas = $this->database->queryAll(
                 "SELECT p.id
                 FROM preguntas p
+                JOIN categorias c ON c.id = p.categoria_id
                 WHERE p.estado = 'activa'
+                AND c.activa = 1
                 AND p.id NOT IN (
                     SELECT pp.pregunta_id
                     FROM partida_preguntas pp
@@ -79,7 +81,9 @@ class PreguntaModel
                 $candidatas = $this->database->queryAll(
                     "SELECT p.id
                     FROM preguntas p
+                    JOIN categorias c ON c.id = p.categoria_id
                     WHERE p.estado = 'activa'
+                    AND c.activa = 1
                     AND p.id NOT IN (
                         SELECT pregunta_id FROM partida_preguntas WHERE partida_id = :partida_id
                     )

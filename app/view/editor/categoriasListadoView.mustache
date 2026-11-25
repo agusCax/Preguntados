@@ -1,0 +1,727 @@
+<style>
+    /* =========================================
+    CONTENEDOR GENERAL
+    ========================================= */
+
+    .moderacion-container {
+        width: 100%;
+        max-width: 1100px;
+        margin-inline: auto;
+        padding: 1.5rem 1rem 2rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 499px) {
+        .moderacion-container {
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    /* Encabezado */
+    .editor__hero {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(
+            135deg,
+            #e0f2fe 0%,
+            #e0f2fe 50%,
+            #fff4dc 100%
+        );
+        border-radius: 1.75rem;
+    }
+
+    .editor__title {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--color-primary-dark, #0369a1);
+    }
+
+    .editor__description {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--color-ink-soft, #334155);
+    }
+
+    /* Encabezado con acción: texto a la izquierda, botón a la derecha */
+    .editor__hero--accion {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .editor__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 100%;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-align: center;
+        color: var(--color-white, #ffffff);
+        background-color: var(--color-primary, #0284c7);
+        border-radius: 9999px;
+        box-shadow: 0 4px 0 var(--color-primary-dark, #0369a1);
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .editor__button:hover {
+        filter: brightness(1.05);
+    }
+
+    .editor__button:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 transparent;
+    }
+
+    .editor__button:focus-visible {
+        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .editor__button {
+            transition: none;
+        }
+    }
+
+    /* =========================================
+    LISTADO MOBILE
+    ========================================= */
+
+    .tabla-container {
+        width: 100%;
+    }
+
+    .tabla-moderacion {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .tabla-moderacion thead {
+        display: none;
+    }
+
+    .tabla-moderacion tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-moderacion tr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 14px;
+        padding: 20px 16px;
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+
+        cursor: pointer;
+        text-align: center;
+
+        transition: background 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .tabla-moderacion td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+        border: none;
+        box-sizing: border-box;
+    }
+
+    /* =========================================
+    CATEGORÍA
+    ========================================= */
+
+    .categoria-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        max-width: 100%;
+        padding: 7px 12px;
+
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================================
+    PREGUNTA Y MOTIVO
+    ========================================= */
+
+    .pregunta-texto {
+        width: 100%;
+        color: #334155;
+        font-size: 0.95rem;
+        line-height: 1.5;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: center;
+    }
+
+    .motivo-texto {
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.4;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: center;
+    }
+
+    .motivo-texto::before {
+        content: "Motivo: ";
+        font-weight: 700;
+        color: #475569;
+    }
+
+    /* =========================================
+    ESTADO PREGUNTA 
+    ========================================= */
+
+    .pregunta-estado {
+        width: 100%;
+        color: #334155;
+        font-size: 0.95rem;
+        line-height: 1.5;
+
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================================
+    BOTÓN VER
+    ========================================= */
+
+    .btn-ver {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 100px;
+        min-height: 42px;
+        padding: 9px 20px;
+
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 700;
+        font-size: 0.9rem;
+
+        transition: transform 0.2s ease,
+                    filter 0.2s ease;
+    }
+
+    .btn-sugerencia {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .btn-reporte {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .btn-ver:active {
+        transform: scale(0.97);
+    }
+
+    /* =========================================
+    PAGINACIÓN
+    ========================================= */
+
+    .paginacion {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .paginacion__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 42px;
+        min-height: 42px;
+        padding: 0 14px;
+
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--color-primary-dark, #0369a1);
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .paginacion__link:hover {
+        background: #e0f2fe;
+    }
+
+    .paginacion__link.is-actual {
+        color: #ffffff;
+        background: var(--color-primary, #0284c7);
+        border-color: var(--color-primary, #0284c7);
+    }
+
+    .paginacion__info {
+        margin: 12px 0 0;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    /* =========================================
+    ESTADO VACÍO
+    ========================================= */
+
+    .sin-resultados {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        min-height: 180px;
+        box-sizing: border-box;
+        padding: 30px 18px;
+
+        text-align: center;
+        color: #64748b;
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+    }
+
+    .sin-resultados span {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .sin-resultados p {
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* =========================================
+    TABLET: 768px EN ADELANTE
+    ========================================= */
+
+    @media (min-width: 768px) {
+
+        .moderacion-container {
+            padding: 2rem 1.5rem;
+        }
+
+        .tabla-container {
+            overflow-x: auto;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .tabla-moderacion {
+            display: table;
+            max-width: none;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .tabla-moderacion thead {
+            display: table-header-group;
+        }
+
+        .tabla-moderacion tbody {
+            display: table-row-group;
+        }
+
+        .tabla-moderacion tr {
+            display: table-row;
+            max-width: none;
+            margin-bottom: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            text-align: left;
+        }
+
+        .tabla-moderacion td {
+            display: table-cell;
+            width: auto;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .tabla-moderacion th {
+            padding: 16px 20px;
+            text-align: left;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-moderacion tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pregunta-texto,
+        .motivo-texto {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+
+        .pregunta-texto {
+            max-width: 450px;
+        }
+
+        .motivo-texto {
+            max-width: 220px;
+        }
+
+        .motivo-texto::before {
+            content: none;
+        }
+
+        .btn-ver:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.97);
+        }
+
+        .sin-resultados {
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .editor__hero {
+            padding: 2rem 2.5rem;
+        }
+
+        .editor__title {
+            font-size: 2.4rem;
+        }
+
+        .editor__description {
+            font-size: 1.1rem;
+        }
+
+        .editor__hero--accion {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .editor__button {
+            width: auto;
+            min-width: 170px;
+            min-height: 50px;
+            font-size: 1rem;
+        }
+
+        .tabla-moderacion th.col-accion,
+        .tabla-moderacion td.col-accion {
+            text-align: center;
+        }
+    }
+
+    /* =========================================
+    ESCRITORIO: 1024px EN ADELANTE
+    ========================================= */
+
+    @media (min-width: 1024px) {
+
+        .tabla-moderacion th,
+        .tabla-moderacion td {
+            padding: 18px 22px;
+        }
+    }
+
+    /* =========================================
+    BANCO DE CATEGORIAS
+    ========================================= */
+
+    .tabla-moderacion tr.fila-categoria {
+        cursor: default;
+    }
+
+    .color-muestra {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .color-muestra__cuadro {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+    }
+
+    .estado-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .estado-badge--activa {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .estado-badge--inactiva {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .fila-inactiva .categoria-badge {
+        opacity: 0.55;
+    }
+
+    .editor__button {
+        box-sizing: border-box;
+    }
+
+    .acciones-categoria {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .acciones-categoria form {
+        margin: 0;
+    }
+
+    .btn-accion {
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+        min-height: 42px;
+        padding: 9px 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .btn-editar {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .btn-desactivar {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .btn-reactivar {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .btn-accion:hover {
+        filter: brightness(0.96);
+    }
+
+    .btn-accion:active {
+        transform: scale(0.97);
+    }
+
+    .nota-categorias {
+        margin: 0 0 1rem;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #475569;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    @media (min-width: 768px) {
+        .acciones-categoria {
+            justify-content: center;
+        }
+    }
+</style>
+
+<main class="moderacion-container">
+
+    <!-- Encabezado -->
+    <section class="editor__hero editor__hero--accion">
+        <div>
+            <h1 class="editor__title">Banco de categorías</h1>
+
+            <p class="editor__description">
+                Administrá las categorías del juego: agregalas, editalas o desactivalas.
+            </p>
+        </div>
+
+        <a href="{{urlNueva}}" class="editor__button">
+            Nueva categoría
+        </a>
+    </section>
+
+    <p class="nota-categorias">
+        Las categorías no se eliminan. Si desactivás una, ella y sus preguntas dejan de aparecer en el juego, pero se conservan y podés reactivarla cuando quieras.
+    </p>
+
+    {{#hayCategorias}}
+
+        <div class="tabla-container">
+            <table class="tabla-moderacion">
+
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Color</th>
+                        <th>Preguntas</th>
+                        <th>Estado</th>
+                        <th class="col-accion">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#categorias}}
+                        <tr class="fila-categoria{{^esActiva}} fila-inactiva{{/esActiva}}">
+                            <td>
+                                <span
+                                    class="categoria-badge"
+                                    style="background-color: {{color}}30; color: {{color}};"
+                                >
+                                    <span>{{icono}}</span>
+                                    {{nombre}}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="color-muestra">
+                                    <span class="color-muestra__cuadro" style="background-color: {{color}};"></span>
+                                    {{color}}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="pregunta-estado">{{totalPreguntas}} preguntas</div>
+                            </td>
+
+                            <td>
+                                {{#esActiva}}
+                                    <span class="estado-badge estado-badge--activa">Activa</span>
+                                {{/esActiva}}
+                                {{^esActiva}}
+                                    <span class="estado-badge estado-badge--inactiva">Inactiva</span>
+                                {{/esActiva}}
+                            </td>
+
+                            <td class="col-accion">
+                                <div class="acciones-categoria">
+                                    <a href="{{urlEditar}}" class="btn-accion btn-editar">Editar</a>
+
+                                    {{#esActiva}}
+                                        <form method="post" action="{{urlCambiarEstado}}" onsubmit="return confirm('¿Desactivar esta categoría? Ella y sus preguntas dejarán de aparecer en el juego.');">
+                                            <input type="hidden" name="id" value="{{id}}">
+                                            <input type="hidden" name="accion" value="desactivar">
+                                            <button type="submit" class="btn-accion btn-desactivar">Desactivar</button>
+                                        </form>
+                                    {{/esActiva}}
+
+                                    {{^esActiva}}
+                                        <form method="post" action="{{urlCambiarEstado}}">
+                                            <input type="hidden" name="id" value="{{id}}">
+                                            <input type="hidden" name="accion" value="reactivar">
+                                            <button type="submit" class="btn-accion btn-reactivar">Reactivar</button>
+                                        </form>
+                                    {{/esActiva}}
+                                </div>
+                            </td>
+                        </tr>
+                    {{/categorias}}
+                </tbody>
+
+            </table>
+        </div>
+
+        {{#hayPaginacion}}
+            <nav class="paginacion" aria-label="Paginación del banco de categorías">
+                {{#hayAnterior}}
+                    <a class="paginacion__link" href="{{urlAnterior}}">&laquo; Anterior</a>
+                {{/hayAnterior}}
+
+                {{#paginas}}
+                    <a class="paginacion__link{{#esActual}} is-actual{{/esActual}}" href="{{url}}"{{#esActual}} aria-current="page"{{/esActual}}>{{numero}}</a>
+                {{/paginas}}
+
+                {{#haySiguiente}}
+                    <a class="paginacion__link" href="{{urlSiguiente}}">Siguiente &raquo;</a>
+                {{/haySiguiente}}
+            </nav>
+
+            <p class="paginacion__info">Página {{paginaActual}} de {{totalPaginas}} · {{totalCategorias}} categorías</p>
+        {{/hayPaginacion}}
+
+    {{/hayCategorias}}
+
+    {{^hayCategorias}}
+        <div class="sin-resultados">
+            <span>📭</span>
+            <p>Aún no hay categorías. Agregá la primera con el botón "Nueva categoría".</p>
+        </div>
+    {{/hayCategorias}}
+
+</main>

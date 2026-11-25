@@ -10,6 +10,7 @@ class EditorController
     private $model;
     private $render;
     private const PREGUNTAS_POR_PAGINA = 10;
+    private const CATEGORIAS_POR_PAGINA = 10;
 
     public function __construct($model, $render)
     {
@@ -202,7 +203,7 @@ class EditorController
                 'texto' => $data['pregunta']['texto'],
             ],
             'respuestas' => $this->armarRespuestas($data['opciones']),
-            'categorias' => $this->armarCategorias($this->model->listarCategorias(), $data['pregunta']['categoria_id']),
+            'categorias' => $this->armarCategorias($this->model->listarCategorias($data['pregunta']['categoria_id']), $data['pregunta']['categoria_id']),
             'urlForm' => BASE_URL . '/editor/modificarPregunta',
             'textoBtnForm' => 'Guardar cambios',
             'confirmacionForm' => '¿Confirmás los cambios en la pregunta?',
@@ -463,6 +464,201 @@ class EditorController
             'categoriaId' => $categoriaId, 
             'respuestas' => $respuestas, 
             'respuestaCorrecta' => $respuestaCorrecta];
+    }
+
+    //BANCO DE CATEGORIAS
+    public function listarCategorias()
+    {
+        $total = $this->model->contarCategorias();
+        $totalPaginas = max(1, (int) ceil($total / self::CATEGORIAS_POR_PAGINA));
+
+        // La página viene por URL: se fuerza a que sea un número entre 1 y la última
+        $pagina = (int) Request::get('pagina', 1);
+        $pagina = min(max(1, $pagina), $totalPaginas);
+
+        $filas = $this->model->listarBancoCategorias(
+            self::CATEGORIAS_POR_PAGINA,
+            ($pagina - 1) * self::CATEGORIAS_POR_PAGINA
+        );
+
+        $categorias = [];
+        foreach ($filas as $fila) {
+            $categorias[] = [
+                'id'             => $fila['id'],
+                'nombre'         => $fila['nombre'],
+                'color'          => $fila['color'],
+                'icono'          => $fila['icono'],
+                'totalPreguntas' => $fila['total_preguntas'],
+                'esActiva'       => (int) $fila['activa'] === 1,
+                'urlEditar'      => BASE_URL . '/editor/editarCategoria?id=' . $fila['id'],
+            ];
+        }
+
+        // Números de página que se muestran: la actual y 2 hacia cada lado
+        $urlBase = BASE_URL . '/editor/listarCategorias?pagina=';
+        $paginas = [];
+        for ($i = max(1, $pagina - 2); $i <= min($totalPaginas, $pagina + 2); $i++) {
+            $paginas[] = [
+                'numero'   => $i,
+                'url'      => $urlBase . $i,
+                'esActual' => $i === $pagina,
+            ];
+        }
+
+        $data = [
+            'hayCategorias'    => !empty($categorias),
+            'categorias'       => $categorias,
+            'urlNueva'         => BASE_URL . '/editor/nuevaCategoria',
+            'urlCambiarEstado' => BASE_URL . '/editor/cambiarEstadoCategoria',
+            'hayPaginacion'    => $totalPaginas > 1,
+            'paginas'          => $paginas,
+            'hayAnterior'      => $pagina > 1,
+            'urlAnterior'      => $urlBase . ($pagina - 1),
+            'haySiguiente'     => $pagina < $totalPaginas,
+            'urlSiguiente'     => $urlBase . ($pagina + 1),
+            'paginaActual'     => $pagina,
+            'totalPaginas'     => $totalPaginas,
+            'totalCategorias'  => $total,
+        ];
+
+        $this->render->renderiza('editor/categoriasListado', $data);
+    }
+
+    public function nuevaCategoria()
+    {
+        $data = [
+            'titulo'      => 'Nueva categoría',
+            'descripcion' => 'Completá los datos para agregar una categoría al juego.',
+            'textoBoton'  => 'Crear categoría',
+            'urlForm'     => BASE_URL . '/editor/guardarNuevaCategoria',
+            'idCategoria' => '',
+            'nombre'      => '',
+            'icono'       => '',
+            'color'       => '#0284c7',
+            'urlVolver'   => BASE_URL . '/editor/listarCategorias',
+        ];
+
+        $this->render->renderiza('editor/categoriaForm', $data);
+    }
+
+    public function guardarNuevaCategoria()
+    {
+        $urlVolver = BASE_URL . '/editor/listarCategorias';
+        $datos = $this->validarCategoria($urlVolver, 0);
+
+        $confirmacion = $this->model->crearCategoria($datos['nombre'], $datos['color'], $datos['icono']);
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje'      => $confirmacion ? 'La categoría se creó correctamente.' : 'No se pudo crear la categoría.',
+            'volverUrl'    => $urlVolver,
+        ]);
+    }
+
+    public function editarCategoria()
+    {
+        $urlVolver = BASE_URL . '/editor/listarCategorias';
+        $categoria = $this->model->obtenerCategoria((int) Request::get('id', 0));
+
+        if (!$categoria) {
+            $this->mostrarError('La categoría que querés editar no existe.', $urlVolver);
+        }
+
+        $data = [
+            'titulo'      => 'Editar categoría',
+            'descripcion' => 'Modificá los datos de la categoría. Sus preguntas se mantienen.',
+            'textoBoton'  => 'Guardar cambios',
+            'urlForm'     => BASE_URL . '/editor/guardarCategoria',
+            'idCategoria' => $categoria['id'],
+            'nombre'      => $categoria['nombre'],
+            'icono'       => $categoria['icono'],
+            'color'       => $categoria['color'],
+            'urlVolver'   => $urlVolver,
+        ];
+
+        $this->render->renderiza('editor/categoriaForm', $data);
+    }
+
+    public function guardarCategoria()
+    {
+        $urlVolver = BASE_URL . '/editor/listarCategorias';
+        $idCategoria = (int) Request::post('id', 0);
+
+        if (!$this->model->obtenerCategoria($idCategoria)) {
+            $this->mostrarError('La categoría que querés editar no existe.', $urlVolver);
+        }
+
+        $datos = $this->validarCategoria($urlVolver, $idCategoria);
+
+        $confirmacion = $this->model->actualizarCategoria($idCategoria, $datos['nombre'], $datos['color'], $datos['icono']);
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje'      => $confirmacion ? 'La categoría se modificó correctamente.' : 'No se pudo modificar la categoría.',
+            'volverUrl'    => $urlVolver,
+        ]);
+    }
+
+    // Desactivar o reactivar (nunca se elimina una categoría)
+    public function cambiarEstadoCategoria()
+    {
+        $urlVolver = BASE_URL . '/editor/listarCategorias';
+        $idCategoria = (int) Request::post('id', 0);
+        $accion = Request::post('accion');
+
+        $categoria = $this->model->obtenerCategoria($idCategoria);
+
+        if (!$categoria || ($accion !== 'desactivar' && $accion !== 'reactivar')) {
+            $this->mostrarError('No se pudo identificar la categoría o la acción pedida.', $urlVolver);
+        }
+
+        $activar = $accion === 'reactivar';
+
+        // Tiene que quedar al menos una categoría activa para poder jugar
+        if (!$activar && (int) $categoria['activa'] === 1 && $this->model->contarCategoriasActivas() <= 1) {
+            $this->mostrarError('No se puede desactivar la única categoría activa. Tiene que haber al menos una para poder jugar.', $urlVolver);
+        }
+
+        $confirmacion = $this->model->cambiarEstadoCategoria($idCategoria, $activar);
+
+        if ($confirmacion) {
+            $mensaje = $activar
+                ? 'La categoría se reactivó. Sus preguntas vuelven a estar disponibles.'
+                : 'La categoría se desactivó. Sus preguntas dejan de aparecer en el juego.';
+        } else {
+            $mensaje = 'No se pudo cambiar el estado de la categoría.';
+        }
+
+        $this->render->renderiza('editor/resultado', [
+            'confirmacion' => $confirmacion,
+            'mensaje'      => $mensaje,
+            'volverUrl'    => $urlVolver,
+        ]);
+    }
+
+    private function validarCategoria($urlVolver, $idActual)
+    {
+        $nombre = trim((string) Request::post('nombre', ''));
+        $icono = trim((string) Request::post('icono', ''));
+        $color = trim((string) Request::post('color', ''));
+
+        if ($nombre === '' || mb_strlen($nombre) > 50) {
+            $this->mostrarError('El nombre es obligatorio y puede tener hasta 50 caracteres.', $urlVolver);
+        }
+
+        if ($icono === '' || mb_strlen($icono) > 10) {
+            $this->mostrarError('El ícono es obligatorio (un emoji) y puede tener hasta 10 caracteres.', $urlVolver);
+        }
+
+        if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
+            $this->mostrarError('El color no es válido.', $urlVolver);
+        }
+
+        if ($this->model->existeNombreCategoria($nombre, $idActual)) {
+            $this->mostrarError('Ya existe una categoría con ese nombre.', $urlVolver);
+        }
+
+        return ['nombre' => $nombre, 'icono' => $icono, 'color' => $color];
     }
 
     //Convierte las opciones de la base en el formato que espera formPreguntaView

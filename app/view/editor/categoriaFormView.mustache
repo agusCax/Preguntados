@@ -1,0 +1,156 @@
+<style>
+    .categoria-form-container {
+        width: 100%;
+        max-width: 560px;
+        margin-inline: auto;
+        padding: 1.5rem 1rem 2.5rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        box-sizing: border-box;
+    }
+
+    .categoria-form-header {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .categoria-form-header h1 {
+        margin: 0 0 8px;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.7rem;
+        color: #0f172a;
+    }
+
+    .categoria-form-header p {
+        margin: 0;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .categoria-form {
+        padding: 22px 18px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .categoria-form__campo {
+        margin-bottom: 18px;
+    }
+
+    .categoria-form__campo label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 700;
+        color: #334155;
+    }
+
+    .categoria-form__campo small {
+        display: block;
+        margin-top: 4px;
+        color: #64748b;
+    }
+
+    .categoria-form__campo input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 46px;
+        padding: 0 14px;
+        font-family: inherit;
+        font-size: 1rem;
+        color: #0f172a;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .categoria-form__campo input[type="text"]:focus {
+        outline: none;
+        border-color: #0284c7;
+    }
+
+    .categoria-form__campo input[type="color"] {
+        width: 80px;
+        height: 46px;
+        padding: 2px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .categoria-form__acciones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    .categoria-form__boton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        border-radius: 9999px;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .categoria-form__boton--primario {
+        color: #ffffff;
+        background: #0284c7;
+        border: none;
+        box-shadow: 0 4px 0 #0369a1;
+    }
+
+    .categoria-form__boton--secundario {
+        color: #334155;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 0 #cbd5e1;
+    }
+
+    .categoria-form__boton:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 transparent;
+    }
+</style>
+
+<main class="categoria-form-container">
+
+    <header class="categoria-form-header">
+        <h1>{{titulo}}</h1>
+        <p>{{descripcion}}</p>
+    </header>
+
+    <form class="categoria-form" method="post" action="{{urlForm}}">
+        <input type="hidden" name="id" value="{{idCategoria}}">
+
+        <div class="categoria-form__campo">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" value="{{nombre}}" maxlength="50" required>
+        </div>
+
+        <div class="categoria-form__campo">
+            <label for="icono">Ícono (emoji)</label>
+            <input type="text" id="icono" name="icono" value="{{icono}}" maxlength="10" required>
+            <small>Por ejemplo: 🔬 🎨 ⚽</small>
+        </div>
+
+        <div class="categoria-form__campo">
+            <label for="color">Color</label>
+            <input type="color" id="color" name="color" value="{{color}}" required>
+        </div>
+
+        <div class="categoria-form__acciones">
+            <button type="submit" class="categoria-form__boton categoria-form__boton--primario">{{textoBoton}}</button>
+            <a href="{{urlVolver}}" class="categoria-form__boton categoria-form__boton--secundario">Cancelar</a>
+        </div>
+    </form>
+
+</main>

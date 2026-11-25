@@ -40,6 +40,12 @@ class EditorModel
             
             $estado = $preguntaConOpciones['pregunta']['estado'];
             $estadoFormateado = mb_strtoupper(mb_substr($estado, 0, 1)) . mb_strtolower(mb_substr($estado, 1));
+
+            // Si la categoría está desactivada, la pregunta no se juega
+            if ((int) $preguntaConOpciones['pregunta']['categoria_activa'] === 0) {
+                $estadoFormateado = 'Inactiva (categoría desactivada)';
+            }
+
             $preguntaConOpciones['pregunta']['estado'] = $estadoFormateado;
 
             $listado[] = $preguntaConOpciones;
@@ -51,7 +57,7 @@ class EditorModel
     public function obtenerPreguntaConOpciones($idPregunta, $estadoPregunta = null)
     {
         $sql = "SELECT p.id, p.texto, p.estado,
-            c.nombre AS categoria, c.color, c.icono, c.id AS categoria_id
+            c.nombre AS categoria, c.color, c.icono, c.id AS categoria_id, c.activa AS categoria_activa
             FROM preguntas p
             JOIN categorias c ON c.id = p.categoria_id
             WHERE p.id = :id";
@@ -191,7 +197,7 @@ class EditorModel
             return null;
         }
 
-        $preguntaReportada['categorias'] = $this->listarCategorias();
+        $preguntaReportada['categorias'] = $this->listarCategorias($preguntaReportada['pregunta']['categoria_id']);
 
         return $preguntaReportada;
     }
@@ -318,13 +324,93 @@ class EditorModel
         return $estadoAVerificar === null || $actualizado > 0;
     }
 
-    public function listarCategorias()
+    // Categorías para los formularios de preguntas: solo las activas
+    // (más la que ya tiene la pregunta que se está editando, aunque esté desactivada)
+    public function listarCategorias($categoriaActualId = 0)
     {
         return $this->database->queryAll(
             "SELECT id, nombre, icono
              FROM categorias
-             ORDER BY id"
+             WHERE activa = 1 OR id = :actual
+             ORDER BY id",
+            [':actual' => (int) $categoriaActualId]
         );
+    }
+
+    //BANCO DE CATEGORIAS
+    public function contarCategorias()
+    {
+        return (int) $this->database->queryOne("SELECT COUNT(*) AS total FROM categorias")['total'];
+    }
+
+    public function contarCategoriasActivas()
+    {
+        return (int) $this->database->queryOne("SELECT COUNT(*) AS total FROM categorias WHERE activa = 1")['total'];
+    }
+
+    // Devuelve una página de categorías, con la cantidad de preguntas que tiene cada una
+    public function listarBancoCategorias($limite, $offset)
+    {
+        $limite = (int) $limite;
+        $offset = (int) $offset;
+
+        return $this->database->queryAll(
+            "SELECT c.id, c.nombre, c.color, c.icono, c.activa,
+                    (SELECT COUNT(*) FROM preguntas p WHERE p.categoria_id = c.id) AS total_preguntas
+             FROM categorias c
+             ORDER BY c.id
+             LIMIT $limite OFFSET $offset"
+        );
+    }
+
+    public function obtenerCategoria($idCategoria)
+    {
+        return $this->database->queryOne(
+            "SELECT id, nombre, color, icono, activa FROM categorias WHERE id = :id",
+            [':id' => (int) $idCategoria]
+        );
+    }
+
+    // Sirve para no repetir nombres (idExcluido es la categoría que se está editando)
+    public function existeNombreCategoria($nombre, $idExcluido = 0)
+    {
+        $fila = $this->database->queryOne(
+            "SELECT id FROM categorias WHERE nombre = :nombre AND id <> :id",
+            [':nombre' => $nombre, ':id' => (int) $idExcluido]
+        );
+
+        return $fila !== null && $fila !== false;
+    }
+
+    public function crearCategoria($nombre, $color, $icono)
+    {
+        $guardada = $this->database->execute(
+            "INSERT INTO categorias (nombre, color, icono, activa) VALUES (:nombre, :color, :icono, 1)",
+            [':nombre' => $nombre, ':color' => $color, ':icono' => $icono]
+        );
+
+        return $guardada !== false;
+    }
+
+    public function actualizarCategoria($idCategoria, $nombre, $color, $icono)
+    {
+        $actualizada = $this->database->execute(
+            "UPDATE categorias SET nombre = :nombre, color = :color, icono = :icono WHERE id = :id",
+            [':nombre' => $nombre, ':color' => $color, ':icono' => $icono, ':id' => (int) $idCategoria]
+        );
+
+        return $actualizada !== false;
+    }
+
+    // Baja lógica: la categoría y sus preguntas se conservan, solo dejan de jugarse
+    public function cambiarEstadoCategoria($idCategoria, $activa)
+    {
+        $cambiada = $this->database->execute(
+            "UPDATE categorias SET activa = :activa WHERE id = :id",
+            [':activa' => $activa ? 1 : 0, ':id' => (int) $idCategoria]
+        );
+
+        return $cambiada !== false;
     }
 
     private function obtenerReportePendiente($idPregunta)

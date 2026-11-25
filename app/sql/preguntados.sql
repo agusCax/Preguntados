@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE,
     color CHAR(7) NOT NULL,          -- formato #RRGGBB (pinta la pantalla de la pregunta)
-    icono VARCHAR(10) NULL           -- emoji
+    icono VARCHAR(10) NULL,          -- emoji
+    activa TINYINT(1) NOT NULL DEFAULT 1   -- 1 = se usa en el juego | 0 = desactivada (no se borra)
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS preguntas (
