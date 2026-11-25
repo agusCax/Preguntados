@@ -257,6 +257,56 @@
     }
 
     /* =========================================
+    PAGINACIÓN
+    ========================================= */
+
+    .paginacion {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .paginacion__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 42px;
+        min-height: 42px;
+        padding: 0 14px;
+
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--color-primary-dark, #0369a1);
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .paginacion__link:hover {
+        background: #e0f2fe;
+    }
+
+    .paginacion__link.is-actual {
+        color: #ffffff;
+        background: var(--color-primary, #0284c7);
+        border-color: var(--color-primary, #0284c7);
+    }
+
+    .paginacion__info {
+        margin: 12px 0 0;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    /* =========================================
     ESTADO VACÍO
     ========================================= */
 
@@ -510,6 +560,24 @@
 
             </table>
         </div>
+
+        {{#hayPaginacion}}
+            <nav class="paginacion" aria-label="Paginación del banco de preguntas">
+                {{#hayAnterior}}
+                    <a class="paginacion__link" href="{{urlAnterior}}">&laquo; Anterior</a>
+                {{/hayAnterior}}
+
+                {{#paginas}}
+                    <a class="paginacion__link{{#esActual}} is-actual{{/esActual}}" href="{{url}}"{{#esActual}} aria-current="page"{{/esActual}}>{{numero}}</a>
+                {{/paginas}}
+
+                {{#haySiguiente}}
+                    <a class="paginacion__link" href="{{urlSiguiente}}">Siguiente &raquo;</a>
+                {{/haySiguiente}}
+            </nav>
+
+            <p class="paginacion__info">Página {{paginaActual}} de {{totalPaginas}} · {{totalPreguntas}} preguntas</p>
+        {{/hayPaginacion}}
 
     {{/hayPreguntas}}
 

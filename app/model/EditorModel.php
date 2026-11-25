@@ -15,9 +15,19 @@ class EditorModel
     }
 
     //BANCO DE PREGUNTAS - TOTAL
-    public function listarBanco()
+    public function contarBanco()
     {
-        $resultado = $this->database->queryAll("SELECT * FROM preguntas p");
+        return (int) $this->database->queryOne("SELECT COUNT(*) AS total FROM preguntas")['total'];
+    }
+
+    // Devuelve solo una página del banco: $limite preguntas, saltando las primeras $offset
+    public function listarBanco($limite, $offset)
+    {
+        $limite = (int) $limite;
+        $offset = (int) $offset;
+
+        $resultado = $this->database->queryAll(
+            "SELECT * FROM preguntas p ORDER BY p.id LIMIT $limite OFFSET $offset");
 
         $listado = [];
 

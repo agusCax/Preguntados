@@ -9,6 +9,7 @@ class EditorController
 {
     private $model;
     private $render;
+    private const PREGUNTAS_POR_PAGINA = 10;
 
     public function __construct($model, $render)
     {
@@ -31,11 +32,42 @@ class EditorController
     //BANCO DE PREGUNTAS
     public function listarBanco()
     {
-        $preguntas = $this->model->listarBanco();
+        $total = $this->model->contarBanco();
+        $totalPaginas = max(1, (int) ceil($total / self::PREGUNTAS_POR_PAGINA));
+
+        // La página viene por URL: se fuerza a que sea un número entre 1 y la última
+        $pagina = (int) Request::get('pagina', 1);
+        $pagina = min(max(1, $pagina), $totalPaginas);
+
+        $preguntas = $this->model->listarBanco(
+            self::PREGUNTAS_POR_PAGINA,
+            ($pagina - 1) * self::PREGUNTAS_POR_PAGINA
+        );
+
+        // Números de página que se muestran: la actual y 2 hacia cada lado
+        $urlBase = BASE_URL . '/editor/listarBanco?pagina=';
+        $paginas = [];
+        for ($i = max(1, $pagina - 2); $i <= min($totalPaginas, $pagina + 2); $i++) {
+            $paginas[] = [
+                'numero'   => $i,
+                'url'      => $urlBase . $i,
+                'esActual' => $i === $pagina,
+            ];
+        }
+
         $data = [
-            'hayPreguntas' => !empty($preguntas),
-            'preguntas' => $preguntas,
-            'urlNueva' => BASE_URL . '/editor/nuevaPregunta',
+            'hayPreguntas'    => !empty($preguntas),
+            'preguntas'       => $preguntas,
+            'urlNueva'        => BASE_URL . '/editor/nuevaPregunta',
+            'hayPaginacion'   => $totalPaginas > 1,
+            'paginas'         => $paginas,
+            'hayAnterior'     => $pagina > 1,
+            'urlAnterior'     => $urlBase . ($pagina - 1),
+            'haySiguiente'    => $pagina < $totalPaginas,
+            'urlSiguiente'    => $urlBase . ($pagina + 1),
+            'paginaActual'    => $pagina,
+            'totalPaginas'    => $totalPaginas,
+            'totalPreguntas'  => $total,
         ];
 
         $this->render->renderiza('editor/bancoListado', $data);
