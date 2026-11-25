@@ -69,6 +69,24 @@
         border-color: #0284c7;
     }
 
+    .categoria-form__campo select {
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 46px;
+        padding: 0 14px;
+        font-family: inherit;
+        font-size: 1.2rem;
+        color: #0f172a;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .categoria-form__campo select:focus {
+        outline: none;
+        border-color: #0284c7;
+    }
+
     .categoria-form__campo input[type="color"] {
         width: 80px;
         height: 46px;
@@ -137,9 +155,13 @@
         </div>
 
         <div class="categoria-form__campo">
-            <label for="icono">Ícono (emoji)</label>
-            <input type="text" id="icono" name="icono" value="{{icono}}" maxlength="10" required>
-            <small>Por ejemplo: 🔬 🎨 ⚽</small>
+            <label for="icono">Ícono</label>
+            <select id="icono" name="icono" required>
+                <option value="">Elegí un ícono</option>
+                {{#iconos}}
+                    <option value="{{icono}}"{{#seleccionado}} selected{{/seleccionado}}>{{icono}}</option>
+                {{/iconos}}
+            </select>
         </div>
 
         <div class="categoria-form__campo">

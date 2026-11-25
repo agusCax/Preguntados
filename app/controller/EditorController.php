@@ -11,6 +11,12 @@ class EditorController
     private $render;
     private const PREGUNTAS_POR_PAGINA = 10;
     private const CATEGORIAS_POR_PAGINA = 10;
+    // Íconos que se pueden elegir al crear o editar una categoría
+    private const ICONOS = [
+        '🔬', '🏛️', '🌎', '🎨', '⚽', '🎬', '🎵', '📚', '💻', '🚀', '🧠', '🧪',
+        '🔭', '🌿', '🐶', '🍔', '🍕', '🏀', '🏆', '🎮', '🎲', '🎭', '📺', '✈️',
+        '🚗', '💡', '🏥', '🌍',
+    ];
 
     public function __construct($model, $render)
     {
@@ -533,7 +539,7 @@ class EditorController
             'urlForm'     => BASE_URL . '/editor/guardarNuevaCategoria',
             'idCategoria' => '',
             'nombre'      => '',
-            'icono'       => '',
+            'iconos'      => $this->armarIconos(''),
             'color'       => '#0284c7',
             'urlVolver'   => BASE_URL . '/editor/listarCategorias',
         ];
@@ -571,7 +577,7 @@ class EditorController
             'urlForm'     => BASE_URL . '/editor/guardarCategoria',
             'idCategoria' => $categoria['id'],
             'nombre'      => $categoria['nombre'],
-            'icono'       => $categoria['icono'],
+            'iconos'      => $this->armarIconos($categoria['icono']),
             'color'       => $categoria['color'],
             'urlVolver'   => $urlVolver,
         ];
@@ -646,8 +652,15 @@ class EditorController
             $this->mostrarError('El nombre es obligatorio y puede tener hasta 50 caracteres.', $urlVolver);
         }
 
-        if ($icono === '' || mb_strlen($icono) > 10) {
-            $this->mostrarError('El ícono es obligatorio (un emoji) y puede tener hasta 10 caracteres.', $urlVolver);
+        // Solo vale un ícono de la lista (o el que la categoría ya tenía)
+        $iconosValidos = self::ICONOS;
+        $categoriaActual = $this->model->obtenerCategoria($idActual);
+        if ($categoriaActual) {
+            $iconosValidos[] = $categoriaActual['icono'];
+        }
+
+        if (!in_array($icono, $iconosValidos, true)) {
+            $this->mostrarError('Elegí un ícono de la lista.', $urlVolver);
         }
 
         if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
@@ -659,6 +672,24 @@ class EditorController
         }
 
         return ['nombre' => $nombre, 'icono' => $icono, 'color' => $color];
+    }
+
+    // Lista de íconos para el desplegable, con el actual seleccionado
+    // (si la categoría ya tenía uno que no está en la lista, también se muestra)
+    private function armarIconos($iconoActual)
+    {
+        $iconos = self::ICONOS;
+
+        if ($iconoActual !== '' && !in_array($iconoActual, $iconos, true)) {
+            array_unshift($iconos, $iconoActual);
+        }
+
+        $listado = [];
+        foreach ($iconos as $icono) {
+            $listado[] = ['icono' => $icono, 'seleccionado' => $icono === $iconoActual];
+        }
+
+        return $listado;
     }
 
     //Convierte las opciones de la base en el formato que espera formPreguntaView

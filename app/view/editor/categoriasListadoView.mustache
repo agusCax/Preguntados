@@ -503,25 +503,6 @@
         border: 1px solid #cbd5e1;
     }
 
-    .estado-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 700;
-    }
-
-    .estado-badge--activa {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .estado-badge--inactiva {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
     .fila-inactiva .categoria-badge {
         opacity: 0.55;
     }
@@ -662,10 +643,10 @@
 
                             <td>
                                 {{#esActiva}}
-                                    <span class="estado-badge estado-badge--activa">Activa</span>
+                                    <div class="pregunta-estado">Activa</div>
                                 {{/esActiva}}
                                 {{^esActiva}}
-                                    <span class="estado-badge estado-badge--inactiva">Inactiva</span>
+                                    <div class="pregunta-estado">Inactiva</div>
                                 {{/esActiva}}
                             </td>
 
@@ -674,7 +655,7 @@
                                     <a href="{{urlEditar}}" class="btn-accion btn-editar">Editar</a>
 
                                     {{#esActiva}}
-                                        <form method="post" action="{{urlCambiarEstado}}" onsubmit="return confirm('¿Desactivar esta categoría? Ella y sus preguntas dejarán de aparecer en el juego.');">
+                                        <form method="post" action="{{urlCambiarEstado}}" data-confirmar="¿Desactivar esta categoría? Ella y sus preguntas dejarán de aparecer en el juego." data-confirmar-titulo="Desactivar categoría">
                                             <input type="hidden" name="id" value="{{id}}">
                                             <input type="hidden" name="accion" value="desactivar">
                                             <button type="submit" class="btn-accion btn-desactivar">Desactivar</button>
@@ -725,3 +706,5 @@
     {{/hayCategorias}}
 
 </main>
+
+{{> editor/confirmarView}}
