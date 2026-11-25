@@ -18,7 +18,7 @@ class ReporteController
     // Pantalla: el reporte en HTML
     public function ranking()
     {
-        $this->render->renderiza('reporteRanking', $this->armarDatos(false), false);
+        $this->render->renderiza('reporteRanking', $this->armarDatos(false));
     }
 
     // El mismo reporte, convertido a PDF

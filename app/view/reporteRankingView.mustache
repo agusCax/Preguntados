@@ -1,43 +1,47 @@
-
+{{#esPdf}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>{{titulo}}</title>
-
-    {{^esPdf}}
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    {{/esPdf}}
+{{/esPdf}}
 
     <style>
-        body {
+        .rr {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 24px;
             font-family: "Nunito", "DejaVu Sans", Arial, sans-serif;
             font-size: 12px;
             color: #1f2937;
-            margin: 24px;
         }
 
-        h1 {
+        {{^esPdf}}
+        /* En pantalla (con header y footer) se lee un poco más grande */
+        .rr {
+            font-size: 15px;
+        }
+        {{/esPdf}}
+
+        .rr h1 {
             font-size: 22px;
             margin: 0 0 4px 0;
             color: #0369a1;
         }
 
-        .fecha {
+        .rr .fecha {
             margin: 0 0 18px 0;
             color: #6b7280;
         }
 
-        .acciones {
+        .rr .acciones {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin: 0 0 20px 0;
         }
 
-        .adm__boton {
+        .rr .adm__boton {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -60,56 +64,62 @@
             transition: background 0.2s ease, transform 0.2s ease;
         }
 
-        .adm__boton:hover {
+        .rr .adm__boton:hover {
             background: #0369a1;
         }
 
-        .adm__boton:focus-visible {
+        .rr .adm__boton:focus-visible {
             outline: 3px solid rgba(2, 132, 199, 0.4);
             outline-offset: 3px;
         }
 
-        .adm__boton:active {
+        .rr .adm__boton:active {
             transform: translateY(3px);
             box-shadow: none;
         }
 
-        table {
+        .rr table {
             width: 100%;
             border-collapse: collapse;
+            background: #ffffff;
         }
 
-        th {
+        .rr th {
             text-align: left;
             background-color: #e0f2fe;
             padding: 8px;
             border: 1px solid #bae6fd;
         }
 
-        td {
+        .rr td {
             padding: 8px;
             border: 1px solid #e5e7eb;
         }
 
-        .pos {
+        .rr .pos {
             width: 12%;
             text-align: center;
         }
 
-        .puntaje {
+        .rr .puntaje {
             width: 20%;
             text-align: right;
         }
 
         @media print {
-            .acciones {
+            .rr .acciones {
                 display: none;
             }
         }
     </style>
+
+{{#esPdf}}
 </head>
 
 <body>
+{{/esPdf}}
+
+<div class="rr">
 
     {{^esPdf}}
         <div class="acciones">
@@ -152,5 +162,9 @@
         </tbody>
     </table>
 
+</div>
+
+{{#esPdf}}
 </body>
 </html>
+{{/esPdf}}

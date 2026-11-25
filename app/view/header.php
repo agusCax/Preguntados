@@ -23,6 +23,7 @@ $hdEditorEnModeracion = $hdSeccion === 'editor' && !$hdEditorEnBanco;
 
 //ADMINISTRADOR
 $hdAdminEnUsuarios = $hdSeccion === 'administrador' && in_array($hdMetodo, ['usuarios', 'cambiarRol'], true);
+$hdAdminEnReporte = $hdSeccion === 'reporte';
 $hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
 
 ?>
@@ -179,6 +180,7 @@ $hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
         .hd__nav {
             grid-area: nav;
             display: flex;
+            flex-wrap: wrap;
             gap: 0.5rem;
         }
 
@@ -189,6 +191,7 @@ $hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
             justify-content: center;
             min-height: 40px;
             padding: 0 1.25rem;
+            white-space: nowrap;
             font-family: var(--font-text);
             font-size: 0.95rem;
             font-weight: 700;
@@ -296,6 +299,7 @@ $hdAdminEnPanel = $hdSeccion === 'administrador' && !$hdAdminEnUsuarios;
                 <?php elseif ($hdRol === Rol::Administrador->name): ?>
                     <a href="<?= BASE_URL ?>/administrador/show" class="hd__link<?= $hdAdminEnPanel ? ' is-active' : '' ?>" <?= $hdAdminEnPanel ? ' aria-current="page"' : '' ?>>Panel</a>
                     <a href="<?= BASE_URL ?>/administrador/usuarios" class="hd__link<?= $hdAdminEnUsuarios ? ' is-active' : '' ?>" <?= $hdAdminEnUsuarios ? ' aria-current="page"' : '' ?>>Usuarios</a>
+                    <a href="<?= BASE_URL ?>/reporte/ranking" class="hd__link<?= $hdAdminEnReporte ? ' is-active' : '' ?>" <?= $hdAdminEnReporte ? ' aria-current="page"' : '' ?>>Reporte de ranking</a>
                 <?php endif; ?>
             </nav>
 
