@@ -253,6 +253,38 @@ class PreguntaModel
         return $candidatas[0]['id']; // si no hay de ese nivel, cualquiera
     }
 
+    // Preguntas que se mostraron en una partida (en orden), con su respuesta correcta
+    public function obtenerPreguntasDePartida($idPartida)
+    {
+        return $this->database->queryAll(
+            "SELECT p.id, p.texto, p.estado, pp.fue_correcta,
+                    (SELECT r.texto FROM respuestas r
+                     WHERE r.pregunta_id = p.id AND r.es_correcta = 1
+                     LIMIT 1) AS respuesta_correcta
+            FROM partida_preguntas pp
+            JOIN preguntas p ON p.id = pp.pregunta_id
+            WHERE pp.partida_id = :partida_id
+            ORDER BY pp.id",
+            [':partida_id' => $idPartida]
+        );
+    }
+
+    // Sirve para que nadie reporte una pregunta que no vio en su partida
+    public function preguntaFueMostradaAlUsuario($idPartida, $idPregunta, $idUsuario)
+    {
+        $fila = $this->database->queryOne(
+            "SELECT pp.id
+            FROM partida_preguntas pp
+            JOIN partidas pa ON pa.id = pp.partida_id
+            WHERE pp.partida_id = :partida_id
+            AND pp.pregunta_id = :pregunta_id
+            AND pa.usuario_id = :usuario_id",
+            [':partida_id' => $idPartida, ':pregunta_id' => $idPregunta, ':usuario_id' => $idUsuario]
+        );
+
+        return $fila !== null && $fila !== false;
+    }
+
     public function registrarReporte($idPregunta, $idUsuario, $motivo, $descripcion=null){
         $preguntasModificadas = $this->database->execute(
             "UPDATE preguntas p

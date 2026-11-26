@@ -31,6 +31,7 @@ class PreguntaController
     {
         // Si no hay partida en curso, se crea una en la base y se guarda su id (INT)
         if (!isset($_SESSION['partida_activa'])) {
+            unset($_SESSION['partida_finalizada']);
             $_SESSION['partida_activa'] = $this->preguntaModel->crearPartida($_SESSION['usuario_id']);
             $_SESSION['puntaje'] = 0;
             $_SESSION['contadorCorrectas'] = 0;
@@ -108,7 +109,6 @@ class PreguntaController
             'pregunta_id'        => $pregunta['id'],
             'pregunta_texto'     => $pregunta['texto'],
             'respuestas'         => $respuestasFormateadas,
-            'motivos_reporte'    => array_map(fn($motivo) => $motivo->value, MotivoReporte::cases()),
             'sonido'             => $sonido,
             'efecto'             => $efecto,
             'racha'              => $racha,
@@ -214,6 +214,7 @@ class PreguntaController
     {
         $puntaje = $_SESSION['puntaje'] ?? 0;
         $correctas = $_SESSION['correctasPartida'] ?? 0;
+        $idPartidaTerminada = $_SESSION['partida_activa'] ?? null;
 
         if (isset($_SESSION['partida_activa'])) {
             $resultado = match ($tipoResultado) {
@@ -229,7 +230,32 @@ class PreguntaController
 
         $sonido = ($tipoResultado === 'ganada') ? 'correcta' : 'incorrecta';
 
+        // Se guarda la partida terminada para poder reportar sus preguntas desde la pantalla de resultado
+        $preguntasPartida = [];
+        $preguntaFinal = null;
 
+        if ($idPartidaTerminada !== null) {
+            $_SESSION['partida_finalizada'] = $idPartidaTerminada;
+            $preguntas = $this->preguntaModel->obtenerPreguntasDePartida($idPartidaTerminada);
+
+            foreach ($preguntas as $indice => $pregunta) {
+                $preguntasPartida[] = [
+                    'numero'               => $indice + 1,
+                    'id'                   => $pregunta['id'],
+                    'texto'                => $pregunta['texto'],
+                    'respuesta_correcta'   => $pregunta['respuesta_correcta'],
+                    'puede_reportar'       => $pregunta['estado'] === 'activa',
+                    'etiqueta_no_reportar' => $pregunta['estado'] === 'reportada' ? 'Reportada' : 'No disponible',
+                ];
+
+                // La última pregunta sin acertar es la que terminó la partida
+                if ($pregunta['fue_correcta'] === null || (int) $pregunta['fue_correcta'] === 0) {
+                    $preguntaFinal = $pregunta;
+                }
+            }
+        }
+
+        $mostrarRespuesta = $tipoResultado !== 'ganada' && $preguntaFinal !== null;
 
         $this->render->renderiza('resultado', [
             'sonido' => $sonido,
@@ -241,6 +267,11 @@ class PreguntaController
             'penalizacion_mensaje' => $mensajePenalizacion,
         'gano' => $tipoResultado === 'ganada',
             'correctas' => $correctas,
+            'pregunta_final' => $mostrarRespuesta ? $preguntaFinal['texto'] : null,
+            'respuesta_correcta_final' => $mostrarRespuesta ? $preguntaFinal['respuesta_correcta'] : null,
+            'hay_preguntas' => !empty($preguntasPartida),
+            'preguntas_partida' => $preguntasPartida,
+            'motivos_reporte' => array_map(fn($motivo) => $motivo->value, MotivoReporte::cases()),
         ], false);
 
         exit();
@@ -302,11 +333,21 @@ class PreguntaController
             $this->responderJson(405, false, 'Método no permitido.');
         }
 
-        if (!isset($_SESSION['pregunta_actual'])) {
-            $this->responderJson(409, false, 'No hay pregunta en curso.');
+        // Solo se reportan preguntas de la última partida terminada
+        $idPartida = $_SESSION['partida_finalizada'] ?? null;
+        $idPregunta = $_POST['pregunta_id'] ?? null;
+
+        if ($idPartida === null) {
+            $this->responderJson(409, false, 'No hay una partida terminada para reportar.');
         }
 
-        $idPreguntaActual = $_SESSION['pregunta_actual'];
+        if (!is_string($idPregunta) || !ctype_digit($idPregunta)) {
+            $this->responderJson(400, false, 'Datos invalidos.');
+        }
+
+        if (!$this->preguntaModel->preguntaFueMostradaAlUsuario($idPartida, (int) $idPregunta, $_SESSION['usuario_id'])) {
+            $this->responderJson(403, false, 'Esa pregunta no se mostró en tu partida.');
+        }
 
         $motivo = $_POST['motivo'] ?? null;
         $descripcion = $_POST['descripcion'] ?? '';
@@ -332,7 +373,7 @@ class PreguntaController
             $descripcion = null;
         }
 
-        $reportado = $this->preguntaModel->registrarReporte($idPreguntaActual, $_SESSION['usuario_id'], $motivoReporte->value, $descripcion);
+        $reportado = $this->preguntaModel->registrarReporte((int) $idPregunta, $_SESSION['usuario_id'], $motivoReporte->value, $descripcion);
 
         if (!$reportado) {
             $this->responderJson(409, false, 'Esta pregunta ya fue reportada.');

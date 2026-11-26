@@ -300,6 +300,211 @@
             25% { transform: translateX(-8px); }
             75% { transform: translateX(8px); }
         }
+
+        /* ---------- Respuesta correcta ---------- */
+        .result__correct {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            text-align: center;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 1rem;
+        }
+
+        .result__correct-pregunta {
+            margin: 0 0 0.4rem;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .result__correct-label {
+            margin: 0;
+            color: #166534;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .result__correct-texto {
+            margin: 0.2rem 0 0;
+            color: #14532d;
+            font-family: var(--font-family);
+            font-size: 1.15rem;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        button.result__button.result__button--report {
+            color: var(--color-ink-soft);
+            background: #ffffff;
+            border: 2px dashed var(--color-ink-soft);
+        }
+
+        button.result__button.result__button--report:hover {
+            color: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+        /* ---------- Modales de reporte ---------- */
+        .rep-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: rgba(15, 23, 42, 0.55);
+        }
+
+        .rep-modal[hidden] {
+            display: none;
+        }
+
+        .rep-modal__card {
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.25rem;
+            text-align: left;
+            background-color: #ffffff;
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3);
+        }
+
+        .rep-modal__title {
+            margin: 0 0 0.5rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--color-ink);
+        }
+
+        .rep-modal__text {
+            margin: 0 0 1rem;
+            font-weight: 600;
+            color: var(--color-ink-soft);
+            overflow-wrap: anywhere;
+        }
+
+        .rep-modal__label {
+            display: block;
+            margin: 0.75rem 0 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-ink-soft);
+        }
+
+        .rep-modal__field {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            font-family: var(--font-text);
+            font-size: 1rem;
+            color: var(--color-ink);
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+        }
+
+        .rep-modal__field:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+
+        textarea.rep-modal__field {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .rep-modal__msg {
+            min-height: 1.4rem;
+            margin: 0.75rem 0 0;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #b91c1c;
+        }
+
+        .rep-modal__actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .rep-modal__btn {
+            min-height: 42px;
+            padding: 0 1.1rem;
+            font-family: var(--font-text);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0284c7;
+            background-color: #ffffff;
+            border: 2px solid #0284c7;
+            border-radius: 9999px;
+            cursor: pointer;
+        }
+
+        .rep-modal__btn--primary {
+            color: #ffffff;
+            background-color: #0284c7;
+        }
+
+        .rep-modal__btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        /* Listado de preguntas de la partida */
+        .rep-lista {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .rep-item {
+            display: grid;
+            gap: 0.35rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .rep-item:last-child {
+            border-bottom: 0;
+        }
+
+        .rep-item__texto {
+            margin: 0;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .rep-item__correcta {
+            margin: 0;
+            color: #166534;
+            font-size: 0.9rem;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .rep-item__btn {
+            justify-self: start;
+            min-height: 36px;
+            padding: 0 1rem;
+            font-family: var(--font-text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #b91c1c;
+            background: #ffffff;
+            border: 2px solid #b91c1c;
+            border-radius: 9999px;
+            cursor: pointer;
+        }
+
+        .rep-item__btn:disabled {
+            color: #64748b;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
     </style>
 </head>
 <body class="result--{{resultado_tipo}}">
@@ -316,6 +521,13 @@
         {{#penalizacion_mensaje}}
         <p class="result__penalty">{{penalizacion_mensaje}}</p>
         {{/penalizacion_mensaje}}
+        {{#respuesta_correcta_final}}
+        <div class="result__correct">
+            <p class="result__correct-pregunta">{{pregunta_final}}</p>
+            <p class="result__correct-label">La respuesta correcta era:</p>
+            <p class="result__correct-texto">{{respuesta_correcta_final}}</p>
+        </div>
+        {{/respuesta_correcta_final}}
         {{#etapa}}
         <div class="result__actions">
             <form method="post" action="{{base_url}}/pregunta/retirarse">
@@ -329,12 +541,199 @@
         {{^etapa}}
         <nav class="result__actions" aria-label="Opciones de partida">
             <a class="result__button result__button--play" href="{{base_url}}/pregunta/show">Jugar otra partida</a>
+            {{#hay_preguntas}}
+            <button type="button" class="result__button result__button--report" id="btn-abrir-reportes">Reportar una pregunta</button>
+            {{/hay_preguntas}}
             <a class="result__button result__button--home" href="{{base_url}}/inicio/show">Volver al inicio</a>
         </nav>
         {{/etapa}}
     </main>
 
     {{> footerPartida}}
+
+    {{#hay_preguntas}}
+    <!-- 1) Listado de las preguntas de la partida -->
+    <div class="rep-modal" id="rep-lista-modal" hidden>
+        <div class="rep-modal__card" role="dialog" aria-modal="true" aria-labelledby="rep-lista-titulo">
+            <h2 class="rep-modal__title" id="rep-lista-titulo">Reportar una pregunta</h2>
+            <p class="rep-modal__text">Estas son las preguntas de tu partida. Elegí la que querés reportar.</p>
+
+            <ul class="rep-lista">
+                {{#preguntas_partida}}
+                <li class="rep-item">
+                    <p class="rep-item__texto">{{numero}}. {{texto}}</p>
+                    <p class="rep-item__correcta">Respuesta correcta: {{respuesta_correcta}}</p>
+                    {{#puede_reportar}}
+                    <button type="button" class="rep-item__btn" data-pregunta-id="{{id}}" data-texto="{{texto}}">Reportar</button>
+                    {{/puede_reportar}}
+                    {{^puede_reportar}}
+                    <button type="button" class="rep-item__btn" disabled>{{etiqueta_no_reportar}}</button>
+                    {{/puede_reportar}}
+                </li>
+                {{/preguntas_partida}}
+            </ul>
+
+            <div class="rep-modal__actions">
+                <button type="button" class="rep-modal__btn" id="rep-lista-cerrar">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2) Formulario de reporte de la pregunta elegida (se envía por fetch a /pregunta/reportar) -->
+    <div class="rep-modal" id="rep-form-modal" hidden>
+        <div class="rep-modal__card" role="dialog" aria-modal="true" aria-labelledby="rep-titulo">
+            <h2 class="rep-modal__title" id="rep-titulo">Reportar pregunta</h2>
+            <p class="rep-modal__text" id="rep-pregunta-texto"></p>
+
+            <form id="form-reporte" method="post" action="{{base_url}}/pregunta/reportar">
+                <input type="hidden" name="pregunta_id" id="rep-pregunta-id" value="">
+
+                <label class="rep-modal__label" for="rep-motivo">Motivo</label>
+                <select class="rep-modal__field" id="rep-motivo" name="motivo" required>
+                    <option value="" disabled selected>Elegí un motivo</option>
+                    {{#motivos_reporte}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{/motivos_reporte}}
+                </select>
+
+                <label class="rep-modal__label" for="rep-descripcion">Descripción (opcional)</label>
+                <textarea class="rep-modal__field" id="rep-descripcion" name="descripcion" maxlength="500"></textarea>
+
+                <p class="rep-modal__msg" id="rep-mensaje" role="status"></p>
+
+                <div class="rep-modal__actions">
+                    <button type="button" class="rep-modal__btn" id="rep-cancelar">Cancelar</button>
+                    <button type="submit" class="rep-modal__btn rep-modal__btn--primary" id="rep-enviar">Enviar reporte</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3) Después de reportar: ¿otro reporte? -->
+    <div class="rep-modal" id="rep-otro-modal" hidden>
+        <div class="rep-modal__card" role="dialog" aria-modal="true" aria-labelledby="rep-otro-titulo">
+            <h2 class="rep-modal__title" id="rep-otro-titulo">¡Reporte enviado!</h2>
+            <p class="rep-modal__text" id="rep-otro-texto">¿Querés realizar otro reporte?</p>
+
+            <div class="rep-modal__actions">
+                <button type="button" class="rep-modal__btn" id="rep-otro-no">No, gracias</button>
+                <button type="button" class="rep-modal__btn rep-modal__btn--primary" id="rep-otro-si">Sí, reportar otra</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // La validación real está en PreguntaController::reportar()
+        (function () {
+            var modalLista = document.getElementById('rep-lista-modal');
+            var modalForm = document.getElementById('rep-form-modal');
+            var modalOtro = document.getElementById('rep-otro-modal');
+            var form = document.getElementById('form-reporte');
+            var campoPregunta = document.getElementById('rep-pregunta-id');
+            var textoPregunta = document.getElementById('rep-pregunta-texto');
+            var mensaje = document.getElementById('rep-mensaje');
+            var btnEnviar = document.getElementById('rep-enviar');
+            var textoOtro = document.getElementById('rep-otro-texto');
+            var btnOtroSi = document.getElementById('rep-otro-si');
+            var botonElegido = null;
+
+            function mostrar(modal) { modal.hidden = false; }
+            function ocultar(modal) { modal.hidden = true; }
+
+            function cerrarTodo() {
+                ocultar(modalLista);
+                ocultar(modalForm);
+                ocultar(modalOtro);
+            }
+
+            // Botón "Reportar una pregunta" de la pantalla
+            document.getElementById('btn-abrir-reportes').addEventListener('click', function () {
+                mostrar(modalLista);
+            });
+
+            document.getElementById('rep-lista-cerrar').addEventListener('click', cerrarTodo);
+
+            // Se elige una pregunta del listado: se abre el formulario
+            modalLista.addEventListener('click', function (e) {
+                if (e.target === modalLista) {
+                    cerrarTodo();
+                    return;
+                }
+
+                var boton = e.target.closest('[data-pregunta-id]');
+                if (!boton || boton.disabled) {
+                    return;
+                }
+
+                botonElegido = boton;
+                form.reset();
+                campoPregunta.value = boton.dataset.preguntaId;
+                textoPregunta.textContent = boton.dataset.texto;   // textContent: nunca interpreta HTML
+                mensaje.textContent = '';
+                btnEnviar.disabled = false;
+
+                ocultar(modalLista);
+                mostrar(modalForm);
+                form.elements.motivo.focus();
+            });
+
+            // Cancelar vuelve al listado
+            document.getElementById('rep-cancelar').addEventListener('click', function () {
+                ocultar(modalForm);
+                mostrar(modalLista);
+            });
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                btnEnviar.disabled = true;   // evita doble envío
+                mensaje.textContent = 'Enviando...';
+
+                try {
+                    var respuesta = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    });
+                    var datos = await respuesta.json();
+
+                    // fetch NO falla con 400/403/409: hay que mirar respuesta.ok
+                    if (respuesta.ok && datos.exito) {
+                        botonElegido.disabled = true;
+                        botonElegido.textContent = 'Reportada';
+
+                        var quedan = modalLista.querySelectorAll('[data-pregunta-id]:not(:disabled)').length > 0;
+                        textoOtro.textContent = quedan
+                            ? '¿Querés realizar otro reporte?'
+                            : 'Ya reportaste todas las preguntas disponibles de esta partida.';
+                        btnOtroSi.hidden = !quedan;
+
+                        ocultar(modalForm);
+                        mostrar(modalOtro);
+                    } else {
+                        mensaje.textContent = datos.mensaje || 'No se pudo enviar el reporte.';
+                        btnEnviar.disabled = false;
+                    }
+                } catch (error) {
+                    // sin conexión, o el servidor devolvió algo que no es JSON
+                    mensaje.textContent = 'No se pudo enviar el reporte. Intentá de nuevo.';
+                    btnEnviar.disabled = false;
+                }
+            });
+
+            btnOtroSi.addEventListener('click', function () {
+                ocultar(modalOtro);
+                mostrar(modalLista);
+            });
+
+            document.getElementById('rep-otro-no').addEventListener('click', cerrarTodo);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    cerrarTodo();
+                }
+            });
+        })();
+    </script>
+    {{/hay_preguntas}}
 
     {{#sonido}}
     <audio src="{{base_url}}/public/sounds/{{sonido}}.wav" autoplay></audio>
