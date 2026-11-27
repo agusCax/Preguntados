@@ -1,353 +1,211 @@
 <style>
-    /* Fondo suave de las pantallas con sesión (igual que el mockup) */
-    body {
-        background-color: var(--color-canvas, #f8fafc);
-    }
+    /* Fondo cálido: los colores planos del juego resaltan mejor que sobre gris */
+    body { background-color: #fff8e8; }
 
     .ini,
     .ini *,
     .ini *::before,
-    .ini *::after {
-        box-sizing: border-box;
-    }
+    .ini *::after { box-sizing: border-box; }
 
     .ini {
-        --ini-pad: 1rem;
+        --ink: #0f172a;
+        --sky: #0284c7;
+        --sky-soft: #bfe6fb;
+        --amber: #f59e0b;
+        --sun: #fcd34d;
+        --violet: #7c3aed;
+        --edge: 3px solid var(--ink);          /* contorno de todo "sticker" */
+        --pad: 1rem;
 
         max-width: 960px;
         margin: 0 auto;
-        padding: 1.5rem var(--ini-pad) 0;
+        padding: 1.5rem var(--pad) 2.5rem;
         font-family: var(--font-text, "Nunito", system-ui, sans-serif);
-        color: var(--color-ink, #0f172a);
-    }
-
-    /* ---------- Tarjeta: Crear partida ---------- */
-    .ini__hero {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
-        padding: 1.25rem;
-        background-color: #e0f2fe;
-        border-radius: 1.75rem;
-        background: linear-gradient(135deg, #e0f2fe 0%, #e0f2fe 45%, #fff4dc 100%);
-    }
-
-    .ini__hero-title {
-        margin: 0;
-        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.6rem;
-        line-height: 1.15;
-        font-weight: 700;
-        color: var(--color-primary-dark, #0369a1);
-    }
-
-    .ini__hero-text {
-        margin: 0.25rem 0 1rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--color-ink-soft, #334155);
-    }
-
-    .ini__play {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 48px;
-        padding: 0 1.75rem;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1rem;
-        font-weight: 700;
-        text-decoration: none;
-        color: var(--color-ink, #0f172a);
-        background-color: var(--color-secondary, #f59e0b);
-        border-radius: 9999px;
-        box-shadow: 0 4px 0 var(--color-secondary-dark, #b45309);
-        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
-    }
-
-    .ini__play:hover {
-        filter: brightness(1.05);
-    }
-
-    .ini__play:active {
-        transform: translateY(4px);
-        box-shadow: 0 0 0 transparent;
-    }
-
-    .ini__play:focus-visible {
-        outline: 3px solid rgba(2, 132, 199, 0.4);
-        outline-offset: 3px;
-    }
-
-    .ini__hero-img {
-        display: block;
-        flex-shrink: 0;
-        width: clamp(96px, 34%, 150px);
-        height: auto;
-        filter: drop-shadow(0 8px 16px rgba(11, 91, 220, 0.15));
+        color: var(--ink);
     }
 
     /* ---------- Saludo ---------- */
     .ini__hello {
-        margin: 0 0 1rem;
+        display: inline-block;
+        margin: 0 0 1.25rem;
+        padding: 0.35rem 1rem;
         font-size: 1rem;
-        font-weight: 600;
-        color: #64748b;
+        font-weight: 700;
+        background: #fff;
+        border: 2px solid var(--ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--ink);
     }
+    .ini__hello strong { font-weight: 800; color: var(--sky); }
 
-    .ini__hello strong {
-        font-weight: 800;
-        color: var(--color-ink, #0f172a);
-    }
-
-    /* ---------- Categorías (una al lado de la otra) ---------- */
-    .ini__cats {
+    /* ---------- Hero ---------- */
+    .ini__hero {
+        position: relative;
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 1.5rem 1.25rem;
+        overflow: hidden;
+        background: var(--sky-soft);
+        border: var(--edge);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--ink);
+        animation: ini-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    /* Trama de puntos, como el confeti de las referencias */
+    .ini__hero::before {
+        content: "";
+        position: absolute;
+        top: 0.9rem;
+        right: 0.9rem;
+        width: 110px;
+        height: 70px;
+        background-image: radial-gradient(var(--ink) 2.2px, transparent 2.6px);
+        background-size: 14px 14px;
+        opacity: 0.55;
+    }
+
+    .ini__deco { position: absolute; pointer-events: none; }
+    .ini__deco--star { left: 46%; bottom: 0.9rem; width: 30px; }
+    .ini__deco--zig  { left: 1.25rem; bottom: 0.75rem; width: 78px; }
+
+    .ini__hero-body { position: relative; z-index: 1; }
+
+    .ini__hero-title {
+        margin: 0;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 2.1rem;
+        line-height: 1.05;
+        font-weight: 700;
+        color: var(--ink);
+        text-shadow: 3px 3px 0 #fff;
+    }
+
+    .ini__hero-text {
+        margin: 0.4rem 0 1.1rem;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    /* Botones: contorno oscuro + sombra dura (se hunden al apretar) */
+    .ini__play {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
-        gap: 0.9rem;
-        margin: 1.25rem 0 0;
-        padding: 0;
-        list-style: none;
+        min-height: 50px;
+        padding: 0 1.9rem;
+        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--ink);
+        text-decoration: none;
+        background: var(--amber);
+        border: var(--edge);
+        border-radius: 9999px;
+        box-shadow: 0 5px 0 var(--ink);
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
+    .ini__play:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
+    .ini__play:active { transform: translateY(5px); box-shadow: 0 0 0 var(--ink); }
+    .ini__play:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
 
-    .ini__cat {
-        width: 56px;
-        height: 56px;
-    }
-
-    .ini__cat-icon {
+    /* Mascota sobre una mancha de color */
+    .ini__mascot {
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
         display: grid;
         place-items: center;
-        width: 100%;
-        height: 100%;
-        font-size: 1.6rem;
-        line-height: 1;
-        background-color: var(--tint);
-        border: 3px solid #ffffff;
-        border-radius: 50%;
-        box-shadow: 0 4px 0 var(--borde);
+        width: clamp(104px, 34%, 170px);
+        aspect-ratio: 1;
+        background: var(--sun);
+        border: var(--edge);
+        border-radius: 58% 42% 55% 45% / 50% 56% 44% 50%;
+        box-shadow: 4px 4px 0 var(--ink);
     }
+    .ini__mascot img { display: block; width: 92%; height: auto; }
 
-    /* ---------- Invitación a proponer preguntas ---------- */
-    .ini__invita {
-        max-width: 520px;
-        margin: 1.5rem auto 0;
-        text-align: center;
-    }
-
-    .ini__invita-titulo {
-        margin: 0 0 0.35rem;
-        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.35rem;
-        font-weight: 700;
-        color: #5b21b6;
-    }
-
-    .ini__invita-texto {
-        margin: 0 0 1rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--color-ink-soft, #334155);
-    }
-
-    /* Mismo botón que "Jugar", pero violeta para distinguirlo */
-    .ini__proponer {
-        color: #ffffff;
-        background-color: #7c3aed;
-        box-shadow: 0 4px 0 #5b21b6;
-    }
-
-    /* ---------- Usuarios (sección de prueba, viene de la base) ---------- */
-    .ini__section {
-        margin-top: 2rem;
-    }
+    /* ---------- Secciones ---------- */
+    .ini__section { margin-top: 2.5rem; }
 
     .ini__section-title {
         margin: 0 0 0.25rem;
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.25rem;
+        font-size: 1.6rem;
         font-weight: 700;
     }
 
     .ini__section-text {
-        margin: 0 0 1rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #64748b;
+        margin: 0 0 1.25rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #475569;
     }
 
-
-    @media (prefers-reduced-motion: reduce) {
-        .ini__play {
-            transition: none;
-        }
-    }
-
-    /* ---------- Tablet (≥ 768px) ---------- */
-    @media (min-width: 768px) {
-        .ini {
-            --ini-pad: 1.5rem;
-            padding-top: 2rem;
-        }
-
-        .ini__hero {
-            gap: 1.5rem;
-            padding: 2rem 2.5rem;
-        }
-
-        .ini__hero-title {
-            font-size: 2.4rem;
-        }
-
-        .ini__hero-text {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-        }
-
-        .ini__play {
-            min-height: 56px;
-            padding: 0 2.5rem;
-            font-size: 1.1rem;
-        }
-
-        .ini__hero-img {
-            width: 200px;
-        }
-
-        .ini__hello {
-            font-size: 1.15rem;
-        }
-
-        .ini__cats {
-            gap: 1.5rem;
-        }
-
-        .ini__cat {
-            width: 72px;
-            height: 72px;
-        }
-
-        .ini__cat-icon {
-            font-size: 2rem;
-        }
-
-        .ini__invita-titulo {
-            font-size: 1.6rem;
-        }
-
-        .ini__invita-texto {
-            font-size: 1.05rem;
-        }
-    }
-
-    /* ---------- Desktop (≥ 1024px) ---------- */
-    @media (min-width: 1024px) {
-        .ini {
-            --ini-pad: 2.5rem;
-            padding-top: 2.5rem;
-        }
-
-        .ini__hero-title {
-            font-size: 2.75rem;
-        }
-
-        .ini__hero-img {
-            width: 240px;
-        }
-    }
-    /* ---------- Podio: los 3 jugadores con más puntos ---------- */
+    /* ---------- Podio ---------- */
     .pd {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         align-items: end;
-        gap: 0.5rem;
+        gap: 0.6rem;
         max-width: 620px;
         margin: 0 auto;
         padding: 3.75rem 0 0;
         list-style: none;
-        border-bottom: 8px solid var(--color-border, #e2e8f0);
-        border-radius: 0 0 0.5rem 0.5rem;
+        border-bottom: 8px solid var(--ink);
     }
 
-    /* El 1° va en el medio, el 2° a la izquierda y el 3° a la derecha (el HTML queda en orden de ranking) */
-    .pd__item {
-        --pd-bg: #fef3c7;
-        --pd-edge: #f59e0b;
-        --pd-badge: #fbbf24;
-        --pd-h: 11rem;
-
-        order: 2;
-        min-width: 0;
-    }
-
-    .pd__item:nth-child(2) {
-        --pd-bg: #e0f2fe;
-        --pd-edge: #0ea5e9;
-        --pd-badge: #7dd3fc;
-        --pd-h: 9rem;
-
-        order: 1;
-    }
-
-    .pd__item:nth-child(3) {
-        --pd-bg: #ffedd5;
-        --pd-edge: #fb923c;
-        --pd-badge: #fdba74;
-        --pd-h: 7.5rem;
-
-        order: 3;
-    }
+    /* El 1° va en el medio; el HTML queda en orden de ranking */
+    .pd__item { --pd-bg: #fde68a; --pd-badge: #fbbf24; --pd-h: 11rem; order: 2; min-width: 0; }
+    .pd__item:nth-child(2) { --pd-bg: #bfe6fb; --pd-badge: #7dd3fc; --pd-h: 9rem; order: 1; }
+    .pd__item:nth-child(3) { --pd-bg: #fed7aa; --pd-badge: #fdba74; --pd-h: 7.5rem; order: 3; }
 
     .pd__box {
         position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.3rem;
         height: var(--pd-h);
         padding: 1.75rem 0.35rem 0.5rem;
         text-align: center;
-        background-color: var(--pd-bg);
-        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 55%);
-        border: 2px solid var(--pd-edge);
+        background: var(--pd-bg);
+        border: var(--edge);
         border-bottom: 0;
         border-radius: 1.1rem 1.1rem 0 0;
+        box-shadow: 4px 0 0 var(--ink);
         animation: pd-rise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
-
     .pd__item:nth-child(1) .pd__box { animation-delay: 0.25s; }
     .pd__item:nth-child(2) .pd__box { animation-delay: 0.1s; }
     .pd__item:nth-child(3) .pd__box { animation-delay: 0.4s; }
 
-    /* Medalla con el número de posición */
     .pd__badge {
         position: absolute;
-        top: -22px;
+        top: -24px;
         left: 50%;
         display: grid;
         place-items: center;
-        width: 44px;
-        height: 44px;
+        width: 46px;
+        height: 46px;
         transform: translateX(-50%);
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--color-ink, #0f172a);
-        background-color: var(--pd-badge);
-        border: 3px solid #ffffff;
+        background: var(--pd-badge);
+        border: var(--edge);
         border-radius: 50%;
-        box-shadow: 0 0 0 2px var(--pd-edge);
+        box-shadow: 0 3px 0 var(--ink);
     }
 
-    /* Corona para el que va ganando */
     .pd__item:nth-child(1) .pd__box::before {
         content: "👑";
         position: absolute;
-        top: -64px;
+        top: -68px;
         left: 50%;
-        font-size: 1.7rem;
+        font-size: 1.8rem;
         line-height: 1;
         animation: pd-crown 2.4s ease-in-out infinite;
     }
@@ -358,7 +216,6 @@
         overflow: hidden;
         font-size: 0.85rem;
         font-weight: 800;
-        color: var(--color-ink, #0f172a);
         text-overflow: ellipsis;
         white-space: nowrap;
     }
@@ -369,90 +226,99 @@
         gap: 0.25rem;
         min-height: 30px;
         margin: 0;
-        padding: 0 0.6rem;
+        padding: 0 0.65rem;
         font-family: var(--font-family, "Outfit", system-ui, sans-serif);
         font-size: 0.95rem;
         font-weight: 800;
-        color: var(--color-ink, #0f172a);
-        background-color: #ffffff;
+        background: #fff;
+        border: 2px solid var(--ink);
         border-radius: 9999px;
-        box-shadow: 0 3px 0 var(--pd-edge);
+        box-shadow: 0 3px 0 var(--ink);
     }
 
-    .pd__empty {
-        margin: 0;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #64748b;
-    }
+    .pd__empty { margin: 0; font-size: 0.85rem; font-weight: 700; color: #475569; }
+    .pd__box.is-empty { opacity: 0.6; }
+    .pd__box.is-empty::before { display: none; }
+    .pd__note { margin: 1rem 0 0; text-align: center; font-size: 0.9rem; font-weight: 700; color: #475569; }
 
-    .pd__box.is-empty {
-        opacity: 0.6;
+    /* ---------- Categorías: stickers ---------- */
+    .ini__cats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.1rem 0.75rem;
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 0;
+        list-style: none;
     }
-
-    .pd__box.is-empty::before {
-        display: none;
+    .ini__cat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .ini__cat-icon {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        font-size: 1.8rem;
+        line-height: 1;
+        background: var(--tint);
+        border: var(--edge);
+        border-radius: 50%;
+        box-shadow: 0 4px 0 var(--ink);
+        transition: transform 0.15s ease;
     }
+    .ini__cat:hover .ini__cat-icon { transform: rotate(-8deg) scale(1.08); }
+    .ini__cat-name { font-size: 0.85rem; font-weight: 800; }
 
-    .pd__note {
-        margin: 1rem 0 0;
+    /* ---------- Invitación a proponer ---------- */
+    .ini__invita {
+        max-width: 520px;
+        margin: 2.5rem auto 0;
+        padding: 1.5rem 1.25rem;
         text-align: center;
-        font-size: 0.9rem;
+        background: #fff;
+        border: var(--edge);
+        border-radius: 1.5rem;
+        box-shadow: 0 6px 0 var(--ink);
+        transform: rotate(-1deg);
+    }
+    .ini__invita-titulo {
+        margin: 0 0 0.35rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.4rem;
         font-weight: 700;
-        color: #64748b;
+        color: #5b21b6;
     }
+    .ini__invita-texto { margin: 0 0 1.1rem; font-size: 0.95rem; font-weight: 700; color: #334155; }
+    .ini__proponer { color: #fff; background: var(--violet); }
 
-    @keyframes pd-rise {
-        from { opacity: 0; transform: translateY(40px); }
-    }
-
+    /* ---------- Animaciones ---------- */
+    @keyframes ini-pop { from { opacity: 0; transform: translateY(24px) scale(0.94); } }
+    @keyframes pd-rise { from { opacity: 0; transform: translateY(40px); } }
     @keyframes pd-crown {
         0%, 100% { transform: translateX(-50%) translateY(0) rotate(-8deg); }
         50%      { transform: translateX(-50%) translateY(-5px) rotate(8deg); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .pd__box,
-        .pd__item:nth-child(1) .pd__box::before {
-            animation: none;
-        }
+        .ini__hero, .pd__box, .pd__item:nth-child(1) .pd__box::before { animation: none; }
+        .ini__play, .ini__cat-icon { transition: none; }
+    }
+
+    /* ---------- Pantallas más grandes ---------- */
+    @media (max-width: 420px) {
+        .ini__hero::before, .ini__deco { display: none; }
     }
 
     @media (min-width: 768px) {
-        .pd {
-            gap: 1rem;
-            padding-top: 4.25rem;
-        }
-
-        .pd__item { --pd-h: 14rem; }
-        .pd__item:nth-child(2) { --pd-h: 11.5rem; }
-        .pd__item:nth-child(3) { --pd-h: 9.5rem; }
-
-        .pd__box {
-            padding-top: 2.1rem;
-        }
-
-        .pd__badge {
-            top: -26px;
-            width: 52px;
-            height: 52px;
-            font-size: 1.8rem;
-        }
-
-        .pd__item:nth-child(1) .pd__box::before {
-            top: -72px;
-            font-size: 2.1rem;
-        }
-
-        .pd__name {
-            font-size: 1.05rem;
-        }
-
-        .pd__score {
-            min-height: 36px;
-            padding: 0 0.9rem;
-            font-size: 1.15rem;
-        }
+        .ini { --pad: 1.5rem; }
+        .ini__hero { padding: 2.5rem 2.5rem; }
+        .ini__hero-title { font-size: 3.6rem; }
+        .ini__hero-text { font-size: 1.15rem; }
+        .ini__mascot { width: 240px; }
+        .ini__deco--star { width: 40px; }
+        .ini__deco--zig { width: 110px; }
+        .ini__cats { grid-template-columns: repeat(6, 1fr); max-width: 640px; }
+        .pd__box { padding-top: 2rem; }
+        .pd__name { font-size: 1rem; }
     }
 </style>
 
@@ -461,19 +327,24 @@
     <p class="ini__hello">¡Hola de nuevo, <strong>@{{nombre_usuario}}</strong>!</p>
 
     <section class="ini__hero" aria-labelledby="ini-partida">
+        <svg class="ini__deco ini__deco--star" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L25 15 L38 20 L25 25 L20 38 L15 25 L2 20 L15 15 Z" fill="#fff" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/></svg>
+        <svg class="ini__deco ini__deco--zig" viewBox="0 0 80 20" aria-hidden="true"><polyline points="2,16 14,4 26,16 38,4 50,16 62,4 78,16" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
         <div class="ini__hero-body">
             <h1 class="ini__hero-title" id="ini-partida">Crear partida</h1>
             <p class="ini__hero-text">Respondé y sumá puntos</p>
             <a href="{{base_url}}/pregunta/show" class="ini__play">Jugar</a>
         </div>
-        <img class="ini__hero-img" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
-    </section>
 
+        <div class="ini__mascot">
+            <img src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
+        </div>
+    </section>
 
     <!-- Podio: los 3 jugadores con más puntos -->
     <section class="ini__section" aria-labelledby="ini-podio">
         <h2 class="ini__section-title" id="ini-podio">Podio</h2>
-        <p class="ini__section-text">Tu mejor partida puede ser topeable. <br>¡Cualquiera puede topear! ¡Animate y jugá!.</p>
+        <p class="ini__section-text">Tu mejor partida puede ser topeable. <br>¡Cualquiera puede topear! ¡Animate y jugá!</p>
 
         <ol class="pd">
             {{#podio}}
@@ -500,12 +371,12 @@
     <section class="ini__section" aria-labelledby="ini-categorias">
         <h2 class="ini__section-title" id="ini-categorias">Categorías</h2>
         <ul class="ini__cats">
-            <li class="ini__cat" style="--tint:#d1fae5; --borde:#6ee7b7"><span class="ini__cat-icon" role="img" aria-label="Ciencia">🔬</span></li>
-            <li class="ini__cat" style="--tint:#fef3c7; --borde:#fcd34d"><span class="ini__cat-icon" role="img" aria-label="Historia">🏛️</span></li>
-            <li class="ini__cat" style="--tint:#e0f2fe; --borde:#7dd3fc"><span class="ini__cat-icon" role="img" aria-label="Geografía">🌎</span></li>
-            <li class="ini__cat" style="--tint:#fce7f3; --borde:#f9a8d4"><span class="ini__cat-icon" role="img" aria-label="Arte">🎨</span></li>
-            <li class="ini__cat" style="--tint:#fee2e2; --borde:#fca5a5"><span class="ini__cat-icon" role="img" aria-label="Deportes">⚽</span></li>
-            <li class="ini__cat" style="--tint:#ede9fe; --borde:#c4b5fd"><span class="ini__cat-icon" role="img" aria-label="Cine">🎬</span></li>
+            <li class="ini__cat" style="--tint:#a7f3d0"><span class="ini__cat-icon" aria-hidden="true">🔬</span><span class="ini__cat-name">Ciencia</span></li>
+            <li class="ini__cat" style="--tint:#fde68a"><span class="ini__cat-icon" aria-hidden="true">🏛️</span><span class="ini__cat-name">Historia</span></li>
+            <li class="ini__cat" style="--tint:#bae6fd"><span class="ini__cat-icon" aria-hidden="true">🌎</span><span class="ini__cat-name">Geografía</span></li>
+            <li class="ini__cat" style="--tint:#fbcfe8"><span class="ini__cat-icon" aria-hidden="true">🎨</span><span class="ini__cat-name">Arte</span></li>
+            <li class="ini__cat" style="--tint:#fecaca"><span class="ini__cat-icon" aria-hidden="true">⚽</span><span class="ini__cat-name">Deportes</span></li>
+            <li class="ini__cat" style="--tint:#ddd6fe"><span class="ini__cat-icon" aria-hidden="true">🎬</span><span class="ini__cat-name">Cine</span></li>
         </ul>
 
         <div class="ini__invita">
