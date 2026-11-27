@@ -1,8 +1,6 @@
 <style>
     /* Fondo suave de las pantallas con sesión */
-    body {
-        background-color: var(--color-canvas, #f8fafc);
-    }
+    /* el fondo crema lo pone header.php */
 
     .rk,
     .rk *,
@@ -297,6 +295,39 @@
             animation: none;
         }
     }
+
+    /* =========================================================
+       SKIN CARTOON (ver DESIGN.md): contorno oscuro + sombra dura
+       ========================================================= */
+    .rk__title { color: #0f172a; text-shadow: 3px 3px 0 #bfe6fb; }
+    .rk__lead { color: var(--color-ink-soft, #334155); }
+
+    .rk__chip { color: #0f172a; background-color: #fff; border: 2.5px solid #0f172a; box-shadow: 0 3px 0 #0f172a; }
+    .rk__chip--me { background-color: #bfe6fb; border-color: #0f172a; }
+
+    .rk__scroll { border: 3px solid #0f172a; box-shadow: 0 6px 0 #0f172a; }
+    .rk__table thead th { color: #0f172a; background-color: #bfe6fb; border-bottom: 3px solid #0f172a; }
+    .rk__table th,
+    .rk__table td { border-bottom-color: rgba(15, 23, 42, 0.12); }
+    .rk__table tbody tr:hover > * { background-color: #fff8e8; }
+
+    .rk__pos,
+    .rk__pos--1,
+    .rk__pos--2,
+    .rk__pos--3 { border: 2.5px solid #0f172a; box-shadow: none; }
+
+    .rk__me { border: 2px solid #0f172a; }
+    .rk__row.is-me > * { background-color: #bfe6fb; }
+    .rk__row.is-me > *:first-child { box-shadow: inset 5px 0 0 #0f172a; }
+    .rk__live { color: #0f172a; background-color: #fde68a; border: 2px solid #0f172a; }
+    .rk__empty { color: var(--color-ink-soft, #334155); border: 3px dashed #0f172a; }
+
+    /* Celular: se oculta "Partidas jugadas" para que la tabla no se corte */
+    @media (max-width: 639px) {
+        .rk__opt { display: none; }
+        .rk__table th,
+        .rk__table td { padding: 0.6rem 0.55rem; }
+    }
 </style>
 
 <main class="rk">
@@ -320,7 +351,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col" >Jugador</th>
-                            <th scope="col" class="rk__num">Partidas jugadas</th>
+                            <th scope="col" class="rk__num rk__opt">Partidas jugadas</th>
                             <th scope="col" class="rk__num">Mejor partida</th>
                         </tr>
                         </thead>
@@ -331,7 +362,7 @@
                                 <th scope="row" class="rk__player">
                                     <a href="{{base_url}}/perfil/showUsuario?usuario_id={{id}}">@{{nombre}}</a>{{#esYo}}<span class="rk__me">Vos</span>{{/esYo}}
                                 </th>
-                                <td class="rk__num">{{cantidad_partidas}}</td>
+                                <td class="rk__num rk__opt">{{cantidad_partidas}}</td>
                                 <td class="rk__num rk__score"><span aria-hidden="true">⭐</span> {{puntaje}}</td>
                             </tr>
                         {{/ranking}}
