@@ -4,82 +4,128 @@
     <meta charset="UTF-8">
     <title>{{titulo}}</title>
     <style>
-        body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 12px; color: #1f2937; margin: 24px; }
-        h1 { font-size: 22px; margin: 0 0 4px 0; color: #0369a1; }
-        h2 { font-size: 15px; margin: 22px 0 8px 0; color: #0369a1; }
-        .fecha { margin: 0 0 6px 0; color: #6b7280; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
-        th { text-align: left; background-color: #e0f2fe; padding: 7px; border: 1px solid #bae6fd; }
-        td { padding: 7px; border: 1px solid #e5e7eb; }
-        .valor { width: 25%; text-align: right; }
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 12px;
+            color: #0f172a;
+            margin: 24px;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 0 0 6px 0;
+            color: #0369a1;
+        }
+
+        h2 {
+            font-size: 15px;
+            margin: 22px 0 8px 0;
+            padding-bottom: 4px;
+            color: #0f172a;
+            border-bottom: 2px solid #0f172a;
+        }
+
+        .fecha {
+            margin: 0 0 4px 0;
+            color: #334155;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+
+        th {
+            text-align: left;
+            background-color: #bfe6fb;
+            color: #0f172a;
+            padding: 8px;
+            border: 2px solid #0f172a;
+        }
+
+        td {
+            padding: 8px;
+            border: 1.5px solid #0f172a;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fffdf8;
+        }
+
+        .valor {
+            width: 25%;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
-    <h1>{{titulo}}</h1>
-    <p class="fecha">Período: {{periodo}}</p>
-    <p class="fecha">Generado el {{fecha}}</p>
+<h1>{{titulo}}</h1>
+<p class="fecha">Período: {{periodo}}</p>
+<p class="fecha">Generado el {{fecha}}</p>
 
-    <h2>Resumen</h2>
-    <table>
-        <tbody>
-            <tr><td>Jugadores</td><td class="valor">{{totales.jugadores}}</td></tr>
-            <tr><td>Partidas jugadas</td><td class="valor">{{totales.partidas}}</td></tr>
-            <tr><td>Preguntas en el juego</td><td class="valor">{{totales.preguntas_activas}}</td></tr>
-            <tr><td>Preguntas creadas</td><td class="valor">{{totales.preguntas_creadas}}</td></tr>
-            <tr><td>Usuarios nuevos</td><td class="valor">{{totales.usuarios_nuevos}}</td></tr>
-        </tbody>
-    </table>
+<h2>Resumen</h2>
+<table>
+    <tbody>
+    <tr><td>Jugadores</td><td class="valor">{{totales.jugadores}}</td></tr>
+    <tr><td>Partidas jugadas</td><td class="valor">{{totales.partidas}}</td></tr>
+    <tr><td>Preguntas en el juego</td><td class="valor">{{totales.preguntas_activas}}</td></tr>
+    <tr><td>Preguntas creadas</td><td class="valor">{{totales.preguntas_creadas}}</td></tr>
+    <tr><td>Usuarios nuevos</td><td class="valor">{{totales.usuarios_nuevos}}</td></tr>
+    </tbody>
+</table>
 
-    <h2>Usuarios por país</h2>
-    <table>
-        <thead><tr><th>País</th><th class="valor">Usuarios</th></tr></thead>
-        <tbody>
-            {{#pais}}
-                <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
-            {{/pais}}
-            {{^pais}}
-                <tr><td colspan="2">Sin datos para este período.</td></tr>
-            {{/pais}}
-        </tbody>
-    </table>
+<h2>Usuarios por país</h2>
+<table>
+    <thead><tr><th>País</th><th class="valor">Usuarios</th></tr></thead>
+    <tbody>
+    {{#pais}}
+        <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
+    {{/pais}}
+    {{^pais}}
+        <tr><td colspan="2">Sin datos para este período.</td></tr>
+    {{/pais}}
+    </tbody>
+</table>
 
-    <h2>Usuarios por sexo</h2>
-    <table>
-        <thead><tr><th>Sexo</th><th class="valor">Usuarios</th></tr></thead>
-        <tbody>
-            {{#sexo}}
-                <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
-            {{/sexo}}
-            {{^sexo}}
-                <tr><td colspan="2">Sin datos para este período.</td></tr>
-            {{/sexo}}
-        </tbody>
-    </table>
+<h2>Usuarios por sexo</h2>
+<table>
+    <thead><tr><th>Sexo</th><th class="valor">Usuarios</th></tr></thead>
+    <tbody>
+    {{#sexo}}
+        <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
+    {{/sexo}}
+    {{^sexo}}
+        <tr><td colspan="2">Sin datos para este período.</td></tr>
+    {{/sexo}}
+    </tbody>
+</table>
 
-    <h2>Usuarios por grupo de edad</h2>
-    <table>
-        <thead><tr><th>Grupo</th><th class="valor">Usuarios</th></tr></thead>
-        <tbody>
-            {{#edad}}
-                <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
-            {{/edad}}
-            {{^edad}}
-                <tr><td colspan="2">Sin datos para este período.</td></tr>
-            {{/edad}}
-        </tbody>
-    </table>
+<h2>Usuarios por grupo de edad</h2>
+<table>
+    <thead><tr><th>Grupo</th><th class="valor">Usuarios</th></tr></thead>
+    <tbody>
+    {{#edad}}
+        <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}</td></tr>
+    {{/edad}}
+    {{^edad}}
+        <tr><td colspan="2">Sin datos para este período.</td></tr>
+    {{/edad}}
+    </tbody>
+</table>
 
-    <h2>Respuestas correctas por usuario</h2>
-    <table>
-        <thead><tr><th>Usuario</th><th class="valor">% correctas</th></tr></thead>
-        <tbody>
-            {{#aciertos}}
-                <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}%</td></tr>
-            {{/aciertos}}
-            {{^aciertos}}
-                <tr><td colspan="2">Sin datos para este período.</td></tr>
-            {{/aciertos}}
-        </tbody>
-    </table>
+<h2>Respuestas correctas por usuario</h2>
+<table>
+    <thead><tr><th>Usuario</th><th class="valor">% correctas</th></tr></thead>
+    <tbody>
+    {{#aciertos}}
+        <tr><td>{{etiqueta}}</td><td class="valor">{{valor}}%</td></tr>
+    {{/aciertos}}
+    {{^aciertos}}
+        <tr><td colspan="2">Sin datos para este período.</td></tr>
+    {{/aciertos}}
+    </tbody>
+</table>
 </body>
 </html>
