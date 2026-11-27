@@ -1,9 +1,9 @@
 {{#esPdf}}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{{titulo}}</title>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{titulo}}</title>
 {{/esPdf}}
 
     <style>
@@ -13,15 +13,8 @@
             padding: 24px;
             font-family: "Nunito", "DejaVu Sans", Arial, sans-serif;
             font-size: 12px;
-            color: #1f2937;
+            color: #0f172a;
         }
-
-        {{^esPdf}}
-        /* En pantalla (con header y footer) se lee un poco más grande */
-        .rr {
-            font-size: 15px;
-        }
-        {{/esPdf}}
 
         .rr h1 {
             font-size: 22px;
@@ -31,51 +24,8 @@
 
         .rr .fecha {
             margin: 0 0 18px 0;
-            color: #6b7280;
-        }
-
-        .rr .acciones {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 0 0 20px 0;
-        }
-
-        .rr .adm__boton {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            min-height: 40px;
-            padding: 0 0.8rem;
-            margin-bottom: 1em;
-
-            font-family: inherit;
-            font-size: inherit;
-            font-weight: 800;
-            color: #ffffff;
-            text-decoration: none;
-
-            background: #0284c7;
-            border: 0;
-            border-radius: 9999px;
-
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-
-        .rr .adm__boton:hover {
-            background: #0369a1;
-        }
-
-        .rr .adm__boton:focus-visible {
-            outline: 3px solid rgba(2, 132, 199, 0.4);
-            outline-offset: 3px;
-        }
-
-        .rr .adm__boton:active {
-            transform: translateY(3px);
-            box-shadow: none;
+            color: #334155;
+            font-weight: 700;
         }
 
         .rr table {
@@ -86,25 +36,142 @@
 
         .rr th {
             text-align: left;
-            background-color: #e0f2fe;
-            padding: 8px;
-            border: 1px solid #bae6fd;
+            background-color: #bfe6fb;
+            color: #0f172a;
+            padding: 10px;
+            border: 2px solid #0f172a;
         }
 
         .rr td {
-            padding: 8px;
-            border: 1px solid #e5e7eb;
+            padding: 10px;
+            border: 1.5px solid #0f172a;
+            font-weight: 700;
         }
 
         .rr .pos {
-            width: 12%;
+            width: 14%;
             text-align: center;
         }
 
         .rr .puntaje {
-            width: 20%;
+            width: 22%;
             text-align: right;
+            font-variant-numeric: tabular-nums;
         }
+
+            {{^esPdf}}
+            body {
+                background-color: var(--color-cream, #fff8e8);
+            }
+
+            .rr {
+                width: min(100% - 2rem, 1000px);
+                margin: 2rem auto 2.75rem;
+                padding: clamp(1.35rem, 4vw, 2.25rem);
+                font-family: var(--font-text, "Nunito", "Outfit", system-ui, sans-serif);
+                font-size: 15px;
+                background-color: var(--color-white, #ffffff);
+                border: 3px solid var(--color-ink, #0f172a);
+                border-radius: 1.75rem;
+                box-shadow: 0 8px 0 var(--color-ink, #0f172a);
+            }
+
+            .rr h1 {
+                font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+                font-size: clamp(1.65rem, 4vw, 2.25rem);
+                font-weight: 700;
+                color: var(--color-ink, #0f172a);
+                margin-bottom: 0.35rem;
+            }
+
+            .rr .fecha {
+                color: var(--color-ink-soft, #334155);
+                margin-bottom: 1.35rem;
+            }
+
+            .rr .acciones {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin: 0 0 1.5rem 0;
+            }
+
+            .rr .adm__boton {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 46px;
+                padding: 0 1.25rem;
+                font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+                font-size: 0.98rem;
+                font-weight: 800;
+                color: var(--color-white, #ffffff);
+                text-decoration: none;
+                background-color: var(--color-primary, #0284c7);
+                border: 3px solid var(--color-ink, #0f172a);
+                border-radius: 9999px;
+                box-shadow: 0 4px 0 var(--color-ink, #0f172a);
+                cursor: pointer;
+                transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease, filter 0.15s ease;
+            }
+
+            .rr .adm__boton:first-child {
+                color: var(--color-ink, #0f172a);
+                background-color: var(--color-white, #ffffff);
+            }
+
+            .rr .adm__boton:first-child:hover {
+                background-color: var(--color-sky-soft, #bfe6fb);
+            }
+
+            .rr .adm__boton:hover {
+                filter: brightness(1.04);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 0 var(--color-ink, #0f172a);
+            }
+
+            .rr .adm__boton:focus-visible {
+                outline: 3px solid var(--color-primary, #0284c7);
+                outline-offset: 3px;
+            }
+
+            .rr .adm__boton:active {
+                transform: translateY(4px);
+                box-shadow: 0 0 0 var(--color-ink, #0f172a);
+            }
+
+            .rr__table-wrap {
+                overflow-x: auto;
+                border: 2.5px solid var(--color-ink, #0f172a);
+                border-radius: 1.15rem;
+                box-shadow: 0 4px 0 var(--color-ink, #0f172a);
+            }
+
+            .rr table {
+                border-collapse: collapse;
+            }
+
+            .rr th {
+                font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+                font-weight: 800;
+                border: 0;
+                border-bottom: 2.5px solid var(--color-ink, #0f172a);
+            }
+
+            .rr th + th,
+            .rr td + td {
+                border-left: 2px solid var(--color-ink, #0f172a);
+            }
+
+            .rr td {
+                border: 0;
+                border-top: 1.5px solid #cbd5e1;
+            }
+
+            .rr tbody tr:nth-child(even) {
+                background-color: #fffdf8;
+            }
+            {{/esPdf}}
 
         @media print {
             .rr .acciones {
@@ -114,9 +181,9 @@
     </style>
 
 {{#esPdf}}
-</head>
+    </head>
 
-<body>
+    <body>
 {{/esPdf}}
 
 <div class="rr">
@@ -124,7 +191,7 @@
     {{^esPdf}}
         <div class="acciones">
             <a class="adm__boton" href="{{base_url}}/administrador/show">
-                Volver al panel
+                ← Volver al panel
             </a>
 
             <a class="adm__boton" href="{{base_url}}/reporte/rankingPdf" target="_blank">
@@ -136,16 +203,17 @@
     <h1>{{titulo}}</h1>
     <p class="fecha">Generado el {{fecha}}</p>
 
-    <table>
-        <thead>
+    <div class="rr__table-wrap">
+        <table>
+            <thead>
             <tr>
                 <th class="pos">Posición</th>
                 <th>Jugador</th>
                 <th class="puntaje">Puntaje</th>
             </tr>
-        </thead>
+            </thead>
 
-        <tbody>
+            <tbody>
             {{#filas}}
                 <tr>
                     <td class="pos">{{posicion}}</td>
@@ -159,12 +227,13 @@
                     <td colspan="3">Todavía no hay jugadores para mostrar.</td>
                 </tr>
             {{/filas}}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
 </div>
 
 {{#esPdf}}
-</body>
-</html>
+    </body>
+    </html>
 {{/esPdf}}
