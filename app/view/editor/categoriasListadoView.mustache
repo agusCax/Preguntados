@@ -24,27 +24,24 @@
     .editor__hero {
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        background: linear-gradient(
-            135deg,
-            #e0f2fe 0%,
-            #e0f2fe 50%,
-            #fff4dc 100%
-        );
+        background: var(--color-sky-soft, #bfe6fb);
+        border: 3px solid var(--color-ink, #0f172a);
         border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--color-ink, #0f172a);
     }
 
     .editor__title {
         margin: 0 0 0.5rem;
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.8rem;
+        font-size: 1.85rem;
         font-weight: 700;
-        color: var(--color-primary-dark, #0369a1);
+        color: var(--color-ink, #0f172a);
     }
 
     .editor__description {
         margin: 0;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 700;
         line-height: 1.5;
         color: var(--color-ink-soft, #334155);
     }
@@ -63,36 +60,42 @@
         justify-content: center;
         flex-shrink: 0;
         width: 100%;
-        min-height: 46px;
-        padding: 0 1.25rem;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        min-height: 48px;
+        padding: 0 1.4rem;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 800;
         text-decoration: none;
         text-align: center;
         color: var(--color-white, #ffffff);
         background-color: var(--color-primary, #0284c7);
+        border: 3px solid var(--color-ink, #0f172a);
         border-radius: 9999px;
-        box-shadow: 0 4px 0 var(--color-primary-dark, #0369a1);
-        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        box-shadow: 0 5px 0 var(--color-ink, #0f172a);
+        box-sizing: border-box;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
     .editor__button:hover {
         filter: brightness(1.05);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 0 var(--color-ink, #0f172a);
     }
 
     .editor__button:active {
-        transform: translateY(4px);
-        box-shadow: 0 0 0 transparent;
+        transform: translateY(5px);
+        box-shadow: 0 0 0 var(--color-ink, #0f172a);
     }
 
     .editor__button:focus-visible {
-        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline: 3px solid var(--color-primary, #0284c7);
         outline-offset: 3px;
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .editor__button {
+        .editor__button,
+        .btn-accion,
+        .paginacion__link {
             transition: none;
         }
     }
@@ -134,16 +137,15 @@
         margin-bottom: 14px;
         padding: 20px 16px;
 
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+        background: var(--color-white, #ffffff);
+        border: 2.5px solid var(--color-ink, #0f172a);
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 0 var(--color-ink, #0f172a);
 
         cursor: pointer;
         text-align: center;
 
-        transition: background 0.2s ease,
-                    box-shadow 0.2s ease;
+        transition: background 0.2s ease, box-shadow 0.2s ease;
     }
 
     .tabla-moderacion td {
@@ -166,11 +168,12 @@
         gap: 7px;
 
         max-width: 100%;
-        padding: 7px 12px;
+        padding: 6px 13px;
 
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 700;
+        border: 2px solid var(--color-ink, #0f172a);
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 800;
         overflow-wrap: anywhere;
     }
 
@@ -180,8 +183,9 @@
 
     .pregunta-texto {
         width: 100%;
-        color: #334155;
+        color: var(--color-ink, #0f172a);
         font-size: 0.95rem;
+        font-weight: 700;
         line-height: 1.5;
 
         white-space: normal;
@@ -190,8 +194,9 @@
     }
 
     .motivo-texto {
-        color: #64748b;
+        color: var(--color-ink-soft, #334155);
         font-size: 0.85rem;
+        font-weight: 700;
         line-height: 1.4;
 
         white-space: normal;
@@ -201,18 +206,19 @@
 
     .motivo-texto::before {
         content: "Motivo: ";
-        font-weight: 700;
-        color: #475569;
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
     }
 
     /* =========================================
-    ESTADO PREGUNTA 
+    ESTADO PREGUNTA
     ========================================= */
 
     .pregunta-estado {
         width: 100%;
-        color: #334155;
+        color: var(--color-ink, #0f172a);
         font-size: 0.95rem;
+        font-weight: 700;
         line-height: 1.5;
 
         white-space: normal;
@@ -232,28 +238,30 @@
         min-height: 42px;
         padding: 9px 20px;
 
-        border-radius: 10px;
+        border: 2px solid var(--color-ink, #0f172a);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--color-ink, #0f172a);
         text-decoration: none;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-weight: 700;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
         font-size: 0.9rem;
 
-        transition: transform 0.2s ease,
-                    filter 0.2s ease;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
     .btn-sugerencia {
         background: #ede9fe;
-        color: #6d28d9;
+        color: var(--color-ink, #0f172a);
     }
 
     .btn-reporte {
         background: #ffedd5;
-        color: #c2410c;
+        color: var(--color-ink, #0f172a);
     }
 
     .btn-ver:active {
-        transform: scale(0.97);
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--color-ink, #0f172a);
     }
 
     /* =========================================
@@ -266,7 +274,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        margin-top: 20px;
+        margin-top: 22px;
     }
 
     .paginacion__link {
@@ -278,32 +286,40 @@
         min-height: 42px;
         padding: 0 14px;
 
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
         font-size: 0.9rem;
-        font-weight: 700;
+        font-weight: 800;
         text-decoration: none;
-        color: var(--color-primary-dark, #0369a1);
+        color: var(--color-ink, #0f172a);
 
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
+        background: var(--color-white, #ffffff);
+        border: 2px solid var(--color-ink, #0f172a);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--color-ink, #0f172a);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
     }
 
     .paginacion__link:hover {
-        background: #e0f2fe;
+        background: var(--color-sky-soft, #bfe6fb);
+        transform: translateY(-1px);
+    }
+
+    .paginacion__link:active {
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--color-ink, #0f172a);
     }
 
     .paginacion__link.is-actual {
-        color: #ffffff;
+        color: var(--color-white, #ffffff);
         background: var(--color-primary, #0284c7);
-        border-color: var(--color-primary, #0284c7);
     }
 
     .paginacion__info {
-        margin: 12px 0 0;
+        margin: 14px 0 0;
         text-align: center;
-        font-size: 0.85rem;
-        color: #64748b;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--color-ink-soft, #334155);
     }
 
     /* =========================================
@@ -322,15 +338,17 @@
         padding: 30px 18px;
 
         text-align: center;
-        color: #64748b;
+        font-weight: 700;
+        color: var(--color-ink-soft, #334155);
 
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
+        background: var(--color-white, #ffffff);
+        border: 3px solid var(--color-ink, #0f172a);
+        border-radius: 1.5rem;
+        box-shadow: 0 6px 0 var(--color-ink, #0f172a);
     }
 
     .sin-resultados span {
-        font-size: 2rem;
+        font-size: 2.2rem;
         margin-bottom: 10px;
     }
 
@@ -351,10 +369,10 @@
 
         .tabla-container {
             overflow-x: auto;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            background: var(--color-white, #ffffff);
+            border: 3px solid var(--color-ink, #0f172a);
+            border-radius: 1.5rem;
+            box-shadow: 0 6px 0 var(--color-ink, #0f172a);
         }
 
         .tabla-moderacion {
@@ -395,11 +413,12 @@
         .tabla-moderacion th {
             padding: 16px 20px;
             text-align: left;
-            background: #f8fafc;
-            color: #64748b;
+            background: #fffdf8;
+            color: var(--color-ink, #0f172a);
+            font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
             font-size: 0.85rem;
-            font-weight: 700;
-            border-bottom: 1px solid #e2e8f0;
+            font-weight: 800;
+            border-bottom: 2px solid var(--color-ink, #0f172a);
         }
 
         .tabla-moderacion tbody tr:last-child td {
@@ -428,12 +447,12 @@
 
         .btn-ver:hover {
             transform: translateY(-2px);
-            filter: brightness(0.97);
+            box-shadow: 0 5px 0 var(--color-ink, #0f172a);
         }
 
         .sin-resultados {
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            border-radius: 1.5rem;
+            box-shadow: 0 6px 0 var(--color-ink, #0f172a);
         }
 
         .editor__hero {
@@ -441,11 +460,11 @@
         }
 
         .editor__title {
-            font-size: 2.4rem;
+            font-size: 2.3rem;
         }
 
         .editor__description {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         .editor__hero--accion {
@@ -456,7 +475,7 @@
 
         .editor__button {
             width: auto;
-            min-width: 170px;
+            min-width: 180px;
             min-height: 50px;
             font-size: 1rem;
         }
@@ -491,24 +510,20 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #475569;
+        font-size: 0.88rem;
+        font-weight: 800;
+        color: var(--color-ink, #0f172a);
     }
 
     .color-muestra__cuadro {
-        width: 22px;
-        height: 22px;
-        border-radius: 6px;
-        border: 1px solid #cbd5e1;
+        width: 24px;
+        height: 24px;
+        border-radius: 8px;
+        border: 2px solid var(--color-ink, #0f172a);
     }
 
     .fila-inactiva .categoria-badge {
         opacity: 0.55;
-    }
-
-    .editor__button {
-        box-sizing: border-box;
     }
 
     .acciones-categoria {
@@ -528,50 +543,57 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 100px;
-        min-height: 42px;
-        padding: 9px 18px;
-        border: none;
-        border-radius: 10px;
+        min-width: 104px;
+        min-height: 40px;
+        padding: 8px 16px;
+        border: 2px solid var(--color-ink, #0f172a);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--color-ink, #0f172a);
         cursor: pointer;
         text-decoration: none;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-weight: 700;
-        font-size: 0.9rem;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
+        font-size: 0.88rem;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
     .btn-editar {
-        background: #e0f2fe;
-        color: #0369a1;
+        background: var(--color-sky-soft, #bfe6fb);
+        color: var(--color-ink, #0f172a);
     }
 
     .btn-desactivar {
-        background: #fee2e2;
-        color: #b91c1c;
+        background: #fecaca;
+        color: var(--color-ink, #0f172a);
     }
 
     .btn-reactivar {
-        background: #dcfce7;
-        color: #166534;
+        background: #bbf7d0;
+        color: var(--color-ink, #0f172a);
     }
 
     .btn-accion:hover {
-        filter: brightness(0.96);
+        filter: brightness(1.03);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 0 var(--color-ink, #0f172a);
     }
 
     .btn-accion:active {
-        transform: scale(0.97);
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--color-ink, #0f172a);
     }
 
     .nota-categorias {
-        margin: 0 0 1rem;
-        padding: 12px 16px;
+        margin: 0 0 1.25rem;
+        padding: 0.95rem 1.15rem;
         font-size: 0.9rem;
+        font-weight: 700;
         line-height: 1.5;
-        color: #475569;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        color: var(--color-ink, #0f172a);
+        background: #fef3c7;
+        border: 2.5px solid var(--color-ink, #0f172a);
+        border-radius: 1.1rem;
+        box-shadow: 0 4px 0 var(--color-ink, #0f172a);
     }
 
     @media (min-width: 768px) {
@@ -608,71 +630,71 @@
             <table class="tabla-moderacion">
 
                 <thead>
-                    <tr>
-                        <th>Categoría</th>
-                        <th>Color</th>
-                        <th>Preguntas</th>
-                        <th>Estado</th>
-                        <th class="col-accion">Acciones</th>
-                    </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Color</th>
+                    <th>Preguntas</th>
+                    <th>Estado</th>
+                    <th class="col-accion">Acciones</th>
+                </tr>
                 </thead>
 
                 <tbody>
-                    {{#categorias}}
-                        <tr class="fila-categoria{{^esActiva}} fila-inactiva{{/esActiva}}">
-                            <td>
+                {{#categorias}}
+                    <tr class="fila-categoria{{^esActiva}} fila-inactiva{{/esActiva}}">
+                        <td>
                                 <span
-                                    class="categoria-badge"
-                                    style="background-color: {{color}}30; color: {{color}};"
+                                        class="categoria-badge"
+                                        style="background-color: {{color}}30; color: {{color}};"
                                 >
                                     <span>{{icono}}</span>
                                     {{nombre}}
                                 </span>
-                            </td>
+                        </td>
 
-                            <td>
+                        <td>
                                 <span class="color-muestra">
                                     <span class="color-muestra__cuadro" style="background-color: {{color}};"></span>
                                     {{color}}
                                 </span>
-                            </td>
+                        </td>
 
-                            <td>
-                                <div class="pregunta-estado">{{totalPreguntas}} preguntas</div>
-                            </td>
+                        <td>
+                            <div class="pregunta-estado">{{totalPreguntas}} preguntas</div>
+                        </td>
 
-                            <td>
+                        <td>
+                            {{#esActiva}}
+                                <div class="pregunta-estado">Activa</div>
+                            {{/esActiva}}
+                            {{^esActiva}}
+                                <div class="pregunta-estado">Inactiva</div>
+                            {{/esActiva}}
+                        </td>
+
+                        <td class="col-accion">
+                            <div class="acciones-categoria">
+                                <a href="{{urlEditar}}" class="btn-accion btn-editar">Editar</a>
+
                                 {{#esActiva}}
-                                    <div class="pregunta-estado">Activa</div>
+                                    <form method="post" action="{{urlCambiarEstado}}" data-confirmar="¿Desactivar esta categoría? Ella y sus preguntas dejarán de aparecer en el juego." data-confirmar-titulo="Desactivar categoría">
+                                        <input type="hidden" name="id" value="{{id}}">
+                                        <input type="hidden" name="accion" value="desactivar">
+                                        <button type="submit" class="btn-accion btn-desactivar">Desactivar</button>
+                                    </form>
                                 {{/esActiva}}
+
                                 {{^esActiva}}
-                                    <div class="pregunta-estado">Inactiva</div>
+                                    <form method="post" action="{{urlCambiarEstado}}">
+                                        <input type="hidden" name="id" value="{{id}}">
+                                        <input type="hidden" name="accion" value="reactivar">
+                                        <button type="submit" class="btn-accion btn-reactivar">Reactivar</button>
+                                    </form>
                                 {{/esActiva}}
-                            </td>
-
-                            <td class="col-accion">
-                                <div class="acciones-categoria">
-                                    <a href="{{urlEditar}}" class="btn-accion btn-editar">Editar</a>
-
-                                    {{#esActiva}}
-                                        <form method="post" action="{{urlCambiarEstado}}" data-confirmar="¿Desactivar esta categoría? Ella y sus preguntas dejarán de aparecer en el juego." data-confirmar-titulo="Desactivar categoría">
-                                            <input type="hidden" name="id" value="{{id}}">
-                                            <input type="hidden" name="accion" value="desactivar">
-                                            <button type="submit" class="btn-accion btn-desactivar">Desactivar</button>
-                                        </form>
-                                    {{/esActiva}}
-
-                                    {{^esActiva}}
-                                        <form method="post" action="{{urlCambiarEstado}}">
-                                            <input type="hidden" name="id" value="{{id}}">
-                                            <input type="hidden" name="accion" value="reactivar">
-                                            <button type="submit" class="btn-accion btn-reactivar">Reactivar</button>
-                                        </form>
-                                    {{/esActiva}}
-                                </div>
-                            </td>
-                        </tr>
-                    {{/categorias}}
+                            </div>
+                        </td>
+                    </tr>
+                {{/categorias}}
                 </tbody>
 
             </table>
