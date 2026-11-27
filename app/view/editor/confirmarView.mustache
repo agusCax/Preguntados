@@ -3,33 +3,34 @@
         width: 100%;
         max-width: min(92vw, 420px);
         padding: 0;
-        border: 0;
-        border-radius: 1.5rem;
-        background: #ffffff;
-        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+        border: 3px solid var(--color-ink, #0f172a);
+        border-radius: 1.75rem;
+        background: var(--color-white, #ffffff);
+        box-shadow: 0 8px 0 var(--color-ink, #0f172a);
         font-family: var(--font-text, "Nunito", system-ui, sans-serif);
         color: var(--color-ink, #0f172a);
     }
 
     .confirmar::backdrop {
-        background: rgba(15, 23, 42, 0.45);
+        background: rgba(15, 23, 42, 0.55);
     }
 
     .confirmar__contenido {
-        padding: 1.5rem;
+        padding: 1.65rem;
     }
 
     .confirmar__titulo {
-        margin: 0 0 0.5rem;
+        margin: 0 0 0.55rem;
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.25rem;
+        font-size: 1.4rem;
         font-weight: 700;
+        color: var(--color-ink, #0f172a);
     }
 
     .confirmar__mensaje {
-        margin: 0 0 1.25rem;
+        margin: 0 0 1.4rem;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 700;
         line-height: 1.5;
         color: var(--color-ink-soft, #334155);
         overflow-wrap: anywhere;
@@ -48,39 +49,45 @@
         width: 100%;
         min-height: 46px;
         padding: 0 1.25rem;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 800;
+        border: 2.5px solid var(--color-ink, #0f172a);
         border-radius: 9999px;
+        box-shadow: 0 4px 0 var(--color-ink, #0f172a);
         cursor: pointer;
-        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease, filter 0.15s ease;
     }
 
     .confirmar__boton--cancelar {
-        color: var(--color-ink-soft, #334155);
-        background: #ffffff;
-        border: 2px solid var(--color-border, #e2e8f0);
-        box-shadow: 0 4px 0 #cbd5e1;
+        color: var(--color-ink, #0f172a);
+        background: var(--color-white, #ffffff);
+    }
+
+    .confirmar__boton--cancelar:hover {
+        background: var(--color-sky-soft, #bfe6fb);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 var(--color-ink, #0f172a);
     }
 
     .confirmar__boton--aceptar {
-        color: #ffffff;
+        color: var(--color-white, #ffffff);
         background: var(--color-primary, #0284c7);
-        border: 0;
-        box-shadow: 0 4px 0 var(--color-primary-dark, #0369a1);
     }
 
-    .confirmar__boton:hover {
+    .confirmar__boton--aceptar:hover {
         filter: brightness(1.05);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 var(--color-ink, #0f172a);
     }
 
     .confirmar__boton:active {
         transform: translateY(4px);
-        box-shadow: 0 0 0 transparent;
+        box-shadow: 0 0 0 var(--color-ink, #0f172a);
     }
 
     .confirmar__boton:focus-visible {
-        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline: 3px solid var(--color-primary, #0284c7);
         outline-offset: 3px;
     }
 
@@ -106,7 +113,7 @@
 {{!
     Ventana de confirmacion reutilizable del editor.
     Se incluye UNA vez por pagina, con el tag de partial.
-    
+
     Para pedir confirmacion en un formulario, agregarle el atributo data-confirmar con el mensaje.
     Opcional: data-confirmar-titulo cambia el titulo de la ventana.
     No requiere datos del controlador.
