@@ -1,149 +1,257 @@
 <style>
+    body {
+        background-color: var(--color-cream, #fff8e8);
+    }
+
+    .usr,
+    .usr *,
+    .usr *::before,
+    .usr *::after {
+        box-sizing: border-box;
+    }
+
     .usr {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 1.5rem 1rem 2.5rem;
-        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
-        color: var(--color-ink, #0f172a);
+        --usr-ink: var(--color-ink, #0f172a);
+        --usr-muted: var(--color-ink-soft, #334155);
+        --usr-primary: var(--color-primary, #0284c7);
+        --usr-sky: var(--color-sky-soft, #bfe6fb);
+        --usr-sun: var(--color-sun, #fcd34d);
+
+        width: min(100% - 2rem, 920px);
+        margin: 2rem auto 2.75rem;
+        padding: clamp(1.35rem, 4vw, 2.25rem);
+        font-family: var(--font-text, "Nunito", "Outfit", system-ui, sans-serif);
+        color: var(--usr-ink);
+        background-color: var(--color-white, #ffffff);
+        border: 3px solid var(--usr-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--usr-ink);
+    }
+
+    .usr a:focus-visible,
+    .usr button:focus-visible,
+    .usr select:focus-visible {
+        outline: 3px solid var(--usr-primary);
+        outline-offset: 3px;
+    }
+
+    .usr__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.35rem;
     }
 
     .usr__title {
-        margin: 0 0 0.25rem;
-        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        margin: 0;
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+        font-size: clamp(1.65rem, 5vw, 2.25rem);
+        line-height: 1.15;
+        font-weight: 700;
+        color: var(--usr-ink);
+    }
+
+    .boton_volver {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 1.25rem;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+        font-size: 0.98rem;
+        font-weight: 800;
+        color: var(--usr-ink);
+        text-decoration: none;
+        background-color: var(--color-white, #ffffff);
+        border: 3px solid var(--usr-ink);
+        border-radius: 9999px;
+        box-shadow: 0 4px 0 var(--usr-ink);
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+    }
+
+    .boton_volver:hover {
+        background-color: var(--usr-sky);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 var(--usr-ink);
+    }
+
+    .boton_volver:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 var(--usr-ink);
     }
 
     .usr__mensaje {
-        margin: 1rem 0;
-        padding: 0.7rem 1rem;
-        background: #e0f2fe;
-        border-radius: 0.75rem;
-        font-weight: 700;
+        margin: 0 0 1.35rem;
+        padding: 0.85rem 1.15rem;
+        font-weight: 800;
+        color: var(--usr-ink);
+        background-color: var(--usr-sun);
+        border: 2.5px solid var(--usr-ink);
+        border-radius: 1.15rem;
+        box-shadow: 0 4px 0 var(--usr-ink);
+    }
+
+    .usr__tabla-wrap {
+        overflow-x: auto;
+        border-radius: 1rem;
     }
 
     .usr__tabla {
         width: 100%;
         border-collapse: collapse;
-        background: #ffffff;
-        border-radius: 1rem;
-        overflow: hidden;
+        background-color: var(--color-white, #ffffff);
     }
 
     .usr__tabla th,
     .usr__tabla td {
-        padding: 0.75rem 1rem;
+        padding: 0.85rem 1rem;
         text-align: left;
-        border-bottom: 1px solid #e2e8f0;
     }
 
     .usr__tabla th {
-        background: #f1f5f9;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+        font-weight: 800;
+        color: var(--usr-ink);
+        background-color: var(--usr-sky);
+    }
+
+    .usr__tabla th:first-child {
+        border-top-left-radius: 1rem;
+        border-bottom-left-radius: 1rem;
+    }
+
+    .usr__tabla th:last-child {
+        border-top-right-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+    }
+
+    .usr__tabla tbody td {
+        font-weight: 700;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .usr__tabla tbody tr:last-child td {
+        border-bottom: 0;
     }
 
     .usr__form {
         display: flex;
-        gap: 0.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem;
         margin: 0;
     }
 
-    .usr__select,
-    .usr__boton {
-        min-height: 40px;
-        padding: 0 0.8rem;
-        font: inherit;
-        border-radius: 9999px;
-    }
-
-  .boton_volver {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 40px;
-      padding: 0 0.8rem;
-      margin-bottom: 1em;
-
-      font: inherit;
-      font-weight: 800;
-      color: #ffffff;
-      text-decoration: none;
-
-      background: #0284c7;
-      border: 0;
-      border-radius: 9999px;
-
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease;
-  }
-
-  .boton_volver:hover {
-      background: #0369a1;
-  }
-
-  .boton_volver:focus-visible {
-      outline: 3px solid rgba(2, 132, 199, 0.4);
-      outline-offset: 3px;
-  }
     .usr__select {
-        border: 2px solid #cbd5e1;
-        background: #ffffff;
-    }
-
-    .usr__boton {
-        border: 0;
+        min-height: 42px;
+        padding: 0 0.85rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        font-size: 0.95rem;
         font-weight: 800;
-        color: #ffffff;
-        background: #0284c7;
+        color: var(--usr-ink);
+        background-color: var(--color-white, #ffffff);
+        border: 2.5px solid var(--usr-ink);
+        border-radius: 0.9rem;
+        box-shadow: 0 3px 0 var(--usr-ink);
         cursor: pointer;
     }
 
+    .usr__boton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 1.1rem;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+        font-size: 0.92rem;
+        font-weight: 800;
+        color: var(--color-white, #ffffff);
+        background-color: var(--usr-primary);
+        border: 2.5px solid var(--usr-ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--usr-ink);
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+    }
+
+    .usr__boton:hover {
+        filter: brightness(1.05);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 var(--usr-ink);
+    }
+
+    .usr__boton:active {
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--usr-ink);
+    }
+
     .usr__yo {
-        color: #64748b;
-        font-weight: 700;
+        display: inline-block;
+        padding: 0.3rem 0.85rem;
+        font-size: 0.88rem;
+        font-weight: 800;
+        color: var(--usr-muted);
+        background-color: #f1f5f9;
+        border: 2px solid #94a3b8;
+        border-radius: 9999px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .boton_volver,
+        .usr__boton {
+            transition: none;
+        }
     }
 </style>
 
 <main class="usr">
-    <h1 class="usr__title">Gestión de usuarios</h1>
-     <a class="boton_volver" href="{{base_url}}/administrador/show">
-         Volver al panel
-     </a>
+    <div class="usr__head">
+        <h1 class="usr__title">Gestión de usuarios</h1>
+        <a class="boton_volver" href="{{base_url}}/administrador/show">
+            ← Volver al panel
+        </a>
+    </div>
 
     {{#mensaje}}
         <p class="usr__mensaje" role="status">{{mensaje}}</p>
     {{/mensaje}}
 
-    <table class="usr__tabla">
-        <thead>
-        <tr>
-            <th>Usuario</th>
-            <th>Email</th>
-            <th>Rol</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#usuarios}}
+    <div class="usr__tabla-wrap">
+        <table class="usr__tabla">
+            <thead>
             <tr>
-                <td>{{nombre_usuario}}</td>
-                <td>{{email}}</td>
-                <td>
-                    {{#es_usuario_actual}}
-                        <span class="usr__yo">Vos (no se puede cambiar)</span>
-                    {{/es_usuario_actual}}
-                    {{^es_usuario_actual}}
-                        <form class="usr__form" method="post" action="{{base_url}}/administrador/cambiarRol">
-                            <input type="hidden" name="usuario_id" value="{{id}}">
-                            <select class="usr__select" name="rol_id" aria-label="Rol de {{nombre_usuario}}">
-                                {{#roles}}
-                                    <option value="{{valor}}" {{#seleccionado}}selected{{/seleccionado}}>{{nombre}}</option>
-                                {{/roles}}
-                            </select>
-                            <button class="usr__boton" type="submit">Guardar</button>
-                        </form>
-                    {{/es_usuario_actual}}
-                </td>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
             </tr>
-        {{/usuarios}}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {{#usuarios}}
+                <tr>
+                    <td>{{nombre_usuario}}</td>
+                    <td>{{email}}</td>
+                    <td>
+                        {{#es_usuario_actual}}
+                            <span class="usr__yo">Vos (no se puede cambiar)</span>
+                        {{/es_usuario_actual}}
+                        {{^es_usuario_actual}}
+                            <form class="usr__form" method="post" action="{{base_url}}/administrador/cambiarRol">
+                                <input type="hidden" name="usuario_id" value="{{id}}">
+                                <select class="usr__select" name="rol_id" aria-label="Rol de {{nombre_usuario}}">
+                                    {{#roles}}
+                                        <option value="{{valor}}" {{#seleccionado}}selected{{/seleccionado}}>{{nombre}}</option>
+                                    {{/roles}}
+                                </select>
+                                <button class="usr__boton" type="submit">Guardar</button>
+                            </form>
+                        {{/es_usuario_actual}}
+                    </td>
+                </tr>
+            {{/usuarios}}
+            </tbody>
+        </table>
+    </div>
 </main>
