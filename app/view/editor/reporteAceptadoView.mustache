@@ -3,29 +3,47 @@
        CONTENEDOR GENERAL
     ========================================= */
 
+    body {
+        background-color: var(--color-cream, #fff8e8);
+    }
+
     .resolucion-container {
+        --res-ink: var(--color-ink, #0f172a);
+        --res-muted: var(--color-ink-soft, #334155);
+        --res-primary: var(--color-primary, #0284c7);
+        --res-sky: var(--color-sky-soft, #bfe6fb);
+
         width: 100%;
-        max-width: 950px;
+        max-width: 820px;
         margin-inline: auto;
-        padding: 24px 16px;
+        padding: 1.5rem 1rem 2.5rem;
         font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--res-ink);
         box-sizing: border-box;
     }
 
     .resolucion-header {
-        margin-bottom: 24px;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
         text-align: center;
+        background-color: var(--res-sky);
+        border: 3px solid var(--res-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--res-ink);
     }
 
     .resolucion-header h1 {
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.7rem;
-        color: #0f172a;
-        margin: 0 0 8px;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--res-ink);
+        margin: 0 0 0.4rem;
     }
 
     .resolucion-header p {
-        color: #64748b;
+        color: var(--res-muted);
+        font-size: 0.98rem;
+        font-weight: 700;
         line-height: 1.5;
         margin: 0;
     }
@@ -35,26 +53,33 @@
     ========================================= */
 
     .reporte-resumen {
-        padding: 20px;
-        margin-bottom: 25px;
+        padding: 1.35rem 1.5rem;
+        margin-bottom: 1.5rem;
         background: #fff7ed;
-        border: 1px solid #fed7aa;
-        border-radius: 16px;
+        border: 3px solid var(--res-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 6px 0 var(--res-ink);
     }
 
     .reporte-resumen h2 {
-        font-size: 1.1rem;
+        font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+        font-size: 1.3rem;
+        font-weight: 700;
         color: #9a3412;
-        margin: 0 0 14px;
+        margin: 0 0 0.85rem;
     }
 
     .reporte-resumen p {
-        color: #7c2d12;
+        color: var(--res-ink);
+        font-size: 0.96rem;
+        font-weight: 700;
         line-height: 1.5;
-        margin: 8px 0;
+        margin: 0.5rem 0;
     }
 
     .reporte-resumen strong {
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
         color: #9a3412;
     }
 
@@ -63,26 +88,28 @@
     ========================================= */
 
     .resolucion-section {
-        padding: 22px 18px;
-        margin-bottom: 22px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        padding: 1.5rem 1.25rem;
+        margin-bottom: 1.5rem;
+        background: var(--color-white, #ffffff);
+        border: 3px solid var(--res-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--res-ink);
     }
 
     .resolucion-section h2 {
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.3rem;
-        color: #0f172a;
-        margin: 0 0 8px;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--res-ink);
+        margin: 0 0 0.45rem;
     }
 
     .resolucion-section > p {
-        color: #64748b;
-        font-size: 0.9rem;
+        color: var(--res-muted);
+        font-size: 0.94rem;
+        font-weight: 700;
         line-height: 1.5;
-        margin: 0 0 20px;
+        margin: 0 0 1.25rem;
     }
 
     /* =========================================
@@ -90,32 +117,40 @@
     ========================================= */
 
     .inactivar-section {
-        background: #fffafa;
-        border-color: #fecaca;
+        background: #fef2f2;
     }
 
     .btn-inactivar {
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
         display: inline-flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-        min-height: 44px;
-        padding: 10px 18px;
+        min-height: 48px;
+        padding: 0.65rem 1.4rem;
         box-sizing: border-box;
 
-        background: #fee2e2;
-        color: #b91c1c;
-        border: none;
-        border-radius: 10px;
+        background: #fecaca;
+        color: var(--res-ink);
+        border: 3px solid var(--res-ink);
+        border-radius: 9999px;
+        box-shadow: 0 5px 0 var(--res-ink);
 
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 0.98rem;
+        font-weight: 800;
         cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
     .btn-inactivar:hover {
-        background: #fecaca;
+        filter: brightness(1.03);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 0 var(--res-ink);
+    }
+
+    .btn-inactivar:active {
+        transform: translateY(5px);
+        box-shadow: 0 0 0 var(--res-ink);
     }
 
     /* =========================================
@@ -123,16 +158,32 @@
     ========================================= */
 
     .volver-link {
-        display: inline-block;
-        margin-top: 5px;
-        padding: 10px 0;
-        color: #64748b;
+        display: inline-flex;
+        align-items: center;
+        min-height: 42px;
+        margin-top: 0.25rem;
+        padding: 0.45rem 1.05rem;
+        color: var(--res-ink);
+        background: var(--color-white, #ffffff);
+        border: 2px solid var(--res-ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--res-ink);
         text-decoration: none;
-        font-weight: 600;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
+        font-size: 0.92rem;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
     }
 
     .volver-link:hover {
-        color: #0f172a;
+        background-color: var(--res-sky);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 var(--res-ink);
+    }
+
+    .volver-link:active {
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--res-ink);
     }
 
     /* =========================================
@@ -141,24 +192,25 @@
 
     @media (min-width: 768px) {
         .resolucion-container {
-            padding: 35px 24px;
+            padding: 2.25rem 1.5rem 2.75rem;
         }
 
         .resolucion-header {
+            padding: 2rem 2.5rem;
             text-align: left;
         }
 
         .resolucion-header h1 {
-            font-size: 2rem;
+            font-size: 2.35rem;
         }
 
         .resolucion-section {
-            padding: 26px;
+            padding: 1.85rem 2rem;
         }
 
         .btn-inactivar {
             width: auto;
-            min-width: 190px;
+            min-width: 220px;
         }
     }
 </style>
@@ -204,9 +256,9 @@
         </p>
 
         <form
-            action="{{urlInactivar}}"
-            method="POST"
-            data-confirmar="¿Estás seguro de que querés inactivar esta pregunta y aceptar el reporte?"
+                action="{{urlInactivar}}"
+                method="POST"
+                data-confirmar="¿Estás seguro de que querés inactivar esta pregunta y aceptar el reporte?"
         >
             <input type="hidden" name="reporte_id" value="{{reporte.reporte_id}}">
             <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
@@ -226,7 +278,7 @@
             Si el problema puede corregirse, modificá el contenido
             de la pregunta antes de volver a habilitarla.
         </p>
-        
+
         {{> editor/formPreguntaView}}
 
     </section>
