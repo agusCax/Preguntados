@@ -3,12 +3,23 @@
     CONTENEDOR GENERAL
     ========================================= */
 
+    body {
+        background-color: var(--color-cream, #fff8e8);
+    }
+
     .moderacion-container {
+        --mod-ink: var(--color-ink, #0f172a);
+        --mod-muted: var(--color-ink-soft, #334155);
+        --mod-primary: var(--color-primary, #0284c7);
+        --mod-sky: var(--color-sky-soft, #bfe6fb);
+        --mod-sun: var(--color-sun, #fcd34d);
+
         width: 100%;
         max-width: 1100px;
         margin-inline: auto;
-        padding: 24px 16px;
+        padding: 1.5rem 1rem 2.5rem;
         font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        color: var(--mod-ink);
         box-sizing: border-box;
     }
 
@@ -22,21 +33,29 @@
 
     .moderacion-header {
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
         text-align: center;
+        background-color: var(--mod-sky);
+        border: 3px solid var(--mod-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--mod-ink);
+        box-sizing: border-box;
     }
 
     .moderacion-header h1 {
         font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
-        font-size: 1.65rem;
+        font-size: 1.75rem;
+        font-weight: 700;
         line-height: 1.2;
-        margin: 0 0 8px;
-        color: #0f172a;
+        margin: 0 0 0.4rem;
+        color: var(--mod-ink);
     }
 
     .moderacion-header p {
-        color: #64748b;
-        font-size: 0.95rem;
+        color: var(--mod-muted);
+        font-size: 0.98rem;
+        font-weight: 700;
         line-height: 1.5;
         margin: 0;
     }
@@ -75,19 +94,18 @@
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        margin-bottom: 14px;
-        padding: 20px 16px;
+        margin-bottom: 1rem;
+        padding: 1.25rem 1rem;
 
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+        background: var(--color-white, #ffffff);
+        border: 2.5px solid var(--mod-ink);
+        border-radius: 1.35rem;
+        box-shadow: 0 5px 0 var(--mod-ink);
 
         cursor: pointer;
         text-align: center;
 
-        transition: background 0.2s ease,
-                    box-shadow 0.2s ease;
+        transition: background-color 0.15s ease, transform 0.1s ease;
     }
 
     .tabla-moderacion td {
@@ -110,11 +128,14 @@
         gap: 7px;
 
         max-width: 100%;
-        padding: 7px 12px;
+        padding: 0.38rem 0.85rem;
 
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 700;
+        border: 2px solid var(--mod-ink);
+        border-radius: 9999px;
+        box-shadow: 0 2px 0 var(--mod-ink);
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-size: 0.84rem;
+        font-weight: 800;
         overflow-wrap: anywhere;
     }
 
@@ -124,8 +145,9 @@
 
     .pregunta-texto {
         width: 100%;
-        color: #334155;
-        font-size: 0.95rem;
+        color: var(--mod-ink);
+        font-size: 0.96rem;
+        font-weight: 700;
         line-height: 1.5;
 
         white-space: normal;
@@ -134,8 +156,9 @@
     }
 
     .motivo-texto {
-        color: #64748b;
-        font-size: 0.85rem;
+        color: var(--mod-muted);
+        font-size: 0.88rem;
+        font-weight: 700;
         line-height: 1.4;
 
         white-space: normal;
@@ -145,8 +168,8 @@
 
     .motivo-texto::before {
         content: "Motivo: ";
-        font-weight: 700;
-        color: #475569;
+        font-weight: 800;
+        color: var(--mod-ink);
     }
 
     /* =========================================
@@ -158,32 +181,33 @@
         align-items: center;
         justify-content: center;
 
-        min-width: 100px;
+        min-width: 104px;
         min-height: 42px;
-        padding: 9px 20px;
+        padding: 0.45rem 1.25rem;
 
-        border-radius: 10px;
+        border: 2.5px solid var(--mod-ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--mod-ink);
         text-decoration: none;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-weight: 700;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
         font-size: 0.9rem;
+        color: var(--mod-ink);
 
-        transition: transform 0.2s ease,
-                    filter 0.2s ease;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
     }
 
     .btn-sugerencia {
-        background: #ede9fe;
-        color: #6d28d9;
+        background: var(--mod-sky);
     }
 
     .btn-reporte {
-        background: #ffedd5;
-        color: #c2410c;
+        background: var(--mod-sun);
     }
 
     .btn-ver:active {
-        transform: scale(0.97);
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--mod-ink);
     }
 
     /* =========================================
@@ -197,21 +221,23 @@
         justify-content: center;
 
         width: 100%;
-        min-height: 180px;
+        min-height: 190px;
         box-sizing: border-box;
-        padding: 30px 18px;
+        padding: 2rem 1.25rem;
 
         text-align: center;
-        color: #64748b;
+        color: var(--mod-muted);
+        font-weight: 700;
 
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
+        background: var(--color-white, #ffffff);
+        border: 3px solid var(--mod-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 8px 0 var(--mod-ink);
     }
 
     .sin-resultados span {
-        font-size: 2rem;
-        margin-bottom: 10px;
+        font-size: 2.2rem;
+        margin-bottom: 0.65rem;
     }
 
     .sin-resultados p {
@@ -224,18 +250,33 @@
     ========================================= */
 
     .volver-link {
-        display: inline-block;
-        margin-top: 22px;
-        padding: 8px 0;
+        display: inline-flex;
+        align-items: center;
+        min-height: 42px;
+        margin-top: 1.5rem;
+        padding: 0.45rem 1.05rem;
 
-        color: #64748b;
+        color: var(--mod-ink);
+        background: var(--color-white, #ffffff);
+        border: 2px solid var(--mod-ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--mod-ink);
         text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
+        font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+        font-weight: 800;
+        font-size: 0.92rem;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
     }
 
     .volver-link:hover {
-        color: #0f172a;
+        background-color: var(--mod-sky);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 var(--mod-ink);
+    }
+
+    .volver-link:active {
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--mod-ink);
     }
 
     /* =========================================
@@ -245,23 +286,24 @@
     @media (min-width: 768px) {
 
         .moderacion-container {
-            padding: 30px 24px;
+            padding: 2rem 1.5rem 2.75rem;
         }
 
         .moderacion-header {
+            padding: 2rem 2.5rem;
             text-align: left;
         }
 
         .moderacion-header h1 {
-            font-size: 2rem;
+            font-size: 2.35rem;
         }
 
         .tabla-container {
             overflow-x: auto;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            background: var(--color-white, #ffffff);
+            border: 3px solid var(--mod-ink);
+            border-radius: 1.75rem;
+            box-shadow: 0 8px 0 var(--mod-ink);
         }
 
         .tabla-moderacion {
@@ -291,21 +333,26 @@
             text-align: left;
         }
 
+        .tabla-moderacion tbody tr:hover {
+            background-color: #fffdf8;
+        }
+
         .tabla-moderacion td {
             display: table-cell;
             width: auto;
-            padding: 16px 20px;
+            padding: 1rem 1.25rem;
             border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
         }
 
         .tabla-moderacion th {
-            padding: 16px 20px;
+            padding: 1rem 1.25rem;
             text-align: left;
             background: #f8fafc;
-            color: #64748b;
-            font-size: 0.85rem;
-            font-weight: 700;
+            color: var(--mod-ink);
+            font-family: var(--font-ui, var(--font-family, "Outfit", system-ui, sans-serif));
+            font-size: 0.88rem;
+            font-weight: 800;
             border-bottom: 1px solid #e2e8f0;
         }
 
@@ -335,12 +382,8 @@
 
         .btn-ver:hover {
             transform: translateY(-2px);
-            filter: brightness(0.97);
-        }
-
-        .sin-resultados {
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 5px 0 var(--mod-ink);
+            filter: brightness(1.03);
         }
     }
 
@@ -351,12 +394,12 @@
     @media (min-width: 1024px) {
 
         .moderacion-container {
-            padding: 36px 28px;
+            padding: 2.5rem 1.75rem 3rem;
         }
 
         .tabla-moderacion th,
         .tabla-moderacion td {
-            padding: 18px 22px;
+            padding: 1.1rem 1.4rem;
         }
     }
 </style>
@@ -381,59 +424,59 @@
             <table class="tabla-moderacion">
 
                 <thead>
-                    <tr>
-                        <th>Categoría</th>
-                        <th>Pregunta</th>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Pregunta</th>
 
-                        {{#esReporte}}
-                            <th>Motivo</th>
-                        {{/esReporte}}
+                    {{#esReporte}}
+                        <th>Motivo</th>
+                    {{/esReporte}}
 
-                        <th>Acción</th>
-                    </tr>
+                    <th>Acción</th>
+                </tr>
                 </thead>
 
                 <tbody>
-                    {{#moderaciones}}
-                        <tr
+                {{#moderaciones}}
+                    <tr
                             class="fila-moderacion"
                             onclick="window.location.href='{{urlDetalle}}'"
-                        >
-                            <td>
+                    >
+                        <td>
                                 <span
-                                    class="categoria-badge"
-                                    style="background-color: {{pregunta.color}}30; color: {{pregunta.color}};"
+                                        class="categoria-badge"
+                                        style="background-color: {{pregunta.color}}30; color: #0f172a;"
                                 >
                                     <span>{{pregunta.icono}}</span>
                                     {{pregunta.categoria}}
                                 </span>
-                            </td>
+                        </td>
 
+                        <td>
+                            <div class="pregunta-texto" title="{{pregunta.texto}}">
+                                {{pregunta.texto}}
+                            </div>
+                        </td>
+
+                        {{#esReporte}}
                             <td>
-                                <div class="pregunta-texto" title="{{pregunta.texto}}">
-                                    {{pregunta.texto}}
+                                <div class="motivo-texto" title="{{reporte.motivo}}">
+                                    {{reporte.motivo}}
                                 </div>
                             </td>
+                        {{/esReporte}}
 
-                            {{#esReporte}}
-                                <td>
-                                    <div class="motivo-texto" title="{{reporte.motivo}}">
-                                        {{reporte.motivo}}
-                                    </div>
-                                </td>
-                            {{/esReporte}}
-
-                            <td>
-                                <a
+                        <td>
+                            <a
                                     href="{{urlDetalle}}"
                                     class="btn-ver {{#esReporte}}btn-reporte{{/esReporte}}{{^esReporte}}btn-sugerencia{{/esReporte}}"
                                     onclick="event.stopPropagation();"
-                                >
-                                    Ver
-                                </a>
-                            </td>
-                        </tr>
-                    {{/moderaciones}}
+                            >
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                {{/moderaciones}}
                 </tbody>
 
             </table>
