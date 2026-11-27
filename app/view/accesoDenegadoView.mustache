@@ -7,26 +7,48 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
 
     <style>
         :root {
-            --color-primary: #0284c7;
-            --color-primary-dark: #0369a1;
-            --color-error: #ef4444;
-            --color-error-dark: #b91c1c;
             --color-ink: #0f172a;
             --color-ink-soft: #334155;
+            --color-ink-muted: #475569;
+            --color-cream: #fff8e8;
             --color-white: #ffffff;
 
-            --font-family: "Outfit", system-ui, sans-serif;
+            --color-primary: #0284c7;
+            --color-primary-dark: #0369a1;
+            --color-sky-soft: #bfe6fb;
+            --color-sun: #fcd34d;
+            --color-amber: #f59e0b;
+            --color-violet: #7c3aed;
+            --color-error: #ef4444;
+            --color-error-dark: #b91c1c;
+
+            --color-tint-lila: #ddd6fe;
+            --color-tint-amarillo: #fde68a;
+            --color-tint-rojo: #fecaca;
+
             --font-display: "Fredoka", "Outfit", system-ui, sans-serif;
             --font-text: "Nunito", "Outfit", system-ui, sans-serif;
+            --font-ui: "Outfit", system-ui, sans-serif;
+
+            --radius-pill: 9999px;
+            --radius-card-lg: 1.75rem;
+            --radius-blob: 58% 42% 55% 45% / 50% 56% 44% 50%;
+
+            --border-edge: 3px solid var(--color-ink);
+            --border-edge-small: 2px solid var(--color-ink);
+
+            --shadow-card-hero: 0 8px 0 var(--color-ink);
+            --shadow-button: 0 5px 0 var(--color-ink);
+            --shadow-control: 0 3px 0 var(--color-ink);
 
             --space-sm: 0.5rem;
             --space-md: 1rem;
             --space-lg: 1.5rem;
-            --space-xl: 2.25rem;
+            --space-xl: 2.5rem;
         }
 
         *,
@@ -36,6 +58,7 @@
         }
 
         body {
+            position: relative;
             min-height: 100vh;
             min-height: 100dvh;
             margin: 0;
@@ -45,129 +68,312 @@
             padding: var(--space-lg) var(--space-md) calc(var(--space-xl) + env(safe-area-inset-bottom, 0px));
             color: var(--color-ink);
             font-family: var(--font-text);
-            /* mismo fondo que la pantalla de resultado */
-            background: linear-gradient(135deg, #e0f2fe 0%, #e0f2fe 55%, #fff4dc 100%);
+            background-color: var(--color-cream);
+            overflow-x: hidden;
         }
 
-        /* ---------- Tarjeta (nivel 2: diálogo con la mascota) ---------- */
+        /* ---------- Fondo decorativo cartoon ---------- */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg__blob {
+            position: absolute;
+            border-radius: var(--radius-blob);
+            opacity: 0.48;
+            animation: bg-float 16s ease-in-out infinite;
+        }
+
+        .bg__blob--sky {
+            width: 340px;
+            height: 340px;
+            bottom: -90px;
+            left: -80px;
+            background-color: var(--color-sky-soft);
+        }
+
+        .bg__blob--sun {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            right: -95px;
+            background-color: var(--color-tint-amarillo);
+            animation-delay: -5s;
+        }
+
+        .bg__blob--lila {
+            width: 220px;
+            height: 220px;
+            top: 22%;
+            left: 5%;
+            background-color: var(--color-tint-lila);
+            animation-delay: -10s;
+        }
+
+        .bg__star {
+            position: absolute;
+            color: var(--color-ink);
+            opacity: 0.16;
+        }
+
+        .bg__star--1 {
+            top: 14%;
+            left: 14%;
+        }
+
+        .bg__star--2 {
+            bottom: 18%;
+            right: 14%;
+        }
+
+        .bg__zigzag {
+            position: absolute;
+            opacity: 0.22;
+        }
+
+        .bg__zigzag--1 {
+            top: 10%;
+            right: 12%;
+            color: var(--color-violet);
+        }
+
+        .bg__zigzag--2 {
+            bottom: 24%;
+            left: 8%;
+            color: var(--color-primary);
+        }
+
+        /* ---------- Tarjeta principal (diálogo 403) ---------- */
         .denied {
             position: relative;
             width: 100%;
             max-width: 440px;
-            margin-top: 4.5rem;
-            padding: 4rem var(--space-lg) var(--space-xl);
+            margin-top: 3.75rem;
+            padding: 4.25rem var(--space-lg) var(--space-xl);
             text-align: center;
             background-color: var(--color-white);
-            border: 2px solid var(--color-ink);
-            border-radius: 2rem;
-            box-shadow: 0 20px 30px -8px rgba(2, 132, 199, 0.18);
-            animation: denied-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            border: var(--border-edge);
+            border-radius: var(--radius-card-lg);
+            box-shadow: var(--shadow-card-hero);
+            animation: denied-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
 
-        /* La mascota asoma por encima del borde superior */
-        .denied__mascot {
+        /* Mascota sobre insignia orgánica amarilla asomando arriba */
+        .denied__mascot-badge {
             position: absolute;
-            top: -4.5rem;
+            top: -3.75rem;
             left: 50%;
-            width: 112px;
-            height: 112px;
-            object-fit: contain;
+            width: 116px;
+            height: 116px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--color-sun);
+            border: var(--border-edge);
+            border-radius: var(--radius-blob);
+            box-shadow: 0 4px 0 var(--color-ink);
             transform: translateX(-50%);
             animation: denied-float 3s ease-in-out infinite;
         }
 
-        /* ---------- Chip de categoría (error) ---------- */
+        .denied__mascot {
+            width: 84px;
+            height: 84px;
+            object-fit: contain;
+        }
+
+        /* ---------- Chip de estado ---------- */
         .denied__chip {
             display: inline-block;
-            padding: 0.3rem 0.9rem;
-            font-family: var(--font-family);
+            padding: 0.35rem 0.95rem;
+            font-family: var(--font-ui);
             font-size: 11px;
             line-height: 14px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.03em;
             text-transform: uppercase;
             color: var(--color-error-dark);
-            background-color: rgba(239, 68, 68, 0.12);
-            border: 2px solid var(--color-error);
-            border-radius: 9999px;
+            background-color: var(--color-tint-rojo);
+            border: var(--border-edge-small);
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-control);
         }
 
         .denied__title {
             margin: var(--space-md) 0 var(--space-sm);
             font-family: var(--font-display);
-            font-size: 32px;
-            line-height: 38px;
+            font-size: 2rem;
+            line-height: 1.15;
             font-weight: 700;
             color: var(--color-ink);
         }
 
         .denied__text {
             margin: 0 0 var(--space-lg);
-            font-size: 18px;
-            line-height: 26px;
+            font-family: var(--font-text);
+            font-size: 1.05rem;
+            line-height: 1.5;
             font-weight: 700;
             color: var(--color-ink-soft);
         }
 
-        /* ---------- Botón táctil primario ---------- */
+        /* ---------- Botón táctil cartoon ---------- */
         .denied__btn {
-            display: inline-block;
-            min-width: 200px;
-            padding: 0.9rem 2rem;
-            font-family: var(--font-family);
-            font-size: 16px;
-            line-height: 20px;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 210px;
+            min-height: 48px;
+            padding: 0.75rem 2rem;
+            font-family: var(--font-ui);
+            font-size: 1.05rem;
+            line-height: 1.2;
+            font-weight: 800;
             color: var(--color-white);
             text-decoration: none;
             background-color: var(--color-primary);
-            border-radius: 9999px;
-            box-shadow: 0 4px 0 var(--color-primary-dark);
-            transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            border: var(--border-edge);
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-button);
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
         }
 
         .denied__btn:hover {
             filter: brightness(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 var(--color-ink);
         }
 
         .denied__btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 transparent;
+            transform: translateY(5px);
+            box-shadow: 0 0 0 var(--color-ink);
         }
 
         .denied__btn:focus-visible {
-            outline: none;
-            box-shadow: 0 4px 0 var(--color-primary-dark), 0 0 0 4px rgba(2, 132, 199, 0.2);
+            outline: 3px solid var(--color-primary);
+            outline-offset: 3px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 767px) {
+            .bg__blob--lila,
+            .bg__star--2,
+            .bg__zigzag {
+                display: none;
+            }
+
+            .bg__blob--sky {
+                width: 240px;
+                height: 240px;
+            }
+
+            .bg__blob--sun {
+                width: 210px;
+                height: 210px;
+            }
+
+            .denied__title {
+                font-size: 1.75rem;
+            }
         }
 
         /* ---------- Animaciones ---------- */
         @keyframes denied-pop {
-            from { opacity: 0; transform: scale(0.92) translateY(16px); }
-            to   { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         @keyframes denied-float {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50%      { transform: translateX(-50%) translateY(-6px); }
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-6px);
+            }
+        }
+
+        @keyframes bg-float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-14px) rotate(4deg);
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
             .denied,
-            .denied__mascot {
+            .denied__mascot-badge,
+            .bg__blob {
                 animation: none;
+            }
+
+            .denied__btn {
+                transition: none;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: var(--color-white);
+            }
+
+            .bg {
+                display: none;
+            }
+
+            .denied,
+            .denied__mascot-badge,
+            .denied__chip,
+            .denied__btn {
+                box-shadow: none;
             }
         }
     </style>
 </head>
 <body>
-    <main class="denied">
+<div class="bg" aria-hidden="true">
+    <div class="bg__blob bg__blob--sky"></div>
+    <div class="bg__blob bg__blob--sun"></div>
+    <div class="bg__blob bg__blob--lila"></div>
+
+    <svg class="bg__star bg__star--1" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+    </svg>
+
+    <svg class="bg__star bg__star--2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+    </svg>
+
+    <svg class="bg__zigzag bg__zigzag--1" width="76" height="18" viewBox="0 0 76 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="2,14 14,4 26,14 38,4 50,14 62,4 74,14" />
+    </svg>
+
+    <svg class="bg__zigzag bg__zigzag--2" width="68" height="16" viewBox="0 0 68 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="2,12 13,4 24,12 35,4 46,12 57,4 66,12" />
+    </svg>
+</div>
+
+<main class="denied">
+    <div class="denied__mascot-badge" aria-hidden="true">
         <img class="denied__mascot" src="{{base_url}}/public/img/imagenPreguntadosLogo.png" alt="" />
+    </div>
 
-        <span class="denied__chip">Error 403</span>
-        <h1 class="denied__title">Acceso denegado</h1>
-        <p class="denied__text">No tenés permisos para ver esta página.</p>
+    <span class="denied__chip">Error 403</span>
+    <h1 class="denied__title">Acceso denegado</h1>
+    <p class="denied__text">No tenés permisos para ver esta página.</p>
 
-        <a href="{{base_url}}/inicio/show" class="denied__btn">Volver al inicio</a>
-    </main>
+    <a href="{{base_url}}/inicio/show" class="denied__btn">Volver al inicio</a>
+</main>
 </body>
 </html>
