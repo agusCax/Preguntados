@@ -1,3 +1,5 @@
+</div>
+
 <footer class="ft">
     <style>
         .ft,
@@ -10,13 +12,15 @@
         .ft {
             --ft-pad: 1rem;
 
-            margin-top: 2.5rem;
+            flex-shrink: 0;
+            margin-top: 0;
             padding: 2rem var(--ft-pad) 1.5rem;
             font-family: var(--font-text, "Nunito", system-ui, sans-serif);
             text-align: center;
-            color: var(--color-ink-soft, #334155);
-            background-color: var(--color-white, #ffffff);
-            border-top: 1px solid var(--color-border, #e2e8f0);
+            color: var(--color-ink, #0f172a);
+            background-color: var(--color-sky-soft, #bfe6fb);
+            border-top: var(--edge, 3px solid #0f172a);
+            box-shadow: 0 -4px 0 rgba(15, 23, 42, 0.1);
         }
 
         .ft__inner {
@@ -27,13 +31,31 @@
         }
 
         .ft__brand {
-            margin: 0 0 0.25rem;
-            font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-            font-size: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0 0 0.5rem;
+            font-family: var(--font-display, "Fredoka", system-ui, sans-serif);
+            font-size: 28px;
             line-height: 1;
-            font-weight: 800;
-            letter-spacing: -0.01em;
+            font-weight: 700;
             color: var(--color-primary-dark, #0369a1);
+            text-shadow: 2px 2px 0 #fff;
+        }
+
+        .ft__logo {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            font-size: 19px;
+            color: var(--color-ink, #0f172a);
+            text-shadow: none;
+            background-color: var(--color-sun, #fcd34d);
+            border: 2.5px solid var(--color-ink, #0f172a);
+            border-radius: 50%;
+            box-shadow: 0 3px 0 var(--color-ink, #0f172a);
+            transform: rotate(-8deg);
         }
 
         .ft__desc {
@@ -41,27 +63,44 @@
             margin: 0 auto;
             font-size: 0.95rem;
             line-height: 1.5;
-            color: #64748b;
+            font-weight: 700;
+            color: var(--color-ink-soft, #334155);
         }
 
         .ft__title {
-            margin: 0 0 0.5rem;
+            display: inline-block;
+            margin: 0 0 0.9rem;
+            padding: 0.2rem 0.9rem;
             font-family: var(--font-text, "Nunito", system-ui, sans-serif);
             font-size: 0.8rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: var(--color-primary-dark, #0369a1);
+            color: var(--color-ink, #0f172a);
+            background-color: var(--color-sun, #fcd34d);
+            border: 2px solid var(--color-ink, #0f172a);
+            border-radius: 9999px;
+            box-shadow: 0 3px 0 var(--color-ink, #0f172a);
         }
 
         .ft__list {
             display: grid;
-            gap: 0.25rem;
+            gap: 0.6rem;
             margin: 0;
             padding: 0;
             list-style: none;
-            font-size: 0.95rem;
-            font-weight: 600;
+        }
+
+        .ft__list li {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            font-weight: 700;
+            color: var(--color-ink, #0f172a);
+            background-color: #fff;
+            border: 2px solid var(--color-ink, #0f172a);
+            border-radius: 1rem;
+            box-shadow: 0 3px 0 var(--color-ink, #0f172a);
         }
 
         .ft__copy {
@@ -69,15 +108,14 @@
             margin: 1.5rem auto 0;
             padding-top: 1rem;
             font-size: 0.85rem;
-            color: #64748b;
-            border-top: 1px solid var(--color-border, #e2e8f0);
+            font-weight: 700;
+            color: var(--color-ink-soft, #334155);
+            border-top: 2px dashed rgba(15, 23, 42, 0.35);
         }
 
         /* Tablet y desktop: marca a la izquierda, integrantes a la derecha */
         @media (min-width: 768px) {
-            .ft {
-                --ft-pad: 1.5rem;
-            }
+            .ft { --ft-pad: 1.5rem; }
 
             .ft__inner {
                 grid-template-columns: 1fr 1fr;
@@ -85,34 +123,20 @@
                 text-align: left;
             }
 
-            .ft__desc {
-                margin-inline: 0;
-            }
-
-            .ft__team {
-                justify-self: end;
-            }
-
-            .ft__list {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.35rem 2rem;
-            }
-
-            .ft__copy {
-                text-align: left;
-            }
+            .ft__desc { margin-inline: 0; }
+            .ft__team { justify-self: end; }
+            .ft__list { grid-template-columns: 1fr 1fr; gap: 0.7rem 0.8rem; }
+            .ft__copy { text-align: left; }
         }
 
         @media (min-width: 1024px) {
-            .ft {
-                --ft-pad: 2.5rem;
-            }
+            .ft { --ft-pad: 2.5rem; }
         }
     </style>
 
     <div class="ft__inner">
         <div class="ft__about">
-            <p class="ft__brand">Cerebrito</p>
+            <p class="ft__brand"><span class="ft__logo" aria-hidden="true">?</span>Cerebrito</p>
             <p class="ft__desc">Trabajo Práctico de Programación Web 2, Universidad Nacional de La Matanza.</p>
         </div>
 
