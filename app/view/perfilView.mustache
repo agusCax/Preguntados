@@ -1,9 +1,8 @@
 <style>
     @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
 
-    /* Fondo suave de las pantallas con sesión (igual que inicioView) */
     body {
-        background-color: var(--color-canvas, #f8fafc);
+        background-color: var(--color-cream, #fff8e8);
     }
 
     .pf,
@@ -14,19 +13,26 @@
     }
 
     /* =========================================================
-    PERFIL (mobile first)
-    Columna centrada de 540px máx
+       PERFIL (mobile first - Cerebrito Cartoon)
        ========================================================= */
     .pf {
         --pf-pad: 1rem;
         --pf-ink: var(--color-ink, #0f172a);
         --pf-ink-soft: var(--color-ink-soft, #334155);
-        --pf-border: var(--color-border, #e2e8f0);
+        --pf-primary: var(--color-primary, #0284c7);
+        --pf-sky: var(--color-sky-soft, #bfe6fb);
+        --pf-sun: var(--color-sun, #fcd34d);
+        --pf-amber: var(--color-amber, #f59e0b);
+        --pf-success: var(--color-success, #4ade80);
+        --pf-tint-amarillo: #fde68a;
+        --pf-tint-verde: #dcfce7;
+        --pf-tint-rojo: #fecaca;
+        --pf-blob: 58% 42% 55% 45% / 50% 56% 44% 50%;
 
-        max-width: 540px;
+        max-width: 560px;
         margin: 0 auto;
-        padding: 0.5rem var(--pf-pad) 0;
-        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        padding: 0.85rem var(--pf-pad) 2.5rem;
+        font-family: var(--font-text, "Nunito", "Outfit", system-ui, sans-serif);
         color: var(--pf-ink);
     }
 
@@ -37,16 +43,16 @@
 
     .pf a:focus-visible,
     .pf button:focus-visible {
-        outline: 3px solid rgba(2, 132, 199, 0.4);
+        outline: 3px solid var(--pf-primary);
         outline-offset: 3px;
     }
 
-    /* ---------- Barra superior: volver + menú ---------- */
+    /* ---------- Barra superior: volver ---------- */
     .pf__top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 0 -0.5rem 0.5rem;
+        margin: 0 0 1rem;
     }
 
     .pf__icon-btn {
@@ -56,22 +62,36 @@
         height: 44px;
         padding: 0;
         color: var(--pf-ink);
-        background: transparent;
-        border: 0;
-        border-radius: 50%;
+        background-color: var(--color-white, #ffffff);
+        border: 2px solid var(--pf-ink);
+        border-radius: 9999px;
+        box-shadow: 0 3px 0 var(--pf-ink);
         cursor: pointer;
-        transition: background-color 0.15s ease;
+        text-decoration: none;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
     }
 
     .pf__icon-btn:hover {
-        background-color: var(--color-shape, #f1f5ff);
+        background-color: var(--pf-sky);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 var(--pf-ink);
     }
 
-    /* ---------- Cabecera: avatar + usuario + seguidores ---------- */
+    .pf__icon-btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 0 0 var(--pf-ink);
+    }
+
+    /* ---------- Cabecera: avatar + usuario ---------- */
     .pf__head {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.1rem;
+        padding: 1.1rem 1.25rem;
+        background-color: var(--color-white, #ffffff);
+        border: 3px solid var(--pf-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 6px 0 var(--pf-ink);
     }
 
     .pf__avatar {
@@ -86,14 +106,20 @@
         place-items: center;
         width: 100%;
         height: 100%;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
         font-size: 2.5rem;
         line-height: 1;
-        font-weight: 800;
-        color: #ffffff;
-        background-color: #475569;
-        border: 4px solid var(--color-primary, #0284c7);
+        font-weight: 700;
+        color: var(--pf-ink);
+        background-color: var(--pf-sun);
+        border: 3px solid var(--pf-ink);
         border-radius: 50%;
+        box-shadow: 0 3px 0 var(--pf-ink);
+    }
+
+    img.pf__avatar-img {
+        object-fit: cover;
+        background-color: var(--pf-sky);
     }
 
     .pf__avatar-cam {
@@ -102,14 +128,21 @@
         bottom: -2px;
         display: grid;
         place-items: center;
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         padding: 0;
         color: var(--pf-ink);
-        background-color: #ffffff;
-        border: 2px solid var(--pf-border);
+        background-color: var(--pf-amber);
+        border: 2px solid var(--pf-ink);
         border-radius: 50%;
+        box-shadow: 0 2px 0 var(--pf-ink);
         cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .pf__avatar-cam:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 0 var(--pf-ink);
     }
 
     .pf__who {
@@ -121,127 +154,118 @@
         align-items: center;
         gap: 0.35rem;
         margin: 0;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1.4rem;
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+        font-size: 1.45rem;
         line-height: 1.2;
-        font-weight: 800;
-        letter-spacing: -0.01em;
+        font-weight: 700;
+        color: var(--pf-ink);
     }
 
     .pf__name-text {
+        display: block;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .pf__name-edit {
-        display: inline-grid;
-        place-items: center;
-        flex-shrink: 0;
-        width: 32px;
-        height: 32px;
-        color: var(--pf-ink);
-        border-radius: 50%;
-        text-decoration: none;
-    }
-
-    .pf__name-edit:hover {
-        background-color: var(--color-shape, #f1f5ff);
-    }
-
-    .pf__follow {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.25rem 1rem;
-        margin: 0.25rem 0 0;
-        font-size: 1rem;
+    .pf__who > span.pf__name-text {
+        margin-top: 0.25rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        font-size: 0.98rem;
         font-weight: 700;
-        color: var(--pf-ink);
+        color: var(--pf-ink-soft);
+        white-space: normal;
     }
 
     /* ---------- Botones: Compartir / Editar perfil ---------- */
     .pf__actions {
         display: flex;
-        gap: 0.75rem;
-        margin: 1.5rem 0 1.75rem;
+        gap: 0.85rem;
+        margin: 1.35rem 0 1.65rem;
     }
 
     .pf__btn {
-        --lip: 4px;
-
         flex: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         min-height: 48px;
-        padding: 0 1rem;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        padding: 0 1.15rem;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
         font-size: 1rem;
-        font-weight: 700;
+        font-weight: 800;
         text-decoration: none;
         cursor: pointer;
-        border: 2px solid var(--pf-ink);
+        border: 3px solid var(--pf-ink);
         border-radius: 9999px;
-        box-shadow: 0 var(--lip) 0 var(--pf-shadow);
-        transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+        box-shadow: 0 5px 0 var(--pf-ink);
+        transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease, filter 0.15s ease;
     }
 
     .pf__btn:hover {
-        filter: brightness(1.05);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 0 var(--pf-ink);
     }
 
     .pf__btn:active {
-        transform: translateY(var(--lip));
-        box-shadow: 0 0 0 transparent;
+        transform: translateY(5px);
+        box-shadow: 0 0 0 var(--pf-ink);
     }
 
-    /* Tactile primary (variante tinta) */
     .pf__btn--dark {
-        --pf-shadow: #020617;
-
-        color: #ffffff;
-        background-color: var(--pf-ink);
+        color: var(--color-white, #ffffff);
+        background-color: var(--pf-primary);
     }
 
-    /* Ghost / neutral */
-    .pf__btn--ghost {
-        --lip: 3px;
-        --pf-shadow: #94a3b8;
+    .pf__btn--dark:hover {
+        filter: brightness(1.05);
+    }
 
+    .pf__btn--ghost {
         color: var(--pf-ink);
-        background-color: #ffffff;
+        background-color: var(--color-white, #ffffff);
+    }
+
+    .pf__btn--ghost:hover {
+        background-color: var(--pf-sky);
     }
 
     /* ---------- Pestañas ---------- */
     .pf__tabs {
         display: flex;
         justify-content: center;
-        gap: 0.5rem;
-        border-bottom: 2px solid var(--pf-border);
+        gap: 0.4rem;
+        padding: 0.35rem;
+        background-color: var(--color-white, #ffffff);
+        border: 2.5px solid var(--pf-ink);
+        border-radius: 9999px;
+        box-shadow: 0 4px 0 var(--pf-ink);
     }
 
     .pf__tab {
-        min-height: 48px;
-        padding: 0 1.25rem;
-        margin-bottom: -2px;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1rem;
-        font-weight: 700;
-        color: #64748b;
-        background: transparent;
-        border: 0;
-        border-bottom: 4px solid transparent;
+        flex: 1;
+        min-height: 42px;
+        padding: 0 0.85rem;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--pf-ink-soft);
+        background-color: transparent;
+        border: 2px solid transparent;
+        border-radius: 9999px;
         cursor: pointer;
-        transition: color 0.15s ease, border-color 0.15s ease;
+        transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
 
     .pf__tab:hover {
         color: var(--pf-ink);
+        background-color: #f8fafc;
     }
 
     .pf__tab[aria-selected="true"] {
         color: var(--pf-ink);
-        border-bottom-color: var(--pf-ink);
+        background-color: var(--pf-sun);
+        border-color: var(--pf-ink);
     }
 
     /* ---------- Panel: Desempeño ---------- */
@@ -252,53 +276,62 @@
     .pf .map {
         position: relative;
         z-index: 0;
-        margin-top: 0.75rem;
-        height: 240px;
+        margin-top: 0.85rem;
+        height: 250px;
         overflow: hidden;
-        background-color: #f1f5f9;
-        border: 2px solid var(--pf-border);
-        border-radius: 0.75rem;
+        background-color: var(--pf-sky);
+        border: 3px solid var(--pf-ink);
+        border-radius: 1.5rem;
+        box-shadow: 0 6px 0 var(--pf-ink);
     }
 
     .pf .field__hint {
-        margin: 0.5rem 0 1rem;
-        font-size: 0.9rem;
-        font-weight: 600;
+        margin: 0.75rem 0 1rem;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 800;
         color: var(--pf-ink-soft);
     }
 
     .pf__section-title {
-        margin: 1rem 0 0;
+        margin: 1.5rem 0 0;
         text-align: center;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1.25rem;
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+        font-size: 1.45rem;
         line-height: 1.2;
-        font-weight: 800;
+        font-weight: 700;
+        color: var(--pf-ink);
     }
 
     .pf__level {
-        margin: 1.5rem 0 0;
+        display: table;
+        margin: 1.15rem auto 0;
+        padding: 0.5rem 1.75rem;
         text-align: center;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 3rem;
-        line-height: 1;
-        font-weight: 800;
-        letter-spacing: -0.02em;
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+        font-size: 2.5rem;
+        line-height: 1.1;
+        font-weight: 700;
+        color: var(--pf-ink);
+        background-color: var(--pf-tint-amarillo);
+        border: 3px solid var(--pf-ink);
+        border-radius: 9999px;
+        box-shadow: 0 5px 0 var(--pf-ink);
     }
 
     .pf__level-text {
-        margin: 0.5rem 0 0;
+        margin: 0.75rem 0 0;
         text-align: center;
         font-size: 1rem;
-        font-weight: 600;
-        color: #64748b;
+        font-weight: 700;
+        color: var(--pf-ink-soft);
     }
 
     /* ---------- Especialidad / La más desafiante ---------- */
     .pf__stats {
         display: grid;
-        gap: 1.5rem;
-        margin: 2rem 0 0;
+        gap: 1.25rem;
+        margin: 1.75rem 0 0;
         padding: 0;
         list-style: none;
     }
@@ -307,26 +340,27 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 1rem 1.25rem;
-        background-color: #ffffff;
-        border: 2px solid var(--pf-border);
-        border-radius: 2rem;
-        box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+        padding: 1.1rem 1.25rem;
+        background-color: var(--color-white, #ffffff);
+        border: 3px solid var(--pf-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 6px 0 var(--pf-ink);
     }
 
-    /* La segunda tarjeta lleva la mascota a la izquierda*/
     .pf__stat--alt {
         flex-direction: row-reverse;
     }
 
     .pf__stat--amber {
-        --accent: var(--color-secondary, #f59e0b);
-        --accent-ink: #d97706;
+        --accent: var(--pf-amber);
+        --accent-ink: #b45309;
+        --accent-bg: var(--pf-tint-amarillo);
     }
 
     .pf__stat--green {
-        --accent: var(--color-tertiary, #10b981);
-        --accent-ink: #059669;
+        --accent: var(--pf-success);
+        --accent-ink: #15803d;
+        --accent-bg: var(--pf-tint-verde);
     }
 
     .pf__stat-body {
@@ -336,33 +370,36 @@
 
     .pf__stat-label {
         margin: 0;
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 0.92rem;
+        font-weight: 800;
         color: var(--pf-ink-soft);
     }
 
     .pf__stat-cat {
         margin: 0.15rem 0 0;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1.5rem;
-        line-height: 1.1;
-        font-weight: 800;
-        letter-spacing: 0.03em;
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
+        font-size: 1.45rem;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: 0.02em;
         text-transform: uppercase;
         color: var(--accent-ink);
     }
 
     .pf__stat-pct {
-        margin: 0.5rem 0 0.4rem;
-        font-size: 1rem;
+        margin: 0.45rem 0 0.4rem;
+        font-family: var(--font-ui, "Outfit", system-ui, sans-serif);
+        font-size: 0.98rem;
         font-weight: 800;
         font-variant-numeric: tabular-nums;
+        color: var(--pf-ink);
     }
 
     .pf__bar {
-        height: 14px;
+        height: 16px;
         overflow: hidden;
-        background-color: var(--pf-border);
+        background-color: #e2e8f0;
+        border: 2px solid var(--pf-ink);
         border-radius: 9999px;
     }
 
@@ -378,122 +415,105 @@
         display: grid;
         place-items: center;
         flex-shrink: 0;
-        width: 96px;
-        height: 96px;
-        font-size: 3.25rem;
+        width: 92px;
+        height: 92px;
+        font-size: 3rem;
         line-height: 1;
-        background-color: #e2e8f0;
-        background-color: color-mix(in srgb, var(--accent) 16%, #ffffff);
-        border-radius: 50%;
+        background-color: var(--accent-bg);
+        border: 2.5px solid var(--pf-ink);
+        border-radius: var(--pf-blob);
+        box-shadow: 0 3px 0 var(--pf-ink);
     }
 
     /* ---------- Totales de partidas ---------- */
     .pf__totals {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        margin: 2rem 0 0;
+        gap: 0.65rem;
+        margin: 1.75rem 0 0;
         padding: 0;
         list-style: none;
     }
 
     .pf__total {
-        padding: 0.25rem 0.25rem;
+        padding: 0.85rem 0.5rem;
         text-align: center;
-    }
-
-    .pf__total + .pf__total {
-        border-left: 1px solid var(--pf-border);
+        background-color: var(--color-white, #ffffff);
+        border: 2.5px solid var(--pf-ink);
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 0 var(--pf-ink);
     }
 
     .pf__total-num {
         display: block;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
+        font-family: var(--font-display, "Fredoka", "Outfit", system-ui, sans-serif);
         font-size: 1.75rem;
-        line-height: 1.2;
-        font-weight: 800;
+        line-height: 1.15;
+        font-weight: 700;
         font-variant-numeric: tabular-nums;
+        color: var(--pf-ink);
     }
 
     .pf__total-label {
         display: block;
-        margin-top: 0.15rem;
-        font-size: 0.85rem;
-        line-height: 1.3;
-        font-weight: 600;
-        color: #64748b;
-    }
-
-    /* ---------- Logros ---------- */
-    .pf__achievements {
-        margin: 2.5rem 0 0;
-        text-align: center;
-    }
-
-    .pf__achievements-title {
-        margin: 0;
-        font-family: var(--font-family, "Outfit", system-ui, sans-serif);
-        font-size: 1.75rem;
-        line-height: 1.2;
+        margin-top: 0.2rem;
+        font-size: 0.82rem;
+        line-height: 1.25;
         font-weight: 800;
+        color: var(--pf-ink-soft);
     }
 
-    .pf__achievements-text {
-        margin: 0.35rem 0 0;
-        font-size: 1rem;
-        font-weight: 600;
-        color: #64748b;
-    }
-
-    /* ---------- Panel: Preguntas (vacío por ahora) ---------- */
+    /* ---------- Panel: Preguntas ---------- */
     .pf__empty {
-        margin: 2.5rem 0 0;
-        padding: 2rem 1rem;
+        margin: 1.75rem 0 0;
+        padding: 2rem 1.25rem;
         text-align: center;
-        font-weight: 600;
-        color: #64748b;
-        background-color: #ffffff;
-        border: 2px dashed var(--color-border, #e2e8f0);
-        border-radius: 2rem;
+        font-weight: 800;
+        color: var(--pf-ink-soft);
+        background-color: var(--color-white, #ffffff);
+        border: 3px dashed var(--pf-ink);
+        border-radius: 1.75rem;
+        box-shadow: 0 5px 0 var(--pf-ink);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .pf__btn,
-        .pf__tab,
-        .pf__icon-btn {
-            transition: none;
-        }
-    }
-
-    /* Modal de error*/
+    /* ---------- Estado de error ---------- */
     .error {
-      margin-bottom: var(--space-md);
-      padding: 0.75rem 1rem;
-      font-family: var(--font-text);
-      font-weight: 700;
-      text-align: center;
-      color: #b91c1c;
-      background-color: #fef2f2;
-      border: 2px solid #fecaca;
-      border-radius: var(--radius-field);
+        margin: 0;
+        padding: 0.85rem 1.15rem;
+        font-family: var(--font-text, "Nunito", system-ui, sans-serif);
+        font-weight: 800;
+        text-align: center;
+        color: var(--color-error-dark, #b91c1c);
+        background-color: var(--pf-tint-rojo);
+        border: 2.5px solid var(--pf-ink);
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 0 var(--pf-ink);
     }
 
     .pf__error-state {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        gap: 1.15rem;
         margin: 1.5rem 0 1.75rem;
     }
 
     .pf__error-state .error {
         width: 100%;
-        margin: 0;
     }
 
     .pf__error-state .pf__btn {
         flex: none;
-        border-color: var(--color-border, #e2e8f0);
-        color: var(--color-ink-soft, #334155);
+        min-width: 200px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .pf__btn,
+        .pf__tab,
+        .pf__icon-btn,
+        .pf__avatar-cam {
+            transition: none;
+        }
     }
 
     /* =========================================================
@@ -514,13 +534,8 @@
             font-size: 2.9rem;
         }
 
-        img.pf__avatar-img {
-            object-fit: cover;
-            background-color: #e2e8f0;
-        }
-
         .pf__name {
-            font-size: 1.6rem;
+            font-size: 1.65rem;
         }
 
         .pf__stat {
@@ -528,13 +543,13 @@
         }
 
         .pf__stat-icon {
-            width: 110px;
-            height: 110px;
-            font-size: 3.75rem;
+            width: 104px;
+            height: 104px;
+            font-size: 3.4rem;
         }
 
         .pf__stat-cat {
-            font-size: 1.75rem;
+            font-size: 1.65rem;
         }
 
         .pf__total-num {
@@ -542,7 +557,7 @@
         }
 
         .pf__total-label {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
     }
 
@@ -559,12 +574,12 @@
     <!-- Barra superior -->
     <div class="pf__top">
         <a href="{{base_url}}/inicio/show" class="pf__icon-btn" aria-label="Volver al inicio">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polyline points="15 18 9 12 15 6" />
             </svg>
         </a>
     </div>
-    
+
     {{#error}}
         <div class="pf__error-state">
             <p class="error" role="alert">{{error}}</p>
@@ -572,121 +587,121 @@
         </div>
     {{/error}}
 
-    {{^error}} 
-    <!-- Cabecera del perfil -->
-    <section class="pf__head" aria-label="Datos del perfil">
-        <div class="pf__avatar">
-            {{#foto}}
-                <img class="pf__avatar-img" src="{{base_url}}/{{foto}}" alt="Foto de perfil de @{{usuario}}">
-            {{/foto}}
-            {{^foto}}
-                <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
-            {{/foto}}
-               {{#esPropietario}}
-                   <form action="{{base_url}}/perfil/subirFoto" method="POST" enctype="multipart/form-data">
-                       <input type="file" name="foto" id="inputFoto" accept="image/png, image/jpeg, image/webp" hidden onchange="this.form.submit()">
-                       <label for="inputFoto" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
-                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                               <circle cx="12" cy="13" r="4" />
-                           </svg>
-                       </label>
-                   </form>
-               {{/esPropietario}}
+    {{^error}}
+        <!-- Cabecera del perfil -->
+        <section class="pf__head" aria-label="Datos del perfil">
+            <div class="pf__avatar">
+                {{#foto}}
+                    <img class="pf__avatar-img" src="{{base_url}}/{{foto}}" alt="Foto de perfil de @{{usuario}}">
+                {{/foto}}
+                {{^foto}}
+                    <div class="pf__avatar-img" aria-hidden="true">{{inicial}}</div>
+                {{/foto}}
+                {{#esPropietario}}
+                    <form action="{{base_url}}/perfil/subirFoto" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="foto" id="inputFoto" accept="image/png, image/jpeg, image/webp" hidden onchange="this.form.submit()">
+                        <label for="inputFoto" class="pf__avatar-cam" aria-label="Cambiar foto de perfil">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                <circle cx="12" cy="13" r="4" />
+                            </svg>
+                        </label>
+                    </form>
+                {{/esPropietario}}
+            </div>
+
+            <div class="pf__who">
+                <h1 class="pf__name">
+                    <span class="pf__name-text">@{{usuario}}</span>
+                </h1>
+                <span class="pf__name-text">{{bio}}</span>
+            </div>
+        </section>
+
+        <!-- Acciones -->
+        {{#esPropietario}}
+            <div class="pf__actions">
+                <a href="{{base_url}}/perfil/compartir" class="pf__btn pf__btn--dark">Compartir</a>
+                <a href="{{base_url}}/perfil/editar" class="pf__btn pf__btn--ghost">Editar perfil</a>
+            </div>
+        {{/esPropietario}}
+
+        <!-- Pestañas -->
+        <div class="pf__tabs" role="tablist" aria-label="Secciones del perfil">
+            <button type="button" class="pf__tab" role="tab" id="pf-tab-desempeno" aria-controls="pf-panel-desempeno" aria-selected="true">Desempeño</button>
+            <button type="button" class="pf__tab" role="tab" id="pf-tab-preguntas" aria-controls="pf-panel-preguntas" aria-selected="false" tabindex="-1">Preguntas</button>
+            <button type="button" class="pf__tab" role="tab" id="pf-tab-ubicacion" aria-controls="pf-panel-ubicacion" aria-selected="false" tabindex="-1">Ubicación</button>
         </div>
 
-        <div class="pf__who">
-            <h1 class="pf__name">
-                <span class="pf__name-text">@{{usuario}}</span>
-            </h1>
-            <span class="pf__name-text">{{bio}}</span>
-        </div>
-    </section>
+        <!-- Panel: Desempeño -->
+        <section class="pf__panel" id="pf-panel-desempeno" role="tabpanel" aria-labelledby="pf-tab-desempeno">
+            <h2 class="pf__section-title">Desempeño</h2>
 
-    <!-- Acciones -->
-    {{#esPropietario}}
-        <div class="pf__actions">
-            <a href="{{base_url}}/perfil/compartir" class="pf__btn pf__btn--dark">Compartir</a>
-            <a href="{{base_url}}/perfil/editar" class="pf__btn pf__btn--ghost">Editar perfil</a>
-        </div>
-    {{/esPropietario}}
+            <p class="pf__level">Nivel {{nivel}}</p>
+            <p class="pf__level-text">Has respondido {{preguntasCorrectas}} preguntas correctamente</p>
 
-    <!-- Pestañas -->
-    <div class="pf__tabs" role="tablist" aria-label="Secciones del perfil">
-        <button type="button" class="pf__tab" role="tab" id="pf-tab-desempeno" aria-controls="pf-panel-desempeno" aria-selected="true">Desempeño</button>
-        <button type="button" class="pf__tab" role="tab" id="pf-tab-preguntas" aria-controls="pf-panel-preguntas" aria-selected="false" tabindex="-1">Preguntas</button>
-        <button type="button" class="pf__tab" role="tab" id="pf-tab-ubicacion" aria-controls="pf-panel-ubicacion" aria-selected="false" tabindex="-1">Ubicación</button>
-    </div>
-
-    <!-- Panel: Desempeño -->
-    <section class="pf__panel" id="pf-panel-desempeno" role="tabpanel" aria-labelledby="pf-tab-desempeno">
-        <h2 class="pf__section-title">Desempeño</h2>
-
-        <p class="pf__level">Nivel {{nivel}}</p>
-        <p class="pf__level-text">Has respondido {{preguntasCorrectas}} preguntas correctamente</p>
-
-        <ul class="pf__stats">
-            <li class="pf__stat pf__stat--amber">
-                <div class="pf__stat-body">
-                    <p class="pf__stat-label">Tu especialidad</p>
-                    <p class="pf__stat-cat">{{especialidad}}</p>
-                    <p class="pf__stat-pct">{{especialidadAciertos}}% aciertos</p>
-                    <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{especialidadAciertos}}" aria-label="Aciertos en {{especialidad}}">
-                        <span class="pf__bar-fill" style="--pct: {{especialidadAciertos}}%;"></span>
+            <ul class="pf__stats">
+                <li class="pf__stat pf__stat--amber">
+                    <div class="pf__stat-body">
+                        <p class="pf__stat-label">Tu especialidad</p>
+                        <p class="pf__stat-cat">{{especialidad}}</p>
+                        <p class="pf__stat-pct">{{especialidadAciertos}}% aciertos</p>
+                        <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{especialidadAciertos}}" aria-label="Aciertos en {{especialidad}}">
+                            <span class="pf__bar-fill" style="--pct: {{especialidadAciertos}}%;"></span>
+                        </div>
                     </div>
-                </div>
-<div class="pf__stat-icon" aria-hidden="true">{{especialidadIcono}}</div>
-            </li>
+                    <div class="pf__stat-icon" aria-hidden="true">{{especialidadIcono}}</div>
+                </li>
 
-            <li class="pf__stat pf__stat--green pf__stat--alt">
-                <div class="pf__stat-body">
-                    <p class="pf__stat-label">La más desafiante</p>
-                    <p class="pf__stat-cat">{{desafiante}}</p>
-                    <p class="pf__stat-pct">{{desafianteAciertos}}% aciertos</p>
-                    <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{desafianteAciertos}}" aria-label="Aciertos en {{desafiante}}">
-                        <span class="pf__bar-fill" style="--pct: {{desafianteAciertos}}%;"></span>
+                <li class="pf__stat pf__stat--green pf__stat--alt">
+                    <div class="pf__stat-body">
+                        <p class="pf__stat-label">La más desafiante</p>
+                        <p class="pf__stat-cat">{{desafiante}}</p>
+                        <p class="pf__stat-pct">{{desafianteAciertos}}% aciertos</p>
+                        <div class="pf__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{desafianteAciertos}}" aria-label="Aciertos en {{desafiante}}">
+                            <span class="pf__bar-fill" style="--pct: {{desafianteAciertos}}%;"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="pf__stat-icon" aria-hidden="true">{{desafianteIcono}}</div>
-            </li>
-        </ul>
+                    <div class="pf__stat-icon" aria-hidden="true">{{desafianteIcono}}</div>
+                </li>
+            </ul>
 
-        <ul class="pf__totals">
-            <li class="pf__total">
-                <span class="pf__total-num">{{partidasGanadas}}</span>
-                <span class="pf__total-label">Partidas ganadas</span>
-            </li>
-            <li class="pf__total">
-                <span class="pf__total-num">{{partidasPerdidas}}</span>
-                <span class="pf__total-label">Partidas perdidas</span>
-            </li>
-            <li class="pf__total">
-                <span class="pf__total-num">{{partidasRendidas}}</span>
-                <span class="pf__total-label">Partidas rendidas</span>
-            </li>
-        </ul>
-    </section>
+            <ul class="pf__totals">
+                <li class="pf__total">
+                    <span class="pf__total-num">{{partidasGanadas}}</span>
+                    <span class="pf__total-label">Partidas ganadas</span>
+                </li>
+                <li class="pf__total">
+                    <span class="pf__total-num">{{partidasPerdidas}}</span>
+                    <span class="pf__total-label">Partidas perdidas</span>
+                </li>
+                <li class="pf__total">
+                    <span class="pf__total-num">{{partidasRendidas}}</span>
+                    <span class="pf__total-label">Partidas rendidas</span>
+                </li>
+            </ul>
+        </section>
 
-    <!-- Panel: Preguntas -->
-    <section class="pf__panel" id="pf-panel-preguntas" role="tabpanel" aria-labelledby="pf-tab-preguntas" hidden>
-        <p class="pf__empty">Todavía no hay preguntas para mostrar.</p>
-    </section>
+        <!-- Panel: Preguntas -->
+        <section class="pf__panel" id="pf-panel-preguntas" role="tabpanel" aria-labelledby="pf-tab-preguntas" hidden>
+            <p class="pf__empty">Todavía no hay preguntas para mostrar.</p>
+        </section>
 
-    <!-- Panel: Ubicación -->
-    <section class="pf__panel" id="pf-panel-ubicacion" role="tabpanel" aria-labelledby="pf-tab-ubicacion" hidden>
-        <h2 class="pf__section-title">Ubicación</h2>
-        <div
-            id="map"
-            class="map"
-            data-latitude="{{latitud}}"
-            data-longitude="{{longitud}}"
-            data-city="{{ciudad}}"
-            data-country="{{ubicacion}}"
-            role="img"
-            aria-label="Mapa con la ubicación del perfil"
-        ></div>
-        <p class="field__hint" id="map-status" aria-live="polite"></p>
-    </section>
+        <!-- Panel: Ubicación -->
+        <section class="pf__panel" id="pf-panel-ubicacion" role="tabpanel" aria-labelledby="pf-tab-ubicacion" hidden>
+            <h2 class="pf__section-title">Ubicación</h2>
+            <div
+                    id="map"
+                    class="map"
+                    data-latitude="{{latitud}}"
+                    data-longitude="{{longitud}}"
+                    data-city="{{ciudad}}"
+                    data-country="{{ubicacion}}"
+                    role="img"
+                    aria-label="Mapa con la ubicación del perfil"
+            ></div>
+            <p class="field__hint" id="map-status" aria-live="polite"></p>
+        </section>
     {{/error}}
 </main>
 
@@ -718,42 +733,42 @@
 
     // Mapa de ubicación del perfil
     (function () {
-    const mapaDiv = document.getElementById('map');
-    const estado = document.getElementById('map-status');
+        const mapaDiv = document.getElementById('map');
+        const estado = document.getElementById('map-status');
 
-    if (!mapaDiv || !estado) {
-        return;
-    }
+        if (!mapaDiv || !estado) {
+            return;
+        }
 
-    if (!window.L) {
-        estado.textContent = 'No se pudo cargar el mapa. Revisá tu conexión.';
-        return;
-    }
+        if (!window.L) {
+            estado.textContent = 'No se pudo cargar el mapa. Revisá tu conexión.';
+            return;
+        }
 
-    const latitud = Number(mapaDiv.dataset.latitude);
-    const longitud = Number(mapaDiv.dataset.longitude);
-    const ciudad = mapaDiv.dataset.city;
-    const pais = mapaDiv.dataset.country;
-    const coordenadasValidas = mapaDiv.dataset.latitude !== '' &&
-        mapaDiv.dataset.longitude !== '' &&
-        Number.isFinite(latitud) &&
-        Number.isFinite(longitud) &&
-        latitud >= -90 && latitud <= 90 &&
-        longitud >= -180 && longitud <= 180;
-    const centro = coordenadasValidas ? [latitud, longitud] : [-25, -60];
-    const mapa = L.map(mapaDiv).setView(centro, coordenadasValidas ? 13 : 3);
-    mapaUbicacion = mapa;
+        const latitud = Number(mapaDiv.dataset.latitude);
+        const longitud = Number(mapaDiv.dataset.longitude);
+        const ciudad = mapaDiv.dataset.city;
+        const pais = mapaDiv.dataset.country;
+        const coordenadasValidas = mapaDiv.dataset.latitude !== '' &&
+                mapaDiv.dataset.longitude !== '' &&
+                Number.isFinite(latitud) &&
+                Number.isFinite(longitud) &&
+                latitud >= -90 && latitud <= 90 &&
+                longitud >= -180 && longitud <= 180;
+        const centro = coordenadasValidas ? [latitud, longitud] : [-25, -60];
+        const mapa = L.map(mapaDiv).setView(centro, coordenadasValidas ? 13 : 3);
+        mapaUbicacion = mapa;
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '&copy; OpenStreetMap'
-    }).addTo(mapa);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(mapa);
 
-    if (coordenadasValidas) {
-        L.marker(centro).addTo(mapa);
-        estado.textContent = ciudad + ', ' + pais + '.';
-    } else {
-        estado.textContent = 'No hay coordenadas disponibles para mostrar.';
-    }
+        if (coordenadasValidas) {
+            L.marker(centro).addTo(mapa);
+            estado.textContent = ciudad + ', ' + pais + '.';
+        } else {
+            estado.textContent = 'No hay coordenadas disponibles para mostrar.';
+        }
     })();
 </script>
