@@ -13,6 +13,8 @@
         :root {
             --color-primary: #0284c7;
             --color-primary-dark: #0369a1;
+            --color-sky-soft: #bfe6fb;
+            --color-sun: #fcd34d;
             --color-ink: #0f172a;
             --color-ink-soft: #334155;
             --color-white: #ffffff;
@@ -40,8 +42,8 @@
             min-height: 100dvh;
             font-family: var(--font-text);
             color: var(--color-ink);
-            background-color: #eef2ff;
-            background-color: color-mix(in srgb, var(--cat, #0284c7) 16%, #ffffff);
+            background-color: #fff8e8;
+            background-color: color-mix(in srgb, var(--cat, #0284c7) 16%, #fff8e8);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
@@ -65,8 +67,9 @@
             background-image:
                     linear-gradient(160deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%),
                     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.09) 0 14px, rgba(255, 255, 255, 0) 14px 28px);
+            border-bottom: 3px solid var(--color-ink);
             border-radius: 0 0 2.5rem 2.5rem;
-            box-shadow: 0 8px 0 rgba(15, 23, 42, 0.16);
+            box-shadow: 0 6px 0 var(--color-ink);
         }
 
         .q__top-inner {
@@ -95,26 +98,27 @@
             font-weight: 800;
             color: var(--color-ink);
             background-color: var(--color-white);
+            border: 2.5px solid var(--color-ink);
             border-radius: var(--radius-full);
-            box-shadow: 0 4px 0 rgba(15, 23, 42, 0.22);
+            box-shadow: 0 4px 0 var(--color-ink);
         }
 
         .q__exit {
             text-decoration: none;
             font-size: 0.95rem;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-             border: 0;
-             cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+            cursor: pointer;
         }
 
         .q__exit:hover {
+            background-color: var(--color-sky-soft);
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 rgba(15, 23, 42, 0.22);
+            box-shadow: 0 6px 0 var(--color-ink);
         }
 
         .q__exit:active {
             transform: translateY(4px);
-            box-shadow: 0 0 0 transparent;
+            box-shadow: 0 0 0 var(--color-ink);
         }
 
         .q__score {
@@ -146,11 +150,11 @@
 
         .q__track {
             flex: 1;
-            height: 22px;
+            height: 24px;
             padding: 3px;
             background-color: rgba(15, 23, 42, 0.28);
+            border: 2.5px solid var(--color-ink);
             border-radius: var(--radius-full);
-            box-shadow: inset 0 3px 0 rgba(15, 23, 42, 0.18);
         }
 
         .q__fill {
@@ -175,9 +179,9 @@
             font-variant-numeric: tabular-nums;
             color: var(--color-ink);
             background-color: var(--color-white);
-            border: 4px solid var(--color-ink);
+            border: 3px solid var(--color-ink);
             border-radius: 50%;
-            box-shadow: 0 4px 0 rgba(15, 23, 42, 0.22);
+            box-shadow: 0 4px 0 var(--color-ink);
         }
 
         .q__timer.is-low .q__fill {
@@ -229,9 +233,10 @@
             font-family: var(--font-display);
             font-size: 1.7rem;
             color: var(--color-ink);
-            background-color: #facc15;
-            border: 4px solid var(--color-ink);
+            background-color: var(--color-sun);
+            border: 3px solid var(--color-ink);
             border-radius: 50%;
+            box-shadow: 0 3px 0 var(--color-ink);
             transform: rotate(14deg);
         }
 
@@ -257,7 +262,7 @@
             text-align: left;
             color: var(--opt-ink);
             background-color: var(--opt-bg);
-            border: 2px solid var(--opt-edge);
+            border: 3px solid var(--opt-edge);
             border-radius: 1.25rem;
             box-shadow: 0 5px 0 var(--opt-edge);
             cursor: pointer;
@@ -305,7 +310,7 @@
             display: none;
         }
 
-        /* ---------- Modales (rendición) ---------- */
+        /* ---------- Modales (rendición - Cerebrito Cartoon) ---------- */
         .rep-modal {
             position: fixed;
             inset: 0;
@@ -321,115 +326,75 @@
             display: none;
         }
 
-        .rep-modal__card {
+        #rendirse-modal .rep-modal__card {
             width: 100%;
             max-width: 420px;
-            padding: 1.25rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
             background-color: var(--color-white);
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3);
-            animation: pop-in 0.25s ease both;
+            border: 3px solid var(--color-ink);
+            border-radius: 1.75rem;
+            box-shadow: 0 8px 0 var(--color-ink);
+            animation: pop-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
 
-        .rep-modal__title {
-            margin: 0 0 0.5rem;
+        #rendirse-modal .rep-modal__title {
+            margin: 0 0 0.75rem;
             font-family: var(--font-display);
-            font-size: 1.3rem;
+            font-size: 1.65rem;
+            line-height: 1.15;
+            font-weight: 700;
             color: var(--color-ink);
         }
 
-        .rep-modal__text {
-            margin: 0 0 1rem;
-            font-weight: 600;
-            color: var(--color-ink-soft);
+        #rendirse-modal .rep-modal__text {
+            margin: 0 0 1.35rem;
+            font-weight: 800;
+            line-height: 1.45;
+            color: #b91c1c;
         }
 
-        .rep-modal__actions {
+        #rendirse-modal .rep-modal__actions {
             display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .rep-modal__btn {
-            min-height: 42px;
-            padding: 0 1.1rem;
-            font-family: var(--font-text);
-            font-size: 0.95rem;
-            font-weight: 700;
+        #rendirse-modal .rep-modal__btn {
+            width: min(100%, 18rem);
+            min-height: 48px;
+            padding: 0.65rem 1.25rem;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 800;
+            border: 3px solid var(--color-ink);
             border-radius: var(--radius-full);
-            border: 2px solid var(--color-primary);
+            box-shadow: 0 4px 0 var(--color-ink);
             cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
         }
 
-        .rep-modal__btn--primary {
+        #rendirse-modal .rep-modal__btn--secondary {
             color: var(--color-white);
             background-color: var(--color-primary);
         }
 
-        .rep-modal__btn--primary:hover:not(:disabled) {
-            background-color: var(--color-primary-dark);
+        #rendirse-modal .rep-modal__btn--primary {
+            color: var(--color-ink);
+            background-color: var(--color-sky-soft);
         }
 
-        .rep-modal__btn--secondary {
-            color: var(--color-primary);
-            background-color: var(--color-white);
+        #rendirse-modal .rep-modal__btn:hover {
+            filter: brightness(1.04);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--color-ink);
         }
 
-        .rep-modal__btn:disabled {
-            opacity: 0.6;
-            cursor: default;
+        #rendirse-modal .rep-modal__btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 var(--color-ink);
         }
-
-                /* Modal de rendición: mismo estilo que la pantalla de resultado */
-                #rendirse-modal .rep-modal__card {
-                    padding: 2rem 1.5rem;
-                    text-align: center;
-                    border: 1px solid var(--color-border);
-                    border-radius: 1.5rem;
-                    box-shadow: 0 12px 32px rgb(15 23 42 / 10%);
-                }
-
-                #rendirse-modal .rep-modal__title {
-                    margin: 0 0 1rem;
-                    font-family: var(--font-family);
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                }
-
-                #rendirse-modal .rep-modal__text {
-                    font-weight: 800;
-                    color: #b91c1c;
-                }
-
-                #rendirse-modal .rep-modal__actions {
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 0.75rem;
-                }
-
-                #rendirse-modal .rep-modal__btn {
-                    width: min(100%, 18rem);
-                    min-height: 48px;
-                    padding: 0.65rem 1.25rem;
-                    border: 0;
-                    font-family: var(--font-family);
-                    font-size: 1rem;
-                    font-weight: 800;
-                    color: #0c4a6e;
-                    box-shadow: 0 4px 0 #0284c7;
-                    transition: transform 0.1s ease, box-shadow 0.1s ease;
-                }
-
-                #rendirse-modal .rep-modal__btn--secondary { background-color: #7dd3fc; } /* Seguir jugando */
-                #rendirse-modal .rep-modal__btn--primary   { background-color: #bfe2f1; } /* Sí, rendirme */
-
-                #rendirse-modal .rep-modal__btn:hover { transform: translateY(-2px); }
-
-                #rendirse-modal .rep-modal__btn:active {
-                    transform: translateY(3px);
-                    box-shadow: 0 0 0 transparent;
-                }
 
         @keyframes pop-in {
             from { opacity: 0; transform: scale(0.8) translateY(14px); }
@@ -502,7 +467,7 @@
         /* Racha hacia el bono */
         .q__racha {
             display: grid;
-            gap: 0.4rem;
+            gap: 0.45rem;
             text-align: center;
         }
 
@@ -514,10 +479,12 @@
         }
 
         .q__racha-barra {
-            height: 16px;
+            height: 18px;
             padding: 3px;
-            background-color: rgba(15, 23, 42, 0.2);
+            background-color: var(--color-white);
+            border: 2.5px solid var(--color-ink);
             border-radius: var(--radius-full);
+            box-shadow: 0 3px 0 var(--color-ink);
         }
 
         .q__racha-relleno {
@@ -567,6 +534,24 @@
             100% {
                 opacity: 0;
                 transform: translate(-50%, -80px) scale(1);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .q__question,
+            .q__option,
+            .q__cat,
+            .q__star,
+            .game__mascot,
+            .q__racha-relleno,
+            .efecto {
+                animation: none;
+            }
+
+            .q__exit,
+            .q__option,
+            #rendirse-modal .rep-modal__btn {
+                transition: none;
             }
         }
     </style>
@@ -673,7 +658,7 @@
 
         btnAbrir.addEventListener('click', function () {
             modal.hidden = false;
-            btnCancelar.focus();   // el foco empieza en la opción segura
+            btnCancelar.focus();
         });
 
         btnCancelar.addEventListener('click', cerrar);
